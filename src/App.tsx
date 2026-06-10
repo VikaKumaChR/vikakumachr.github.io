@@ -33,7 +33,6 @@ import {
   Sparkle24Regular,
   WeatherSunny24Regular,
 } from "@fluentui/react-icons";
-import heroImage from "../Image/hero-character-blog.png";
 import webModuleOne from "../Image/web-module-01.png";
 import webModuleTwo from "../Image/web-module-02.png";
 
@@ -180,12 +179,12 @@ const useStyles = makeStyles({
   },
   hero: {
     position: "relative",
-    minHeight: "86vh",
+    minHeight: "90vh",
     display: "grid",
     alignItems: "center",
     overflow: "hidden",
     isolation: "isolate",
-    padding: "calc(72px + 44px) clamp(20px, 6vw, 90px) 68px",
+    padding: "calc(72px + 42px) clamp(20px, 6vw, 90px) 70px",
     backgroundColor: "var(--heroBase)",
     backgroundImage:
       "linear-gradient(135deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(225deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(45deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(315deg, var(--heroDiamond) 25%, var(--heroBase) 25%)",
@@ -202,15 +201,15 @@ const useStyles = makeStyles({
   heroReferenceOne: {
     position: "absolute",
     zIndex: 0,
-    right: "clamp(-130px, -7vw, -36px)",
-    top: "calc(72px + 34px)",
-    width: "min(58vw, 880px)",
+    right: "clamp(-240px, -12vw, -80px)",
+    top: "calc(72px + 16px)",
+    width: "min(62vw, 980px)",
     opacity: "var(--moduleOneOpacity)",
-    filter: "drop-shadow(0 22px 40px rgba(101, 86, 138, 0.14))",
+    filter: "saturate(0.86) drop-shadow(0 22px 40px rgba(101, 86, 138, 0.12))",
     "@media (max-width: 960px)": {
-      right: "-240px",
-      width: "880px",
-      opacity: "0.34",
+      right: "-360px",
+      width: "940px",
+      opacity: "0.26",
     },
     "@media (max-width: 540px)": {
       right: "-330px",
@@ -221,12 +220,12 @@ const useStyles = makeStyles({
   heroReferenceTwo: {
     position: "absolute",
     zIndex: 0,
-    left: "clamp(16px, 4vw, 70px)",
-    bottom: "clamp(-120px, -9vw, -54px)",
-    width: "min(26vw, 300px)",
-    minWidth: "180px",
+    left: "clamp(-60px, 3vw, 46px)",
+    bottom: "clamp(-170px, -10vw, -80px)",
+    width: "min(32vw, 380px)",
+    minWidth: "220px",
     opacity: "var(--moduleTwoOpacity)",
-    transform: "rotate(-2deg)",
+    transform: "rotate(-1deg)",
     filter: "drop-shadow(0 20px 30px rgba(101, 86, 138, 0.13))",
     "@media (max-width: 860px)": {
       display: "none",
@@ -242,10 +241,24 @@ const useStyles = makeStyles({
         "linear-gradient(180deg, var(--heroOverlayStrong) 0%, var(--heroOverlayMid) 56%, var(--colorNeutralBackground1) 100%)",
     },
   },
-  heroContent: {
+  heroLayout: {
     position: "relative",
     zIndex: 2,
-    maxWidth: "660px",
+    width: "min(1180px, 100%)",
+    marginRight: "auto",
+    marginLeft: "auto",
+    display: "grid",
+    gridTemplateColumns: "minmax(0, 0.9fr) minmax(360px, 0.78fr)",
+    alignItems: "center",
+    gap: "clamp(28px, 5vw, 72px)",
+    "@media (max-width: 980px)": {
+      gridTemplateColumns: "1fr",
+      alignItems: "start",
+    },
+  },
+  heroContent: {
+    position: "relative",
+    maxWidth: "680px",
     padding: "clamp(28px, 4vw, 46px)",
     backgroundColor: "var(--heroCardBackground)",
     borderRadius: "8px",
@@ -263,6 +276,16 @@ const useStyles = makeStyles({
     "@media (max-width: 540px)": {
       padding: "24px",
     },
+  },
+  heroMetaRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "8px",
+    marginTop: "24px",
+  },
+  heroTag: {
+    backgroundColor: "var(--mintSoft)",
+    color: "var(--tagText)",
   },
   heroContentInner: {
     position: "relative",
@@ -299,6 +322,117 @@ const useStyles = makeStyles({
     flexWrap: "wrap",
     gap: "12px",
     marginTop: "30px",
+  },
+  visualBoard: {
+    position: "relative",
+    display: "grid",
+    gap: "18px",
+    padding: "20px",
+    backgroundColor: "var(--boardBackground)",
+    borderRadius: "8px",
+    ...shorthands.border("1px", "solid", "var(--heroCardStroke)"),
+    boxShadow: "0 24px 54px rgba(101, 86, 138, 0.16)",
+    backdropFilter: "blur(12px)",
+    "@media (max-width: 980px)": {
+      maxWidth: "620px",
+    },
+  },
+  boardRibbon: {
+    position: "absolute",
+    top: "-16px",
+    left: "28px",
+    right: "28px",
+    height: "28px",
+    borderRadius: "8px",
+    backgroundColor: "var(--ribbonColor)",
+    boxShadow: "0 10px 22px rgba(101, 86, 138, 0.12)",
+  },
+  boardHeader: {
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "14px",
+    padding: "10px 4px 0",
+  },
+  boardTitle: {
+    margin: 0,
+    color: tokens.colorNeutralForeground1,
+    fontWeight: tokens.fontWeightSemibold,
+  },
+  boardCount: {
+    color: tokens.colorBrandForeground1,
+    fontWeight: tokens.fontWeightBold,
+  },
+  frameGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "14px",
+    "@media (max-width: 540px)": {
+      gridTemplateColumns: "1fr",
+    },
+  },
+  framePanel: {
+    position: "relative",
+    minHeight: "178px",
+    display: "grid",
+    alignContent: "end",
+    gap: "8px",
+    padding: "18px",
+    overflow: "hidden",
+    color: tokens.colorNeutralForeground1,
+    textDecorationLine: "none",
+    borderRadius: "8px",
+    backgroundColor: "var(--mintPanel)",
+    ...shorthands.border("10px", "solid", "var(--laceWhite)"),
+    boxShadow: "inset 0 0 0 2px rgba(198, 186, 224, 0.42)",
+    "::before": {
+      content: '""',
+      position: "absolute",
+      inset: "8px",
+      pointerEvents: "none",
+      borderRadius: "8px",
+      ...shorthands.border("1px", "dashed", "rgba(157, 145, 191, 0.55)"),
+    },
+    ":hover": {
+      transform: "translateY(-2px)",
+      boxShadow: "inset 0 0 0 2px rgba(198, 186, 224, 0.5), 0 16px 34px rgba(101, 86, 138, 0.13)",
+    },
+  },
+  framePanelTall: {
+    gridRow: "span 2",
+    minHeight: "370px",
+    backgroundColor: "var(--paperPanel)",
+    "@media (max-width: 540px)": {
+      minHeight: "230px",
+    },
+  },
+  frameKicker: {
+    position: "relative",
+    zIndex: 1,
+    color: tokens.colorBrandForeground1,
+    fontSize: tokens.fontSizeBase200,
+    fontWeight: tokens.fontWeightBold,
+  },
+  frameTitle: {
+    position: "relative",
+    zIndex: 1,
+    margin: 0,
+    fontSize: tokens.fontSizeBase600,
+    lineHeight: 1.2,
+  },
+  frameCopy: {
+    position: "relative",
+    zIndex: 1,
+    color: tokens.colorNeutralForeground2,
+  },
+  paperLines: {
+    position: "absolute",
+    inset: "72px 18px 22px",
+    opacity: "var(--paperLineOpacity)",
+    backgroundImage:
+      "repeating-linear-gradient(180deg, transparent 0 28px, rgba(157, 145, 191, 0.32) 29px 30px)",
+    transform: "rotate(-3deg)",
   },
   section: {
     padding: "clamp(64px, 9vw, 112px) clamp(20px, 5vw, 72px)",
@@ -575,28 +709,37 @@ export function App() {
   );
 
   useEffect(() => {
-    const targets = ["characters", "posts", "about"]
-      .map((id) => document.getElementById(id))
-      .filter((section): section is HTMLElement => Boolean(section));
+    const sectionIds = ["characters", "posts", "about"];
+    let frame = 0;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    const updateActiveSection = () => {
+      const marker = 140;
+      const current =
+        sectionIds
+          .map((id) => ({ id, top: document.getElementById(id)?.getBoundingClientRect().top }))
+          .filter((section): section is { id: string; top: number } => typeof section.top === "number")
+          .filter((section) => section.top <= marker)
+          .at(-1)?.id ?? "characters";
 
-        if (visible?.target.id) {
-          setActiveSection(visible.target.id);
-        }
-      },
-      {
-        rootMargin: "-35% 0px -45% 0px",
-        threshold: [0.15, 0.35, 0.6],
-      },
-    );
+      setActiveSection(current);
+    };
 
-    targets.forEach((target) => observer.observe(target));
-    return () => observer.disconnect();
+    const scheduleUpdate = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(updateActiveSection);
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("hashchange", scheduleUpdate);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("hashchange", scheduleUpdate);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -623,8 +766,16 @@ export function App() {
             mode === "dark" ? "rgba(30, 26, 43, 0.72)" : "rgba(255, 255, 255, 0.58)",
           "--heroCardStroke":
             mode === "dark" ? "rgba(222, 213, 239, 0.22)" : "rgba(255, 255, 255, 0.72)",
-          "--moduleOneOpacity": mode === "dark" ? "0.28" : "0.72",
-          "--moduleTwoOpacity": mode === "dark" ? "0.2" : "0.56",
+          "--moduleOneOpacity": mode === "dark" ? "0.16" : "0.22",
+          "--moduleTwoOpacity": mode === "dark" ? "0.16" : "0.24",
+          "--mintSoft": mode === "dark" ? "rgba(191, 226, 197, 0.16)" : "rgba(205, 236, 209, 0.84)",
+          "--mintPanel": mode === "dark" ? "rgba(143, 190, 153, 0.2)" : "rgba(205, 236, 209, 0.9)",
+          "--paperPanel": mode === "dark" ? "rgba(244, 241, 251, 0.14)" : "rgba(255, 255, 255, 0.76)",
+          "--boardBackground": mode === "dark" ? "rgba(25, 22, 36, 0.72)" : "rgba(255, 255, 255, 0.42)",
+          "--ribbonColor": mode === "dark" ? "rgba(198, 186, 224, 0.34)" : "rgba(198, 186, 224, 0.72)",
+          "--laceWhite": mode === "dark" ? "rgba(244, 241, 251, 0.2)" : "rgba(255, 255, 255, 0.86)",
+          "--tagText": mode === "dark" ? "#dff4e3" : "#385943",
+          "--paperLineOpacity": mode === "dark" ? "0.26" : "0.5",
           "--colorNeutralBackground1": theme.colorNeutralBackground1,
         } as React.CSSProperties
       }
@@ -641,6 +792,13 @@ export function App() {
             }`}
             href="#characters"
             appearance="subtle"
+            onClick={() => setActiveSection("characters")}
+            aria-current={activeSection === "characters" ? "page" : undefined}
+            style={{
+              borderBottom:
+                activeSection === "characters" ? "3px solid #c6bae0" : "3px solid transparent",
+              color: activeSection === "characters" ? theme.colorNeutralForeground1 : undefined,
+            }}
           >
             原创角色
           </Link>
@@ -648,6 +806,13 @@ export function App() {
             className={`${styles.navLink} ${activeSection === "posts" ? styles.navLinkActive : ""}`}
             href="#posts"
             appearance="subtle"
+            onClick={() => setActiveSection("posts")}
+            aria-current={activeSection === "posts" ? "page" : undefined}
+            style={{
+              borderBottom:
+                activeSection === "posts" ? "3px solid #c6bae0" : "3px solid transparent",
+              color: activeSection === "posts" ? theme.colorNeutralForeground1 : undefined,
+            }}
           >
             个人贴文
           </Link>
@@ -655,6 +820,13 @@ export function App() {
             className={`${styles.navLink} ${activeSection === "about" ? styles.navLinkActive : ""}`}
             href="#about"
             appearance="subtle"
+            onClick={() => setActiveSection("about")}
+            aria-current={activeSection === "about" ? "page" : undefined}
+            style={{
+              borderBottom:
+                activeSection === "about" ? "3px solid #c6bae0" : "3px solid transparent",
+              color: activeSection === "about" ? theme.colorNeutralForeground1 : undefined,
+            }}
           >
             关于
           </Link>
@@ -674,26 +846,94 @@ export function App() {
           <img className={styles.heroReferenceOne} src={webModuleOne} alt="" aria-hidden="true" />
           <img className={styles.heroReferenceTwo} src={webModuleTwo} alt="" aria-hidden="true" />
           <div className={styles.heroOverlay} />
-          <div className={styles.heroContent}>
-            <div className={styles.heroContentInner}>
-              <Text as="p" className={styles.eyebrow}>
-                Original Characters and Notes
-              </Text>
-              <h1 id="hero-title" className={styles.heroTitle}>
-                VK Character Log
-              </h1>
-              <Text as="p" className={styles.heroCopy}>
-                存放原创角色、人设档案、世界观碎片和日常创作贴文的个人博客。
-              </Text>
-              <div className={styles.heroActions}>
-                <Button as="a" href="#characters" appearance="primary" icon={<Person24Regular />}>
-                  浏览角色
-                </Button>
-                <Button as="a" href="#posts" appearance="secondary" icon={<BookOpen24Regular />}>
-                  阅读贴文
-                </Button>
+          <div className={styles.heroLayout}>
+            <div className={styles.heroContent}>
+              <div className={styles.heroContentInner}>
+                <Text as="p" className={styles.eyebrow}>
+                  Personal Identity System
+                </Text>
+                <h1 id="hero-title" className={styles.heroTitle}>
+                  VK Character Log
+                </h1>
+                <Text as="p" className={styles.heroCopy}>
+                  像桌布一样安静铺开，像四格手账一样收纳日常：这里存放原创角色、人设档案、
+                  世界观碎片和创作贴文。
+                </Text>
+                <div className={styles.heroMetaRow} aria-label="博客气质关键词">
+                  <Badge className={styles.heroTag} appearance="tint">
+                    紫色身份感
+                  </Badge>
+                  <Badge className={styles.heroTag} appearance="tint">
+                    绿色内容框
+                  </Badge>
+                  <Badge className={styles.heroTag} appearance="tint">
+                    手账分格
+                  </Badge>
+                </div>
+                <div className={styles.heroActions}>
+                  <Button
+                    as="a"
+                    href="#characters"
+                    appearance="primary"
+                    icon={<Person24Regular />}
+                    onClick={() => setActiveSection("characters")}
+                  >
+                    浏览角色
+                  </Button>
+                  <Button
+                    as="a"
+                    href="#posts"
+                    appearance="secondary"
+                    icon={<BookOpen24Regular />}
+                    onClick={() => setActiveSection("posts")}
+                  >
+                    阅读贴文
+                  </Button>
+                </div>
               </div>
             </div>
+
+            <aside className={styles.visualBoard} aria-label="主页内容分格">
+              <div className={styles.boardRibbon} aria-hidden="true" />
+              <div className={styles.boardHeader}>
+                <Text as="p" className={styles.boardTitle}>
+                  Life Panels
+                </Text>
+                <Text className={styles.boardCount}>04</Text>
+              </div>
+              <div className={styles.frameGrid}>
+                <a
+                  className={`${styles.framePanel} ${styles.framePanelTall}`}
+                  href="#characters"
+                  onClick={() => setActiveSection("characters")}
+                >
+                  <span className={styles.paperLines} aria-hidden="true" />
+                  <span className={styles.frameKicker}>Character File</span>
+                  <h2 className={styles.frameTitle}>原创角色档案</h2>
+                  <Text className={styles.frameCopy}>
+                    主线、支线与世界观角色，以可继续补完的档案形式收纳。
+                  </Text>
+                </a>
+                <a
+                  className={styles.framePanel}
+                  href="#posts"
+                  onClick={() => setActiveSection("posts")}
+                >
+                  <span className={styles.frameKicker}>Daily Notes</span>
+                  <h2 className={styles.frameTitle}>个人贴文</h2>
+                  <Text className={styles.frameCopy}>短札、绘图记录和设定推进。</Text>
+                </a>
+                <a
+                  className={styles.framePanel}
+                  href="#about"
+                  onClick={() => setActiveSection("about")}
+                >
+                  <span className={styles.frameKicker}>World View</span>
+                  <h2 className={styles.frameTitle}>世界观索引</h2>
+                  <Text className={styles.frameCopy}>把零散灵感整理成可回访的入口。</Text>
+                </a>
+              </div>
+            </aside>
           </div>
         </section>
 
