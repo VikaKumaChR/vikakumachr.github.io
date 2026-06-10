@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Badge,
   Button,
@@ -7,12 +7,6 @@ import {
   CardHeader,
   FluentProvider,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  MenuPopover,
-  MenuTrigger,
   Subtitle1,
   Tab,
   TabList,
@@ -33,15 +27,15 @@ import {
 import {
   ArrowUp24Regular,
   BookOpen24Regular,
-  Color24Regular,
   DarkTheme24Regular,
-  MoreHorizontal24Regular,
   PenSparkle24Regular,
   Person24Regular,
   Sparkle24Regular,
   WeatherSunny24Regular,
 } from "@fluentui/react-icons";
 import heroImage from "../Image/hero-character-blog.png";
+import webModuleOne from "../Image/web-module-01.png";
+import webModuleTwo from "../Image/web-module-02.png";
 
 const brandRamp: BrandVariants = {
   10: "#07050c",
@@ -146,18 +140,57 @@ const useStyles = makeStyles({
     },
   },
   navLink: {
+    position: "relative",
+    minHeight: "40px",
+    display: "inline-flex",
+    alignItems: "center",
     color: tokens.colorNeutralForeground2,
+    fontWeight: tokens.fontWeightSemibold,
+    paddingBottom: "2px",
     ":hover": {
       color: tokens.colorNeutralForeground1,
     },
+    "::after": {
+      content: '""',
+      position: "absolute",
+      left: "10%",
+      right: "10%",
+      bottom: "2px",
+      height: "3px",
+      borderRadius: "999px",
+      backgroundColor: "transparent",
+      transform: "scaleX(0.36)",
+      transitionDuration: tokens.durationNormal,
+      transitionProperty: "background-color, transform",
+      transitionTimingFunction: tokens.curveEasyEase,
+    },
+  },
+  navLinkActive: {
+    color: tokens.colorNeutralForeground1,
+    "::after": {
+      backgroundColor: "#c6bae0",
+      transform: "scaleX(1)",
+    },
+  },
+  themeButton: {
+    minWidth: "44px",
+    width: "44px",
+    height: "44px",
+    borderRadius: "8px",
   },
   hero: {
     position: "relative",
-    minHeight: "88vh",
+    minHeight: "86vh",
     display: "grid",
     alignItems: "center",
     overflow: "hidden",
+    isolation: "isolate",
     padding: "calc(72px + 44px) clamp(20px, 6vw, 90px) 68px",
+    backgroundColor: "var(--heroBase)",
+    backgroundImage:
+      "linear-gradient(135deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(225deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(45deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(315deg, var(--heroDiamond) 25%, var(--heroBase) 25%)",
+    backgroundPosition: "42px 0, 42px 0, 0 0, 0 0",
+    backgroundSize: "84px 84px",
     "@media (max-width: 860px)": {
       minHeight: "82vh",
       paddingTop: "80px",
@@ -166,18 +199,44 @@ const useStyles = makeStyles({
       minHeight: "78vh",
     },
   },
-  heroImage: {
+  heroReferenceOne: {
     position: "absolute",
-    inset: 0,
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
+    zIndex: 0,
+    right: "clamp(-130px, -7vw, -36px)",
+    top: "calc(72px + 34px)",
+    width: "min(58vw, 880px)",
+    opacity: "var(--moduleOneOpacity)",
+    filter: "drop-shadow(0 22px 40px rgba(101, 86, 138, 0.14))",
+    "@media (max-width: 960px)": {
+      right: "-240px",
+      width: "880px",
+      opacity: "0.34",
+    },
+    "@media (max-width: 540px)": {
+      right: "-330px",
+      top: "96px",
+      width: "780px",
+    },
+  },
+  heroReferenceTwo: {
+    position: "absolute",
+    zIndex: 0,
+    left: "clamp(16px, 4vw, 70px)",
+    bottom: "clamp(-120px, -9vw, -54px)",
+    width: "min(26vw, 300px)",
+    minWidth: "180px",
+    opacity: "var(--moduleTwoOpacity)",
+    transform: "rotate(-2deg)",
+    filter: "drop-shadow(0 20px 30px rgba(101, 86, 138, 0.13))",
+    "@media (max-width: 860px)": {
+      display: "none",
+    },
   },
   heroOverlay: {
     position: "absolute",
     inset: 0,
     background:
-      "linear-gradient(90deg, var(--heroOverlayStrong) 0%, var(--heroOverlayMid) 34%, var(--heroOverlaySoft) 78%), linear-gradient(180deg, transparent 64%, var(--colorNeutralBackground1) 100%)",
+      "linear-gradient(90deg, var(--heroOverlayStrong) 0%, var(--heroOverlayMid) 39%, var(--heroOverlaySoft) 78%), linear-gradient(180deg, transparent 64%, var(--colorNeutralBackground1) 100%)",
     "@media (max-width: 860px)": {
       background:
         "linear-gradient(180deg, var(--heroOverlayStrong) 0%, var(--heroOverlayMid) 56%, var(--colorNeutralBackground1) 100%)",
@@ -187,6 +246,27 @@ const useStyles = makeStyles({
     position: "relative",
     zIndex: 2,
     maxWidth: "660px",
+    padding: "clamp(28px, 4vw, 46px)",
+    backgroundColor: "var(--heroCardBackground)",
+    borderRadius: "8px",
+    ...shorthands.border("1px", "solid", "var(--heroCardStroke)"),
+    boxShadow: "0 22px 52px rgba(101, 86, 138, 0.14)",
+    backdropFilter: "blur(18px) saturate(1.15)",
+    "::before": {
+      content: '""',
+      position: "absolute",
+      inset: "12px",
+      pointerEvents: "none",
+      borderRadius: "8px",
+      ...shorthands.border("1px", "dashed", "rgba(157, 145, 191, 0.36)"),
+    },
+    "@media (max-width: 540px)": {
+      padding: "24px",
+    },
+  },
+  heroContentInner: {
+    position: "relative",
+    zIndex: 1,
   },
   eyebrow: {
     marginBottom: "10px",
@@ -486,12 +566,38 @@ export function App() {
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
   const [filter, setFilter] = useState<string>("all");
+  const [activeSection, setActiveSection] = useState("characters");
 
   const theme = mode === "dark" ? darkTheme : lightTheme;
   const filteredPosts = useMemo(
     () => posts.filter((post) => filter === "all" || post.category === filter),
     [filter],
   );
+
+  useEffect(() => {
+    const targets = ["characters", "posts", "about"]
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => Boolean(section));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible?.target.id) {
+          setActiveSection(visible.target.id);
+        }
+      },
+      {
+        rootMargin: "-35% 0px -45% 0px",
+        threshold: [0.15, 0.35, 0.6],
+      },
+    );
+
+    targets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
+  }, []);
 
   const toggleTheme = () => {
     const nextMode = mode === "dark" ? "light" : "dark";
@@ -506,11 +612,19 @@ export function App() {
       style={
         {
           "--heroOverlayStrong":
-            mode === "dark" ? "rgba(18, 15, 26, 0.94)" : "rgba(250, 248, 255, 0.94)",
+            mode === "dark" ? "rgba(18, 15, 26, 0.9)" : "rgba(248, 244, 255, 0.82)",
           "--heroOverlayMid":
-            mode === "dark" ? "rgba(18, 15, 26, 0.72)" : "rgba(250, 248, 255, 0.72)",
+            mode === "dark" ? "rgba(18, 15, 26, 0.58)" : "rgba(248, 244, 255, 0.42)",
           "--heroOverlaySoft":
-            mode === "dark" ? "rgba(18, 15, 26, 0.22)" : "rgba(250, 248, 255, 0.2)",
+            mode === "dark" ? "rgba(18, 15, 26, 0.22)" : "rgba(248, 244, 255, 0.08)",
+          "--heroBase": mode === "dark" ? "#181523" : "#e8def5",
+          "--heroDiamond": mode === "dark" ? "rgba(198, 186, 224, 0.06)" : "rgba(255, 255, 255, 0.25)",
+          "--heroCardBackground":
+            mode === "dark" ? "rgba(30, 26, 43, 0.72)" : "rgba(255, 255, 255, 0.58)",
+          "--heroCardStroke":
+            mode === "dark" ? "rgba(222, 213, 239, 0.22)" : "rgba(255, 255, 255, 0.72)",
+          "--moduleOneOpacity": mode === "dark" ? "0.28" : "0.72",
+          "--moduleTwoOpacity": mode === "dark" ? "0.2" : "0.56",
           "--colorNeutralBackground1": theme.colorNeutralBackground1,
         } as React.CSSProperties
       }
@@ -521,58 +635,64 @@ export function App() {
           <span className={styles.brandText}>Character Log</span>
         </Link>
         <nav className={styles.nav} aria-label="主要导航">
-          <Link className={styles.navLink} href="#characters" appearance="subtle">
+          <Link
+            className={`${styles.navLink} ${
+              activeSection === "characters" ? styles.navLinkActive : ""
+            }`}
+            href="#characters"
+            appearance="subtle"
+          >
             原创角色
           </Link>
-          <Link className={styles.navLink} href="#posts" appearance="subtle">
+          <Link
+            className={`${styles.navLink} ${activeSection === "posts" ? styles.navLinkActive : ""}`}
+            href="#posts"
+            appearance="subtle"
+          >
             个人贴文
           </Link>
-          <Link className={styles.navLink} href="#about" appearance="subtle">
+          <Link
+            className={`${styles.navLink} ${activeSection === "about" ? styles.navLinkActive : ""}`}
+            href="#about"
+            appearance="subtle"
+          >
             关于
           </Link>
         </nav>
-        <Menu>
-          <MenuTrigger disableButtonEnhancement>
-            <MenuButton
-              appearance="subtle"
-              icon={<MoreHorizontal24Regular />}
-              aria-label="更多站点操作"
-            />
-          </MenuTrigger>
-          <MenuPopover>
-            <MenuList>
-              <MenuItem
-                icon={mode === "dark" ? <WeatherSunny24Regular /> : <DarkTheme24Regular />}
-                onClick={toggleTheme}
-              >
-                {mode === "dark" ? "切换亮色" : "切换暗色"}
-              </MenuItem>
-            </MenuList>
-          </MenuPopover>
-        </Menu>
+        <Button
+          className={styles.themeButton}
+          appearance="subtle"
+          icon={mode === "dark" ? <WeatherSunny24Regular /> : <DarkTheme24Regular />}
+          onClick={toggleTheme}
+          aria-label={mode === "dark" ? "切换亮色模式" : "切换暗色模式"}
+          title={mode === "dark" ? "切换亮色模式" : "切换暗色模式"}
+        />
       </header>
 
       <main id="top">
         <section className={styles.hero} aria-labelledby="hero-title">
-          <img className={styles.heroImage} src={heroImage} alt="原创角色博客首页视觉图" />
+          <img className={styles.heroReferenceOne} src={webModuleOne} alt="" aria-hidden="true" />
+          <img className={styles.heroReferenceTwo} src={webModuleTwo} alt="" aria-hidden="true" />
           <div className={styles.heroOverlay} />
           <div className={styles.heroContent}>
-            <Text as="p" className={styles.eyebrow}>
-              Original Characters and Notes
-            </Text>
-            <h1 id="hero-title" className={styles.heroTitle}>
-              VK Character Log
-            </h1>
-            <Text as="p" className={styles.heroCopy}>
-              存放原创角色、人设档案、世界观碎片和日常创作贴文的个人博客。
-            </Text>
-            <div className={styles.heroActions}>
-              <Button as="a" href="#characters" appearance="primary" icon={<Person24Regular />}>
-                浏览角色
-              </Button>
-              <Button as="a" href="#posts" appearance="secondary" icon={<BookOpen24Regular />}>
-                阅读贴文
-              </Button>
+            <div className={styles.heroContentInner}>
+              <Text as="p" className={styles.eyebrow}>
+                Original Characters and Notes
+              </Text>
+              <h1 id="hero-title" className={styles.heroTitle}>
+                VK Character Log
+              </h1>
+              <Text as="p" className={styles.heroCopy}>
+                存放原创角色、人设档案、世界观碎片和日常创作贴文的个人博客。
+              </Text>
+              <div className={styles.heroActions}>
+                <Button as="a" href="#characters" appearance="primary" icon={<Person24Regular />}>
+                  浏览角色
+                </Button>
+                <Button as="a" href="#posts" appearance="secondary" icon={<BookOpen24Regular />}>
+                  阅读贴文
+                </Button>
+              </div>
             </div>
           </div>
         </section>
