@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Badge,
   Button,
@@ -146,30 +146,19 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground2,
     fontWeight: tokens.fontWeightSemibold,
     paddingBottom: "2px",
+    borderBottomWidth: "3px",
+    borderBottomStyle: "solid",
+    borderBottomColor: "transparent",
+    transitionDuration: tokens.durationNormal,
+    transitionProperty: "border-bottom-color, color",
+    transitionTimingFunction: tokens.curveEasyEase,
     ":hover": {
       color: tokens.colorNeutralForeground1,
-    },
-    "::after": {
-      content: '""',
-      position: "absolute",
-      left: "10%",
-      right: "10%",
-      bottom: "2px",
-      height: "3px",
-      borderRadius: "999px",
-      backgroundColor: "transparent",
-      transform: "scaleX(0.36)",
-      transitionDuration: tokens.durationNormal,
-      transitionProperty: "background-color, transform",
-      transitionTimingFunction: tokens.curveEasyEase,
     },
   },
   navLinkActive: {
     color: tokens.colorNeutralForeground1,
-    "::after": {
-      backgroundColor: "#c6bae0",
-      transform: "scaleX(1)",
-    },
+    borderBottomColor: "#c6bae0",
   },
   themeButton: {
     minWidth: "44px",
@@ -701,6 +690,7 @@ export function App() {
   });
   const [filter, setFilter] = useState<string>("all");
   const [activeSection, setActiveSection] = useState("characters");
+  const navigationLockUntil = useRef(0);
 
   const theme = mode === "dark" ? darkTheme : lightTheme;
   const filteredPosts = useMemo(
@@ -713,6 +703,10 @@ export function App() {
     let frame = 0;
 
     const updateActiveSection = () => {
+      if (Date.now() < navigationLockUntil.current) {
+        return;
+      }
+
       const marker = 140;
       const current =
         sectionIds
@@ -746,6 +740,11 @@ export function App() {
     const nextMode = mode === "dark" ? "light" : "dark";
     setMode(nextMode);
     localStorage.setItem("theme", nextMode);
+  };
+
+  const navigateToSection = (section: string) => {
+    navigationLockUntil.current = Date.now() + 900;
+    setActiveSection(section);
   };
 
   return (
@@ -792,11 +791,10 @@ export function App() {
             }`}
             href="#characters"
             appearance="subtle"
-            onClick={() => setActiveSection("characters")}
+            onClick={() => navigateToSection("characters")}
             aria-current={activeSection === "characters" ? "page" : undefined}
             style={{
-              borderBottom:
-                activeSection === "characters" ? "3px solid #c6bae0" : "3px solid transparent",
+              borderBottomColor: activeSection === "characters" ? "#c6bae0" : "transparent",
               color: activeSection === "characters" ? theme.colorNeutralForeground1 : undefined,
             }}
           >
@@ -806,11 +804,10 @@ export function App() {
             className={`${styles.navLink} ${activeSection === "posts" ? styles.navLinkActive : ""}`}
             href="#posts"
             appearance="subtle"
-            onClick={() => setActiveSection("posts")}
+            onClick={() => navigateToSection("posts")}
             aria-current={activeSection === "posts" ? "page" : undefined}
             style={{
-              borderBottom:
-                activeSection === "posts" ? "3px solid #c6bae0" : "3px solid transparent",
+              borderBottomColor: activeSection === "posts" ? "#c6bae0" : "transparent",
               color: activeSection === "posts" ? theme.colorNeutralForeground1 : undefined,
             }}
           >
@@ -820,11 +817,10 @@ export function App() {
             className={`${styles.navLink} ${activeSection === "about" ? styles.navLinkActive : ""}`}
             href="#about"
             appearance="subtle"
-            onClick={() => setActiveSection("about")}
+            onClick={() => navigateToSection("about")}
             aria-current={activeSection === "about" ? "page" : undefined}
             style={{
-              borderBottom:
-                activeSection === "about" ? "3px solid #c6bae0" : "3px solid transparent",
+              borderBottomColor: activeSection === "about" ? "#c6bae0" : "transparent",
               color: activeSection === "about" ? theme.colorNeutralForeground1 : undefined,
             }}
           >
@@ -876,7 +872,7 @@ export function App() {
                     href="#characters"
                     appearance="primary"
                     icon={<Person24Regular />}
-                    onClick={() => setActiveSection("characters")}
+                    onClick={() => navigateToSection("characters")}
                   >
                     浏览角色
                   </Button>
@@ -885,7 +881,7 @@ export function App() {
                     href="#posts"
                     appearance="secondary"
                     icon={<BookOpen24Regular />}
-                    onClick={() => setActiveSection("posts")}
+                    onClick={() => navigateToSection("posts")}
                   >
                     阅读贴文
                   </Button>
@@ -905,7 +901,7 @@ export function App() {
                 <a
                   className={`${styles.framePanel} ${styles.framePanelTall}`}
                   href="#characters"
-                  onClick={() => setActiveSection("characters")}
+                  onClick={() => navigateToSection("characters")}
                 >
                   <span className={styles.paperLines} aria-hidden="true" />
                   <span className={styles.frameKicker}>Character File</span>
@@ -917,7 +913,7 @@ export function App() {
                 <a
                   className={styles.framePanel}
                   href="#posts"
-                  onClick={() => setActiveSection("posts")}
+                  onClick={() => navigateToSection("posts")}
                 >
                   <span className={styles.frameKicker}>Daily Notes</span>
                   <h2 className={styles.frameTitle}>个人贴文</h2>
@@ -926,7 +922,7 @@ export function App() {
                 <a
                   className={styles.framePanel}
                   href="#about"
-                  onClick={() => setActiveSection("about")}
+                  onClick={() => navigateToSection("about")}
                 >
                   <span className={styles.frameKicker}>World View</span>
                   <h2 className={styles.frameTitle}>世界观索引</h2>
