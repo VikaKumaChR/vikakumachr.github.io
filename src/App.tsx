@@ -434,40 +434,6 @@ const useStyles = makeStyles({
     marginRight: "auto",
     marginLeft: "auto",
   },
-  introBand: {
-    paddingTop: "22px",
-    paddingBottom: "22px",
-  },
-  statsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    gap: "1px",
-    overflow: "hidden",
-    backgroundColor: tokens.colorNeutralStroke2,
-    borderRadius: "8px",
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-    boxShadow: tokens.shadow16,
-    "@media (max-width: 860px)": {
-      gridTemplateColumns: "1fr",
-    },
-  },
-  stat: {
-    minHeight: "118px",
-    display: "grid",
-    alignContent: "center",
-    gap: "4px",
-    padding: "24px",
-    backgroundColor: tokens.colorNeutralBackground1,
-  },
-  statValue: {
-    color: tokens.colorBrandForeground1,
-    fontSize: "2.2rem",
-    fontWeight: tokens.fontWeightBold,
-    lineHeight: 1,
-  },
-  statLabel: {
-    color: tokens.colorNeutralForeground2,
-  },
   sectionHeading: {
     marginBottom: "34px",
   },
@@ -582,12 +548,43 @@ const useStyles = makeStyles({
   },
   aboutGrid: {
     display: "grid",
-    gridTemplateColumns: "minmax(0, 1fr) 340px",
-    gap: "26px",
+    gridTemplateColumns: "minmax(0, 1fr) 420px",
+    gap: "34px",
     alignItems: "start",
     "@media (max-width: 860px)": {
       gridTemplateColumns: "1fr",
     },
+  },
+  aboutLead: {
+    maxWidth: "68ch",
+    color: tokens.colorNeutralForeground2,
+    fontSize: tokens.fontSizeBase500,
+  },
+  aboutNoteGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: "12px",
+    marginTop: "28px",
+    "@media (max-width: 720px)": {
+      gridTemplateColumns: "1fr",
+    },
+  },
+  aboutNote: {
+    minHeight: "112px",
+    display: "grid",
+    alignContent: "start",
+    gap: "8px",
+    padding: "18px",
+    borderRadius: "8px",
+    backgroundColor: tokens.colorNeutralBackground2,
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+  },
+  aboutNoteTitle: {
+    color: tokens.colorBrandForeground1,
+    fontWeight: tokens.fontWeightBold,
+  },
+  aboutCardHeader: {
+    marginBottom: "14px",
   },
   profileList: {
     display: "grid",
@@ -602,6 +599,9 @@ const useStyles = makeStyles({
     gap: "16px",
     paddingTop: "12px",
     ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
+  },
+  profileValue: {
+    textAlign: "right",
   },
   footer: {
     display: "flex",
@@ -933,21 +933,6 @@ export function App() {
           </div>
         </section>
 
-        <section className={`${styles.section} ${styles.introBand}`} aria-label="博客概览">
-          <div className={`${styles.sectionInner} ${styles.statsGrid}`}>
-            {[
-              ["06", "角色档案"],
-              ["18", "创作贴文"],
-              ["04", "世界观分区"],
-            ].map(([value, label]) => (
-              <article className={styles.stat} key={label}>
-                <span className={styles.statValue}>{value}</span>
-                <Text className={styles.statLabel}>{label}</Text>
-              </article>
-            ))}
-          </div>
-        </section>
-
         <section className={styles.section} id="characters" aria-labelledby="characters-title">
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeading}>
@@ -1066,29 +1051,50 @@ export function App() {
               <Title1 as="h2" id="about-title">
                 关于这个博客
               </Title1>
-              <Text as="p" className={styles.headingCopy}>
-                这里适合放你的个人简介、创作偏好、更新频率，以及角色授权或转载说明。页面已经改为
-                React + Fluent UI v9，构建后仍可部署到 GitHub Pages。
+              <Text as="p" className={styles.aboutLead}>
+                这里是 VikaKumaChR 的原创角色与个人创作记录页。它更像一本持续整理的线上手账：
+                角色设定、世界观碎片、绘图过程和短札都会被收纳在这里，方便回看、补完和延展。
               </Text>
+              <div className={styles.aboutNoteGrid} aria-label="博客内容说明">
+                <div className={styles.aboutNote}>
+                  <Text className={styles.aboutNoteTitle}>原创角色</Text>
+                  <Text className={styles.cardCopy}>整理角色档案、关键词、关系和阶段性设定。</Text>
+                </div>
+                <div className={styles.aboutNote}>
+                  <Text className={styles.aboutNoteTitle}>创作贴文</Text>
+                  <Text className={styles.cardCopy}>记录绘图、构思、灵感片段和更新日志。</Text>
+                </div>
+                <div className={styles.aboutNote}>
+                  <Text className={styles.aboutNoteTitle}>阅读说明</Text>
+                  <Text className={styles.cardCopy}>内容以个人创作为主，设定会随作品推进继续调整。</Text>
+                </div>
+              </div>
             </div>
             <Card className={styles.card}>
               <div className={styles.cardBody}>
                 <CardHeader
+                  className={styles.aboutCardHeader}
                   image={<Sparkle24Regular />}
-                  header={<Title2 as="p">站点信息</Title2>}
+                  header={<Title2 as="p">创作索引</Title2>}
                 />
                 <ul className={styles.profileList}>
                   <li className={styles.profileItem}>
-                    <Text>主题色</Text>
-                    <Text weight="semibold">#c6bae0</Text>
+                    <Text>主要内容</Text>
+                    <Text className={styles.profileValue} weight="semibold">
+                      角色 / 贴文 / 世界观
+                    </Text>
                   </li>
                   <li className={styles.profileItem}>
-                    <Text>组件库</Text>
-                    <Text weight="semibold">Fluent UI v9</Text>
+                    <Text>更新方式</Text>
+                    <Text className={styles.profileValue} weight="semibold">
+                      不定期整理
+                    </Text>
                   </li>
                   <li className={styles.profileItem}>
-                    <Text>发布方式</Text>
-                    <Text weight="semibold">GitHub Pages</Text>
+                    <Text>转载说明</Text>
+                    <Text className={styles.profileValue} weight="semibold">
+                      请先联系确认
+                    </Text>
                   </li>
                 </ul>
               </div>
