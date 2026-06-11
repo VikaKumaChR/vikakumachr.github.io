@@ -248,7 +248,7 @@ const useStyles = makeStyles({
   heroContent: {
     position: "relative",
     maxWidth: "680px",
-    padding: "clamp(28px, 4vw, 46px)",
+    padding: "clamp(24px, 3.2vw, 38px)",
     backgroundColor: "var(--heroCardBackground)",
     borderRadius: "8px",
     ...shorthands.border("1px", "solid", "var(--heroCardStroke)"),
@@ -289,11 +289,11 @@ const useStyles = makeStyles({
     letterSpacing: "0",
   },
   heroTitle: {
-    maxWidth: "10ch",
+    maxWidth: "12ch",
     marginTop: 0,
     marginBottom: 0,
-    fontSize: "clamp(3.2rem, 7vw, 6.8rem)",
-    lineHeight: "0.92",
+    fontSize: "clamp(2.8rem, 6vw, 5.8rem)",
+    lineHeight: "0.96",
     letterSpacing: "0",
     overflowWrap: "anywhere",
     "@media (max-width: 540px)": {
@@ -311,6 +311,19 @@ const useStyles = makeStyles({
     flexWrap: "wrap",
     gap: "12px",
     marginTop: "30px",
+  },
+  heroPreviewStrip: {
+    display: "grid",
+    gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+    gap: "10px",
+    marginTop: "24px",
+  },
+  heroPreview: {
+    minHeight: "78px",
+    borderRadius: "8px",
+    background:
+      "linear-gradient(145deg, rgba(255,255,255,0.68), transparent), radial-gradient(circle at 72% 28%, rgba(255,255,255,0.9), transparent 24%), var(--previewColor)",
+    ...shorthands.border("1px", "solid", "rgba(198, 186, 224, 0.42)"),
   },
   visualBoard: {
     position: "relative",
@@ -437,6 +450,11 @@ const useStyles = makeStyles({
   sectionHeading: {
     marginBottom: "34px",
   },
+  sectionHeadingStack: {
+    display: "grid",
+    gap: "8px",
+    marginBottom: "34px",
+  },
   sectionHeadingSplit: {
     display: "flex",
     alignItems: "end",
@@ -454,14 +472,19 @@ const useStyles = makeStyles({
   },
   characterGrid: {
     display: "grid",
-    gridTemplateColumns: "1.2fr 0.9fr 0.9fr",
-    gap: "18px",
+    gridTemplateColumns: "360px minmax(0, 1fr)",
+    gap: "22px",
+    alignItems: "start",
     "@media (max-width: 860px)": {
       gridTemplateColumns: "1fr",
     },
   },
-  featuredCard: {
-    gridRow: "span 2",
+  characterProfile: {
+    position: "sticky",
+    top: "96px",
+    "@media (max-width: 860px)": {
+      position: "static",
+    },
   },
   card: {
     overflow: "hidden",
@@ -474,7 +497,37 @@ const useStyles = makeStyles({
       "linear-gradient(135deg, rgba(255, 255, 255, 0.48), transparent), radial-gradient(circle at 72% 24%, rgba(255, 255, 255, 0.8), transparent 26%), var(--artColor)",
   },
   featuredArt: {
-    minHeight: "310px",
+    minHeight: "250px",
+  },
+  illustrationGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: "16px",
+    "@media (max-width: 640px)": {
+      gridTemplateColumns: "1fr",
+    },
+  },
+  illustrationCard: {
+    minHeight: "260px",
+    display: "grid",
+    alignContent: "space-between",
+    padding: "18px",
+    borderRadius: "8px",
+    background:
+      "linear-gradient(145deg, rgba(255,255,255,0.54), transparent), radial-gradient(circle at 76% 20%, rgba(255,255,255,0.86), transparent 22%), var(--artColor)",
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+    boxShadow: tokens.shadow8,
+  },
+  illustrationMeta: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "12px",
+    color: tokens.colorNeutralForeground2,
+    fontSize: tokens.fontSizeBase200,
+    fontWeight: tokens.fontWeightSemibold,
+  },
+  illustrationCaption: {
+    maxWidth: "24ch",
   },
   cardBody: {
     padding: "22px",
@@ -505,11 +558,15 @@ const useStyles = makeStyles({
   },
   postList: {
     display: "grid",
-    gap: "14px",
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: "16px",
+    "@media (max-width: 900px)": {
+      gridTemplateColumns: "1fr",
+    },
   },
   postCard: {
     display: "grid",
-    gridTemplateColumns: "92px 1fr",
+    gridTemplateRows: "auto 1fr",
     overflow: "hidden",
     borderRadius: "8px",
     boxShadow: tokens.shadow8,
@@ -518,17 +575,15 @@ const useStyles = makeStyles({
     },
   },
   postDate: {
-    display: "grid",
-    placeItems: "center",
-    alignContent: "center",
-    gap: "2px",
-    backgroundColor: tokens.colorBrandBackground2,
-    ...shorthands.borderRight("1px", "solid", tokens.colorNeutralStroke2),
-    "@media (max-width: 540px)": {
-      minHeight: "76px",
-      borderRightWidth: 0,
-      ...shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
-    },
+    minHeight: "118px",
+    display: "flex",
+    alignItems: "end",
+    justifyContent: "space-between",
+    gap: "14px",
+    padding: "18px",
+    background:
+      "linear-gradient(135deg, rgba(255,255,255,0.62), transparent), var(--postAccent)",
+    ...shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
   },
   postDay: {
     fontSize: "2rem",
@@ -546,9 +601,19 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground2,
     fontWeight: tokens.fontWeightSemibold,
   },
+  postBody: {
+    minHeight: "220px",
+    display: "grid",
+    alignContent: "space-between",
+    padding: "22px",
+  },
+  postExcerpt: {
+    color: tokens.colorNeutralForeground2,
+    marginBottom: "18px",
+  },
   aboutGrid: {
     display: "grid",
-    gridTemplateColumns: "minmax(0, 1fr) 420px",
+    gridTemplateColumns: "minmax(0, 1fr) 360px",
     gap: "34px",
     alignItems: "start",
     "@media (max-width: 860px)": {
@@ -556,13 +621,13 @@ const useStyles = makeStyles({
     },
   },
   aboutLead: {
-    maxWidth: "68ch",
+    maxWidth: "62ch",
     color: tokens.colorNeutralForeground2,
     fontSize: tokens.fontSizeBase500,
   },
   aboutNoteGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
     gap: "12px",
     marginTop: "28px",
     "@media (max-width: 720px)": {
@@ -624,6 +689,7 @@ const posts = [
     day: "06",
     month: "Jun",
     readTime: "4 min read",
+    accent: "#c6bae0",
     title: "璃音的记忆笔记如何影响主线推进",
     excerpt: "这篇整理她的观察习惯、叙事视角，以及笔记在章节结构中的功能。",
   },
@@ -632,6 +698,7 @@ const posts = [
     day: "28",
     month: "May",
     readTime: "2 min read",
+    accent: "#cfe9d2",
     title: "给旧城区增加“安静但危险”的气质",
     excerpt: "从街灯、窗户、路牌和声音密度入手，让场景不用直说也能传达不安。",
   },
@@ -640,42 +707,45 @@ const posts = [
     day: "15",
     month: "May",
     readTime: "3 min read",
+    accent: "#e8b2aa",
     title: "角色立绘配色记录：淡紫、冷灰与一点暖色",
     excerpt: "主色选择接近 #c6bae0，用低饱和冷灰稳定画面，再用暖色做视线落点。",
   },
 ] as const;
 
-type Character = {
-  name: string;
-  type: string;
-  color: string;
-  summary: string;
-  featured?: boolean;
-  keywords?: string;
-  status?: string;
+const character = {
+  name: "璃音",
+  type: "主线角色",
+  color: "#c6bae0",
+  summary: "以记忆为线索行动的记录者。外表冷静，习惯把重要的事写进随身笔记。",
+  keywords: "月光、旧信、观察者",
+  status: "设定整理中",
 };
 
-const characters: Character[] = [
+const illustrations = [
   {
-    name: "璃音",
-    type: "主线角色",
+    title: "主视觉草案",
+    tone: "淡紫 / 冷光",
     color: "#c6bae0",
-    featured: true,
-    summary: "以记忆为线索行动的记录者。外表冷静，习惯把重要的事写进随身笔记。",
-    keywords: "月光、旧信、观察者",
-    status: "设定整理中",
+    caption: "用于确认角色的基础气质、轮廓和首屏视觉方向。",
   },
   {
-    name: "青澄",
-    type: "支线角色",
-    color: "#76a99a",
-    summary: "擅长修复机械鸟的少年，性格明亮，但对过去保持沉默。",
+    title: "日常便装",
+    tone: "薄荷 / 纸感",
+    color: "#cfe9d2",
+    caption: "记录角色在普通场景里的姿态、服装层次和小道具。",
   },
   {
-    name: "诺亚",
-    type: "世界观角色",
-    color: "#d77b6d",
-    summary: "城市边界的巡夜人，负责把迷路的人带回灯光仍在的街区。",
+    title: "表情记录",
+    tone: "暖粉 / 柔焦",
+    color: "#e8b2aa",
+    caption: "收纳常用表情、情绪变化和对话时的微动作。",
+  },
+  {
+    title: "场景片段",
+    tone: "夜色 / 旧信",
+    color: "#b8c5df",
+    caption: "连接世界观地点、光线和角色行动线索。",
   },
 ] as const;
 
@@ -846,25 +916,36 @@ export function App() {
             <div className={styles.heroContent}>
               <div className={styles.heroContentInner}>
                 <Text as="p" className={styles.eyebrow}>
-                  Personal Identity System
+                  Current Character Archive
                 </Text>
                 <h1 id="hero-title" className={styles.heroTitle}>
-                  VK Character Log
+                  璃音
+                  <br />
+                  Archive
                 </h1>
                 <Text as="p" className={styles.heroCopy}>
-                  像桌布一样安静铺开，像四格手账一样收纳日常：这里存放原创角色、人设档案、
-                  世界观碎片和创作贴文。
+                  当前博客围绕一个原创角色展开：档案、插图、设定片段和创作贴文会随着整理进度持续补完。
                 </Text>
                 <div className={styles.heroMetaRow} aria-label="博客气质关键词">
                   <Badge className={styles.heroTag} appearance="tint">
-                    紫色身份感
+                    主线角色
                   </Badge>
                   <Badge className={styles.heroTag} appearance="tint">
-                    绿色内容框
+                    多插图展示
                   </Badge>
                   <Badge className={styles.heroTag} appearance="tint">
-                    手账分格
+                    设定整理中
                   </Badge>
+                </div>
+                <div className={styles.heroPreviewStrip} aria-label="插图预览">
+                  {illustrations.map((item) => (
+                    <span
+                      key={item.title}
+                      className={styles.heroPreview}
+                      style={{ "--previewColor": item.color } as React.CSSProperties}
+                      title={item.title}
+                    />
+                  ))}
                 </div>
                 <div className={styles.heroActions}>
                   <Button
@@ -905,9 +986,9 @@ export function App() {
                 >
                   <span className={styles.paperLines} aria-hidden="true" />
                   <span className={styles.frameKicker}>Character File</span>
-                  <h2 className={styles.frameTitle}>原创角色档案</h2>
+                  <h2 className={styles.frameTitle}>璃音档案</h2>
                   <Text className={styles.frameCopy}>
-                    主线、支线与世界观角色，以可继续补完的档案形式收纳。
+                    基础设定、关键词、状态和后续补完记录集中在这里。
                   </Text>
                 </a>
                 <a
@@ -917,16 +998,16 @@ export function App() {
                 >
                   <span className={styles.frameKicker}>Daily Notes</span>
                   <h2 className={styles.frameTitle}>个人贴文</h2>
-                  <Text className={styles.frameCopy}>短札、绘图记录和设定推进。</Text>
+                  <Text className={styles.frameCopy}>短札、绘图记录、设定推进和更新说明。</Text>
                 </a>
                 <a
                   className={styles.framePanel}
                   href="#about"
                   onClick={() => navigateToSection("about")}
                 >
-                  <span className={styles.frameKicker}>World View</span>
-                  <h2 className={styles.frameTitle}>世界观索引</h2>
-                  <Text className={styles.frameCopy}>把零散灵感整理成可回访的入口。</Text>
+                  <span className={styles.frameKicker}>Gallery</span>
+                  <h2 className={styles.frameTitle}>插图索引</h2>
+                  <Text className={styles.frameCopy}>把同一角色的不同版本、情绪和场景分格收纳。</Text>
                 </a>
               </div>
             </aside>
@@ -940,47 +1021,59 @@ export function App() {
                 Character Archive
               </Text>
               <Title1 as="h2" id="characters-title">
-                原创角色
+                原创角色：璃音
               </Title1>
               <Text as="p" className={styles.headingCopy}>
-                用 Fluent UI v9 的卡片、标签和主题令牌记录角色定位、气质关键词和最新设定状态。
+                当前仅展示一个原创角色，重点整理角色档案和多张插图/设定图的阶段性记录。
               </Text>
             </div>
 
             <div className={styles.characterGrid}>
-              {characters.map((character) => (
-                <Card
-                  key={character.name}
-                  className={`${styles.card} ${character.featured ? styles.featuredCard : ""}`}
-                  style={{ "--artColor": character.color } as React.CSSProperties}
-                >
-                  <div
-                    className={`${styles.characterArt} ${
-                      character.featured ? styles.featuredArt : ""
-                    }`}
-                    aria-hidden="true"
-                  />
-                  <div className={styles.cardBody}>
-                    <Badge appearance="tint">{character.type}</Badge>
-                    <CardHeader header={<Title3 as="h3">{character.name}</Title3>} />
-                    <Text as="p" className={styles.cardCopy}>
-                      {character.summary}
-                    </Text>
-                    {character.featured ? (
-                      <dl className={styles.metaList}>
-                        <div>
-                          <dt className={styles.metaTerm}>关键词</dt>
-                          <dd className={styles.metaDefinition}>{character.keywords}</dd>
-                        </div>
-                        <div>
-                          <dt className={styles.metaTerm}>状态</dt>
-                          <dd className={styles.metaDefinition}>{character.status}</dd>
-                        </div>
-                      </dl>
-                    ) : null}
-                  </div>
-                </Card>
-              ))}
+              <Card
+                className={`${styles.card} ${styles.characterProfile}`}
+                style={{ "--artColor": character.color } as React.CSSProperties}
+              >
+                <div className={`${styles.characterArt} ${styles.featuredArt}`} aria-hidden="true" />
+                <div className={styles.cardBody}>
+                  <Badge appearance="tint">{character.type}</Badge>
+                  <CardHeader header={<Title3 as="h3">{character.name}</Title3>} />
+                  <Text as="p" className={styles.cardCopy}>
+                    {character.summary}
+                  </Text>
+                  <dl className={styles.metaList}>
+                    <div>
+                      <dt className={styles.metaTerm}>关键词</dt>
+                      <dd className={styles.metaDefinition}>{character.keywords}</dd>
+                    </div>
+                    <div>
+                      <dt className={styles.metaTerm}>状态</dt>
+                      <dd className={styles.metaDefinition}>{character.status}</dd>
+                    </div>
+                  </dl>
+                </div>
+              </Card>
+
+              <div className={styles.illustrationGrid} aria-label="璃音插图展示">
+                {illustrations.map((item, index) => (
+                  <article
+                    key={item.title}
+                    className={styles.illustrationCard}
+                    style={{ "--artColor": item.color } as React.CSSProperties}
+                  >
+                    <div className={styles.illustrationMeta}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <span>{item.tone}</span>
+                    </div>
+                    <div>
+                      <Badge appearance="tint">Illustration</Badge>
+                      <Title3 as="h3">{item.title}</Title3>
+                      <Text as="p" className={`${styles.cardCopy} ${styles.illustrationCaption}`}>
+                        {item.caption}
+                      </Text>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -988,7 +1081,7 @@ export function App() {
         <section className={`${styles.section} ${styles.sectionMuted}`} id="posts" aria-labelledby="posts-title">
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeadingSplit}>
-              <div>
+              <div className={styles.sectionHeadingStack}>
                 <Text as="p" className={styles.eyebrow}>
                   Personal Posts
                 </Text>
@@ -1016,20 +1109,26 @@ export function App() {
 
             <div className={styles.postList}>
               {filteredPosts.map((post) => (
-                <Card key={post.title} className={styles.postCard}>
+                <Card
+                  key={post.title}
+                  className={styles.postCard}
+                  style={{ "--postAccent": post.accent } as React.CSSProperties}
+                >
                   <div className={styles.postDate}>
                     <span className={styles.postDay}>{post.day}</span>
                     <span className={styles.postMonth}>{post.month}</span>
                   </div>
-                  <div className={styles.cardBody}>
+                  <div className={styles.postBody}>
+                    <div>
                     <div className={styles.postMeta}>
                       <span>{post.category}</span>
                       <span>{post.readTime}</span>
                     </div>
                     <CardHeader header={<Subtitle1 as="h3">{post.title}</Subtitle1>} />
-                    <Text as="p" className={styles.cardCopy}>
+                    <Text as="p" className={styles.postExcerpt}>
                       {post.excerpt}
                     </Text>
+                    </div>
                     <CardFooter>
                       <Button appearance="subtle" icon={<PenSparkle24Regular />}>
                         阅读
@@ -1052,21 +1151,21 @@ export function App() {
                 关于这个博客
               </Title1>
               <Text as="p" className={styles.aboutLead}>
-                这里是 VikaKumaChR 的原创角色与个人创作记录页。它更像一本持续整理的线上手账：
-                角色设定、世界观碎片、绘图过程和短札都会被收纳在这里，方便回看、补完和延展。
+                这里是 VikaKumaChR 的原创角色整理页。当前站点聚焦同一个角色的长期补完：
+                设定会被写成档案，插图会按阶段归档，贴文则记录每次修改背后的想法。
               </Text>
               <div className={styles.aboutNoteGrid} aria-label="博客内容说明">
                 <div className={styles.aboutNote}>
-                  <Text className={styles.aboutNoteTitle}>原创角色</Text>
-                  <Text className={styles.cardCopy}>整理角色档案、关键词、关系和阶段性设定。</Text>
+                  <Text className={styles.aboutNoteTitle}>角色档案</Text>
+                  <Text className={styles.cardCopy}>先围绕璃音建立稳定设定，再逐步补充关系和世界观。</Text>
                 </div>
                 <div className={styles.aboutNote}>
-                  <Text className={styles.aboutNoteTitle}>创作贴文</Text>
-                  <Text className={styles.cardCopy}>记录绘图、构思、灵感片段和更新日志。</Text>
+                  <Text className={styles.aboutNoteTitle}>插图归档</Text>
+                  <Text className={styles.cardCopy}>同一角色的主视觉、日常、表情和场景会分开陈列。</Text>
                 </div>
                 <div className={styles.aboutNote}>
-                  <Text className={styles.aboutNoteTitle}>阅读说明</Text>
-                  <Text className={styles.cardCopy}>内容以个人创作为主，设定会随作品推进继续调整。</Text>
+                  <Text className={styles.aboutNoteTitle}>贴文记录</Text>
+                  <Text className={styles.cardCopy}>用短篇记录修改、灵感和阶段性想法，不追求一次定稿。</Text>
                 </div>
               </div>
             </div>
@@ -1081,13 +1180,13 @@ export function App() {
                   <li className={styles.profileItem}>
                     <Text>主要内容</Text>
                     <Text className={styles.profileValue} weight="semibold">
-                      角色 / 贴文 / 世界观
+                      璃音 / 插图 / 贴文
                     </Text>
                   </li>
                   <li className={styles.profileItem}>
-                    <Text>更新方式</Text>
+                    <Text>更新节奏</Text>
                     <Text className={styles.profileValue} weight="semibold">
-                      不定期整理
+                      随创作进度补完
                     </Text>
                   </li>
                   <li className={styles.profileItem}>
