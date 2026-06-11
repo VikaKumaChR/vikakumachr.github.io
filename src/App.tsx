@@ -28,7 +28,7 @@ import {
   ArrowUp24Regular,
   BookOpen24Regular,
   DarkTheme24Regular,
-  PenSparkle24Regular,
+  Image24Regular,
   Person24Regular,
   Sparkle24Regular,
   WeatherSunny24Regular,
@@ -266,16 +266,6 @@ const useStyles = makeStyles({
       padding: "24px",
     },
   },
-  heroMetaRow: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "8px",
-    marginTop: "24px",
-  },
-  heroTag: {
-    backgroundColor: "var(--mintSoft)",
-    color: "var(--tagText)",
-  },
   heroContentInner: {
     position: "relative",
     zIndex: 1,
@@ -311,19 +301,6 @@ const useStyles = makeStyles({
     flexWrap: "wrap",
     gap: "12px",
     marginTop: "30px",
-  },
-  heroPreviewStrip: {
-    display: "grid",
-    gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-    gap: "10px",
-    marginTop: "24px",
-  },
-  heroPreview: {
-    minHeight: "78px",
-    borderRadius: "8px",
-    background:
-      "linear-gradient(145deg, rgba(255,255,255,0.68), transparent), radial-gradient(circle at 72% 28%, rgba(255,255,255,0.9), transparent 24%), var(--previewColor)",
-    ...shorthands.border("1px", "solid", "rgba(198, 186, 224, 0.42)"),
   },
   visualBoard: {
     position: "relative",
@@ -450,6 +427,21 @@ const useStyles = makeStyles({
   sectionHeading: {
     marginBottom: "34px",
   },
+  sectionTitleRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    flexWrap: "wrap",
+  },
+  sectionTitleIcon: {
+    width: "36px",
+    height: "36px",
+    display: "inline-grid",
+    placeItems: "center",
+    borderRadius: "8px",
+    backgroundColor: tokens.colorBrandBackground2,
+    color: tokens.colorBrandForeground1,
+  },
   sectionHeadingStack: {
     display: "grid",
     gap: "8px",
@@ -525,6 +517,20 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground2,
     fontSize: tokens.fontSizeBase200,
     fontWeight: tokens.fontWeightSemibold,
+  },
+  illustrationHeading: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  },
+  illustrationIcon: {
+    width: "30px",
+    height: "30px",
+    display: "inline-grid",
+    placeItems: "center",
+    borderRadius: "8px",
+    backgroundColor: "rgba(255, 255, 255, 0.62)",
+    color: tokens.colorBrandForeground1,
   },
   illustrationCaption: {
     maxWidth: "24ch",
@@ -625,28 +631,11 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground2,
     fontSize: tokens.fontSizeBase500,
   },
-  aboutNoteGrid: {
+  aboutSummary: {
     display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
     gap: "12px",
-    marginTop: "28px",
-    "@media (max-width: 720px)": {
-      gridTemplateColumns: "1fr",
-    },
-  },
-  aboutNote: {
-    minHeight: "112px",
-    display: "grid",
-    alignContent: "start",
-    gap: "8px",
-    padding: "18px",
-    borderRadius: "8px",
-    backgroundColor: tokens.colorNeutralBackground2,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-  },
-  aboutNoteTitle: {
-    color: tokens.colorBrandForeground1,
-    fontWeight: tokens.fontWeightBold,
+    marginTop: "22px",
+    color: tokens.colorNeutralForeground2,
   },
   aboutCardHeader: {
     marginBottom: "14px",
@@ -915,38 +904,11 @@ export function App() {
           <div className={styles.heroLayout}>
             <div className={styles.heroContent}>
               <div className={styles.heroContentInner}>
-                <Text as="p" className={styles.eyebrow}>
-                  Current Character Archive
-                </Text>
                 <h1 id="hero-title" className={styles.heroTitle}>
                   璃音
                   <br />
                   Archive
                 </h1>
-                <Text as="p" className={styles.heroCopy}>
-                  当前博客围绕一个原创角色展开：档案、插图、设定片段和创作贴文会随着整理进度持续补完。
-                </Text>
-                <div className={styles.heroMetaRow} aria-label="博客气质关键词">
-                  <Badge className={styles.heroTag} appearance="tint">
-                    主线角色
-                  </Badge>
-                  <Badge className={styles.heroTag} appearance="tint">
-                    多插图展示
-                  </Badge>
-                  <Badge className={styles.heroTag} appearance="tint">
-                    设定整理中
-                  </Badge>
-                </div>
-                <div className={styles.heroPreviewStrip} aria-label="插图预览">
-                  {illustrations.map((item) => (
-                    <span
-                      key={item.title}
-                      className={styles.heroPreview}
-                      style={{ "--previewColor": item.color } as React.CSSProperties}
-                      title={item.title}
-                    />
-                  ))}
-                </div>
                 <div className={styles.heroActions}>
                   <Button
                     as="a"
@@ -1017,12 +979,14 @@ export function App() {
         <section className={styles.section} id="characters" aria-labelledby="characters-title">
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeading}>
-              <Text as="p" className={styles.eyebrow}>
-                Character Archive
-              </Text>
-              <Title1 as="h2" id="characters-title">
-                原创角色：璃音
-              </Title1>
+              <div className={styles.sectionTitleRow}>
+                <span className={styles.sectionTitleIcon} aria-hidden="true">
+                  <Person24Regular />
+                </span>
+                <Title1 as="h2" id="characters-title">
+                  原创角色：璃音
+                </Title1>
+              </div>
               <Text as="p" className={styles.headingCopy}>
                 当前仅展示一个原创角色，重点整理角色档案和多张插图/设定图的阶段性记录。
               </Text>
@@ -1065,8 +1029,12 @@ export function App() {
                       <span>{item.tone}</span>
                     </div>
                     <div>
-                      <Badge appearance="tint">Illustration</Badge>
-                      <Title3 as="h3">{item.title}</Title3>
+                      <div className={styles.illustrationHeading}>
+                        <span className={styles.illustrationIcon} aria-hidden="true">
+                          <Image24Regular />
+                        </span>
+                        <Title3 as="h3">{item.title}</Title3>
+                      </div>
                       <Text as="p" className={`${styles.cardCopy} ${styles.illustrationCaption}`}>
                         {item.caption}
                       </Text>
@@ -1082,12 +1050,14 @@ export function App() {
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeadingSplit}>
               <div className={styles.sectionHeadingStack}>
-                <Text as="p" className={styles.eyebrow}>
-                  Personal Posts
-                </Text>
-                <Title1 as="h2" id="posts-title">
-                  个人贴文
-                </Title1>
+                <div className={styles.sectionTitleRow}>
+                  <span className={styles.sectionTitleIcon} aria-hidden="true">
+                    <BookOpen24Regular />
+                  </span>
+                  <Title1 as="h2" id="posts-title">
+                    个人贴文
+                  </Title1>
+                </div>
                 <Text as="p" className={styles.headingCopy}>
                   短札、设定片段、绘图记录和角色关系梳理。
                 </Text>
@@ -1130,7 +1100,7 @@ export function App() {
                     </Text>
                     </div>
                     <CardFooter>
-                      <Button appearance="subtle" icon={<PenSparkle24Regular />}>
+                      <Button appearance="subtle" icon={<BookOpen24Regular />}>
                         阅读
                       </Button>
                     </CardFooter>
@@ -1144,29 +1114,21 @@ export function App() {
         <section className={styles.section} id="about" aria-labelledby="about-title">
           <div className={`${styles.sectionInner} ${styles.aboutGrid}`}>
             <div className={styles.sectionHeading}>
-              <Text as="p" className={styles.eyebrow}>
-                About
-              </Text>
-              <Title1 as="h2" id="about-title">
-                关于这个博客
-              </Title1>
+              <div className={styles.sectionTitleRow}>
+                <span className={styles.sectionTitleIcon} aria-hidden="true">
+                  <Sparkle24Regular />
+                </span>
+                <Title1 as="h2" id="about-title">
+                  关于这个博客
+                </Title1>
+              </div>
               <Text as="p" className={styles.aboutLead}>
                 这里是 VikaKumaChR 的原创角色整理页。当前站点聚焦同一个角色的长期补完：
                 设定会被写成档案，插图会按阶段归档，贴文则记录每次修改背后的想法。
               </Text>
-              <div className={styles.aboutNoteGrid} aria-label="博客内容说明">
-                <div className={styles.aboutNote}>
-                  <Text className={styles.aboutNoteTitle}>角色档案</Text>
-                  <Text className={styles.cardCopy}>先围绕璃音建立稳定设定，再逐步补充关系和世界观。</Text>
-                </div>
-                <div className={styles.aboutNote}>
-                  <Text className={styles.aboutNoteTitle}>插图归档</Text>
-                  <Text className={styles.cardCopy}>同一角色的主视觉、日常、表情和场景会分开陈列。</Text>
-                </div>
-                <div className={styles.aboutNote}>
-                  <Text className={styles.aboutNoteTitle}>贴文记录</Text>
-                  <Text className={styles.cardCopy}>用短篇记录修改、灵感和阶段性想法，不追求一次定稿。</Text>
-                </div>
+              <div className={styles.aboutSummary}>
+                <Text>这个页面不是完整作品目录，而是一个持续整理的创作记录空间。</Text>
+                <Text>内容会保持简洁：先收纳角色核心信息，再逐步补充插图、设定片段和修改记录。</Text>
               </div>
             </div>
             <Card className={styles.card}>
