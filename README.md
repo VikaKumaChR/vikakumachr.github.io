@@ -1,4 +1,4 @@
-# VK Character Log
+# VkC's blog 
 
 一个使用 React + Fluent UI v9 制作的个人角色博客，用于展示原创角色、人设档案和个人贴文。主题色为 `#c6bae0`，支持亮色和暗色切换。
 
