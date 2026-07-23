@@ -39,6 +39,9 @@ import {
 import characterCollage from "../Image/Snipaste_2026-07-23_16-09-13.png";
 import characterPortrait from "../Image/Snipaste_2026-07-23_16-22-56.png";
 import characterScene from "../Image/Snipaste_2026-07-23_16-23-18.png";
+import heroFigurePlaceholder from "../Image/hero-figure-placeholder.png";
+
+const heroFigure = heroFigurePlaceholder;
 
 const brandRamp: BrandVariants = {
   10: "#07050c",
@@ -225,42 +228,61 @@ const useStyles = makeStyles({
   },
   hero: {
     position: "relative",
-    minHeight: "100vh",
+    minHeight: "clamp(760px, 100vh, 920px)",
     display: "grid",
     alignItems: "center",
     overflow: "hidden",
     isolation: "isolate",
     scrollMarginTop: "72px",
-    padding: "calc(72px + 54px) clamp(20px, 6vw, 92px) 58px",
+    padding: "calc(72px + clamp(38px, 6vh, 66px)) clamp(20px, 6vw, 92px) clamp(34px, 5vh, 54px)",
     backgroundColor: "var(--heroBase)",
     backgroundImage:
-      "radial-gradient(circle at 74% 14%, var(--heroGlow) 0 18%, transparent 36%), linear-gradient(135deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(225deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(45deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(315deg, var(--heroDiamond) 25%, var(--heroBase) 25%)",
-    backgroundPosition: "0 0, 42px 0, 42px 0, 0 0, 0 0",
-    backgroundSize: "100% 100%, 84px 84px, 84px 84px, 84px 84px, 84px 84px",
+      "radial-gradient(ellipse at 72% 18%, var(--heroCoolGlow) 0, transparent 44%), radial-gradient(ellipse at 24% 88%, var(--heroWarmGlow) 0, transparent 36%), linear-gradient(180deg, var(--heroBase) 0%, var(--heroPaper) 58%, var(--heroBase) 100%)",
+    ":before": {
+      content: '""',
+      position: "absolute",
+      top: "72px",
+      right: 0,
+      left: 0,
+      height: "1px",
+      background:
+        "linear-gradient(90deg, transparent, var(--heroLine) 16%, var(--heroLine) 84%, transparent)",
+      opacity: 0.68,
+    },
+    ":after": {
+      content: '""',
+      position: "absolute",
+      right: "clamp(24px, 8vw, 140px)",
+      bottom: "clamp(72px, 10vh, 120px)",
+      left: "clamp(24px, 8vw, 140px)",
+      height: "1px",
+      background: "linear-gradient(90deg, transparent, var(--heroLine), transparent)",
+      opacity: 0.52,
+    },
     "@media (max-width: 860px)": {
       minHeight: "auto",
-      paddingTop: "38px",
+      paddingTop: "42px",
       paddingBottom: "48px",
     },
   },
   heroInner: {
     position: "relative",
     zIndex: 1,
-    width: "min(1360px, 100%)",
+    width: "min(1240px, 100%)",
     marginRight: "auto",
     marginLeft: "auto",
     display: "grid",
-    gridTemplateColumns: "minmax(0, 0.9fr) minmax(360px, 0.78fr)",
+    gridTemplateColumns: "minmax(0, 0.95fr) minmax(300px, 0.78fr)",
     alignItems: "center",
-    gap: "clamp(28px, 5vw, 72px)",
+    gap: "clamp(24px, 4.4vw, 58px)",
     "@media (max-width: 980px)": {
       gridTemplateColumns: "1fr",
     },
   },
   heroCopy: {
     display: "grid",
-    gap: "28px",
-    maxWidth: "760px",
+    gap: "22px",
+    maxWidth: "660px",
   },
   eyebrow: {
     margin: 0,
@@ -270,18 +292,18 @@ const useStyles = makeStyles({
     textTransform: "uppercase",
   },
   heroTitle: {
-    maxWidth: "10ch",
+    maxWidth: "9.8ch",
     marginTop: 0,
     marginBottom: 0,
-    fontSize: "clamp(4rem, 9vw, 8.8rem)",
-    lineHeight: "0.88",
+    fontSize: "clamp(3.7rem, 7.5vw, 7.4rem)",
+    lineHeight: "0.92",
     overflowWrap: "anywhere",
     "@media (max-width: 520px)": {
-      fontSize: "3.7rem",
+      fontSize: "3.35rem",
     },
   },
   heroLead: {
-    maxWidth: "46ch",
+    maxWidth: "38ch",
     color: tokens.colorNeutralForeground2,
     fontSize: tokens.fontSizeBase500,
     lineHeight: tokens.lineHeightBase500,
@@ -293,63 +315,86 @@ const useStyles = makeStyles({
   },
   heroArtStage: {
     position: "relative",
-    minHeight: "620px",
+    minHeight: "clamp(420px, 56vh, 610px)",
     display: "grid",
-    alignItems: "end",
-    overflow: "hidden",
-    borderRadius: "28px",
-    backgroundColor: "var(--stageSurface)",
-    boxShadow: "0 28px 82px rgba(101, 86, 138, 0.16)",
+    placeItems: "end center",
+    overflow: "visible",
+    backgroundColor: "transparent",
+    ":before": {
+      content: '""',
+      position: "absolute",
+      right: "8%",
+      bottom: "4%",
+      left: "8%",
+      height: "22%",
+      borderRadius: "50%",
+      background:
+        "radial-gradient(ellipse at center, var(--figureShadow) 0, transparent 68%)",
+      filter: "blur(18px)",
+    },
+    ":after": {
+      content: '""',
+      position: "absolute",
+      bottom: "8%",
+      left: "50%",
+      width: "min(86%, 470px)",
+      height: "min(88%, 590px)",
+      borderRadius: "48% 48% 44% 44%",
+      background: "linear-gradient(180deg, var(--figureHalo), transparent 76%)",
+      transform: "translateX(-50%)",
+      opacity: 0.72,
+    },
     "@media (max-width: 980px)": {
       minHeight: "480px",
     },
     "@media (max-width: 520px)": {
-      minHeight: "360px",
-      borderRadius: "22px",
+      minHeight: "380px",
     },
   },
   heroArtBackdrop: {
     position: "absolute",
-    inset: 0,
-    background:
-      "linear-gradient(180deg, rgba(255,255,255,0.2), transparent 42%), radial-gradient(circle at 60% 18%, rgba(255,255,255,0.72), transparent 22%), linear-gradient(135deg, rgba(198,186,224,0.36), rgba(184,203,228,0.3))",
+    inset: "8% 0 0",
+    background: "radial-gradient(ellipse at 52% 22%, var(--figureLight) 0, transparent 46%)",
+    pointerEvents: "none",
   },
   heroArtImage: {
     position: "relative",
-    zIndex: 1,
-    width: "100%",
-    height: "100%",
-    minHeight: "620px",
+    zIndex: 2,
+    width: "min(92%, 500px)",
+    height: "auto",
+    maxHeight: "clamp(420px, 68vh, 660px)",
+    minHeight: 0,
     display: "block",
-    objectFit: "cover",
-    objectPosition: "center",
-    filter: "saturate(0.95) contrast(0.98)",
+    objectFit: "contain",
+    objectPosition: "bottom center",
+    filter: "saturate(0.96) contrast(0.98) drop-shadow(0 32px 48px rgba(66, 52, 95, 0.22))",
     mixBlendMode: "normal",
     "@media (max-width: 980px)": {
-      minHeight: "480px",
+      maxHeight: "480px",
     },
     "@media (max-width: 520px)": {
-      minHeight: "360px",
+      width: "min(96%, 340px)",
+      maxHeight: "380px",
     },
   },
   partGrid: {
     gridColumn: "1 / -1",
     display: "grid",
     gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    gap: "16px",
-    marginTop: "clamp(24px, 4vw, 44px)",
+    gap: "14px",
+    marginTop: "clamp(18px, 3vh, 28px)",
     "@media (max-width: 900px)": {
       gridTemplateColumns: "1fr",
     },
   },
   partCard: {
-    minHeight: "128px",
+    minHeight: "106px",
     display: "grid",
     gridTemplateColumns: "52px minmax(0, 1fr) 24px",
     alignItems: "center",
     gap: "18px",
-    padding: "22px",
-    borderRadius: "22px",
+    padding: "18px",
+    borderRadius: "8px",
     color: tokens.colorNeutralForeground1,
     backgroundColor: "var(--partSurface)",
     textDecorationLine: "none",
@@ -429,41 +474,53 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground2,
   },
   albumShell: {
-    overflow: "hidden",
-    borderRadius: "28px",
-    backgroundColor: "var(--albumSurface)",
-    boxShadow: tokens.shadow8,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-    "@media (max-width: 560px)": {
-      borderRadius: "22px",
-    },
+    position: "relative",
+    width: "min(1360px, calc(100vw - 32px))",
+    marginLeft: "50%",
+    overflow: "visible",
+    backgroundColor: "transparent",
+    boxShadow: "none",
+    transform: "translateX(-50%)",
+    ...shorthands.border("0", "solid", "transparent"),
   },
   albumViewport: {
     position: "relative",
-    height: "560px",
-    overflow: "hidden",
-    backgroundColor: "var(--albumViewport)",
+    height: "500px",
+    overflow: "visible",
+    backgroundColor: "transparent",
+    ":before": {
+      content: '""',
+      position: "absolute",
+      zIndex: 0,
+      top: "22%",
+      right: "7%",
+      bottom: "12%",
+      left: "7%",
+      borderRadius: "999px",
+      background: "radial-gradient(ellipse at center, var(--albumGlow) 0, transparent 70%)",
+      filter: "blur(20px)",
+    },
     "@media (max-width: 760px)": {
-      height: "500px",
+      height: "460px",
     },
     "@media (max-width: 520px)": {
-      height: "430px",
+      height: "420px",
     },
   },
   albumCard: {
     position: "absolute",
-    top: "34px",
+    top: "50%",
     left: "50%",
     zIndex: "var(--albumZ)",
-    width: "clamp(260px, 34vw, 410px)",
-    height: "calc(100% - 68px)",
+    width: "clamp(280px, 30vw, 390px)",
+    height: "clamp(330px, 34vw, 430px)",
     overflow: "hidden",
     borderRadius: "28px",
     color: "#fff",
     backgroundColor: "var(--imageSurface)",
     boxShadow: "0 24px 52px rgba(47, 37, 70, 0.2)",
     transform:
-      "translateX(calc(-50% + var(--albumOffset))) scale(var(--albumScale)) rotate(var(--albumRotate))",
+      "translateX(calc(-50% + var(--albumOffset))) translateY(-50%) scale(var(--albumScale)) rotate(var(--albumRotate))",
     opacity: "var(--albumOpacity)",
     transitionDuration: "560ms",
     transitionProperty: "transform, opacity, box-shadow",
@@ -472,6 +529,7 @@ const useStyles = makeStyles({
     cursor: "pointer",
     "@media (max-width: 520px)": {
       width: "min(72vw, 286px)",
+      height: "360px",
       borderRadius: "24px",
     },
     "@media (prefers-reduced-motion: reduce)": {
@@ -505,13 +563,16 @@ const useStyles = makeStyles({
     textTransform: "uppercase",
   },
   albumPanel: {
+    width: "min(980px, calc(100vw - 48px))",
+    marginRight: "auto",
+    marginLeft: "auto",
     display: "grid",
     gridTemplateColumns: "minmax(0, 1fr) auto",
     gap: "22px",
     alignItems: "center",
-    padding: "22px",
-    backgroundColor: tokens.colorNeutralBackground1,
-    ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
+    padding: "4px 0 0",
+    backgroundColor: "transparent",
+    ...shorthands.borderTop("0", "solid", "transparent"),
     "@media (max-width: 720px)": {
       gridTemplateColumns: "1fr",
     },
@@ -856,14 +917,17 @@ export function App() {
       className={styles.shell}
       style={
         {
-          "--heroBase": mode === "dark" ? "#181523" : "#f5effa",
-          "--heroDiamond": mode === "dark" ? "rgba(198, 186, 224, 0.06)" : "rgba(198, 186, 224, 0.18)",
-          "--heroGlow": mode === "dark" ? "rgba(198, 186, 224, 0.14)" : "rgba(184, 203, 228, 0.46)",
-          "--stageSurface": mode === "dark" ? "rgba(30, 26, 43, 0.74)" : "rgba(255, 255, 255, 0.5)",
+          "--heroBase": mode === "dark" ? "#15131d" : "#fbf9fd",
+          "--heroPaper": mode === "dark" ? "#1d1828" : "#f6f1fa",
+          "--heroCoolGlow": mode === "dark" ? "rgba(129, 159, 186, 0.16)" : "rgba(184, 203, 228, 0.42)",
+          "--heroWarmGlow": mode === "dark" ? "rgba(198, 186, 224, 0.12)" : "rgba(236, 224, 241, 0.72)",
+          "--heroLine": mode === "dark" ? "rgba(222, 213, 239, 0.14)" : "rgba(113, 101, 144, 0.16)",
+          "--figureLight": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(255, 255, 255, 0.78)",
+          "--figureHalo": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(210, 199, 231, 0.42)",
+          "--figureShadow": mode === "dark" ? "rgba(6, 4, 12, 0.56)" : "rgba(101, 86, 138, 0.2)",
           "--partSurface": mode === "dark" ? "rgba(31, 27, 43, 0.92)" : "rgba(255, 255, 255, 0.9)",
           "--partStroke": mode === "dark" ? "rgba(222, 213, 239, 0.18)" : "rgba(255, 255, 255, 0.82)",
-          "--albumSurface": mode === "dark" ? "#1d1828" : "#fffaff",
-          "--albumViewport": mode === "dark" ? "#17121f" : "#f6effb",
+          "--albumGlow": mode === "dark" ? "rgba(198, 186, 224, 0.14)" : "rgba(198, 186, 224, 0.26)",
           "--imageSurface": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(232, 222, 245, 0.58)",
           "--colorNeutralBackground1": theme.colorNeutralBackground1,
         } as CSSProperties
@@ -965,7 +1029,7 @@ export function App() {
 
             <aside className={styles.heroArtStage} aria-label="璃音首頁立繪舞台">
               <div className={styles.heroArtBackdrop} aria-hidden="true" />
-              <img className={styles.heroArtImage} src={characterScene} alt="璃音的淡藍紫色場景插圖" />
+              <img className={styles.heroArtImage} src={heroFigure} alt="璃音的淡紫色角色立繪" />
             </aside>
 
             <div className={styles.partGrid} aria-label="特色頁面入口">
@@ -1024,8 +1088,8 @@ export function App() {
                       className={`${styles.albumCard} ${isActive ? styles.albumCardActive : ""}`}
                       style={
                         {
-                          "--albumOffset": `${position * 72}%`,
-                          "--albumScale": distance === 0 ? 1 : 0.9,
+                          "--albumOffset": `${position * 64}%`,
+                          "--albumScale": distance === 0 ? 1 : 0.88,
                           "--albumOpacity": distance === 0 ? 1 : 0.72,
                           "--albumRotate": `${position * -2}deg`,
                           "--albumZ": 10 - distance,
