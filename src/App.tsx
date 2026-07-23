@@ -319,10 +319,12 @@ const useStyles = makeStyles({
     display: "grid",
     placeItems: "end center",
     overflow: "visible",
+    isolation: "isolate",
     backgroundColor: "transparent",
     ":before": {
       content: '""',
       position: "absolute",
+      zIndex: 0,
       right: "8%",
       bottom: "4%",
       left: "8%",
@@ -331,18 +333,6 @@ const useStyles = makeStyles({
       background:
         "radial-gradient(ellipse at center, var(--figureShadow) 0, transparent 68%)",
       filter: "blur(18px)",
-    },
-    ":after": {
-      content: '""',
-      position: "absolute",
-      bottom: "8%",
-      left: "50%",
-      width: "min(86%, 470px)",
-      height: "min(88%, 590px)",
-      borderRadius: "48% 48% 44% 44%",
-      background: "linear-gradient(180deg, var(--figureHalo), transparent 76%)",
-      transform: "translateX(-50%)",
-      opacity: 0.72,
     },
     "@media (max-width: 980px)": {
       minHeight: "480px",
@@ -353,13 +343,67 @@ const useStyles = makeStyles({
   },
   heroArtBackdrop: {
     position: "absolute",
+    zIndex: 0,
     inset: "8% 0 0",
-    background: "radial-gradient(ellipse at 52% 22%, var(--figureLight) 0, transparent 46%)",
+    background:
+      "radial-gradient(ellipse at 52% 34%, var(--figureLight) 0, transparent 58%)",
     pointerEvents: "none",
+  },
+  heroCollageLayer: {
+    position: "absolute",
+    zIndex: 1,
+    inset: 0,
+    pointerEvents: "none",
+    "@media (max-width: 640px)": {
+      opacity: 0.42,
+    },
+  },
+  heroCollagePiece: {
+    position: "absolute",
+    overflow: "hidden",
+    borderRadius: "8px",
+    opacity: 0.54,
+    backgroundColor: "rgba(255, 255, 255, 0.38)",
+    boxShadow: "0 20px 42px rgba(82, 68, 111, 0.12)",
+    ...shorthands.border("1px", "solid", "rgba(198, 186, 224, 0.32)"),
+  },
+  heroCollageImage: {
+    width: "100%",
+    height: "100%",
+    display: "block",
+    objectFit: "cover",
+  },
+  heroCollageTopLeft: {
+    top: "12%",
+    left: "4%",
+    width: "128px",
+    height: "96px",
+    transform: "rotate(-7deg)",
+  },
+  heroCollageTopRight: {
+    top: "7%",
+    right: "6%",
+    width: "142px",
+    height: "108px",
+    transform: "rotate(6deg)",
+  },
+  heroCollageBottomLeft: {
+    bottom: "22%",
+    left: "0%",
+    width: "154px",
+    height: "112px",
+    transform: "rotate(5deg)",
+  },
+  heroCollageBottomRight: {
+    right: "1%",
+    bottom: "12%",
+    width: "132px",
+    height: "102px",
+    transform: "rotate(-5deg)",
   },
   heroArtImage: {
     position: "relative",
-    zIndex: 2,
+    zIndex: 3,
     width: "min(92%, 500px)",
     height: "auto",
     maxHeight: "clamp(420px, 68vh, 660px)",
@@ -385,6 +429,22 @@ const useStyles = makeStyles({
     marginTop: "clamp(18px, 3vh, 28px)",
     "@media (max-width: 900px)": {
       gridTemplateColumns: "1fr",
+    },
+  },
+  heroTransition: {
+    gridColumn: "1 / -1",
+    height: "clamp(72px, 10vh, 118px)",
+    marginTop: "-14px",
+    background:
+      "radial-gradient(ellipse at 28% 46%, var(--heroFadeWarm) 0, transparent 50%), radial-gradient(ellipse at 70% 48%, var(--heroFadeCool) 0, transparent 52%), linear-gradient(90deg, transparent, var(--heroFadeMain), transparent)",
+    filter: "blur(18px)",
+    opacity: 0.82,
+    WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 44%, transparent 100%)",
+    maskImage: "linear-gradient(180deg, transparent 0%, #000 44%, transparent 100%)",
+    pointerEvents: "none",
+    "@media (max-width: 900px)": {
+      height: "64px",
+      marginTop: "-8px",
     },
   },
   partCard: {
@@ -438,6 +498,9 @@ const useStyles = makeStyles({
     marginRight: "auto",
     marginLeft: "auto",
   },
+  chartsInner: {
+    width: "min(1320px, 100%)",
+  },
   sectionHeading: {
     display: "flex",
     alignItems: "end",
@@ -473,9 +536,14 @@ const useStyles = makeStyles({
     maxWidth: "62ch",
     color: tokens.colorNeutralForeground2,
   },
+  chartHeadingCopy: {
+    maxWidth: "54ch",
+    fontSize: tokens.fontSizeBase300,
+    lineHeight: tokens.lineHeightBase400,
+  },
   albumShell: {
     position: "relative",
-    width: "min(1360px, calc(100vw - 32px))",
+    width: "min(1120px, calc(100vw - 32px))",
     marginLeft: "50%",
     overflow: "visible",
     backgroundColor: "transparent",
@@ -485,7 +553,7 @@ const useStyles = makeStyles({
   },
   albumViewport: {
     position: "relative",
-    height: "500px",
+    height: "452px",
     overflow: "visible",
     backgroundColor: "transparent",
     ":before": {
@@ -512,8 +580,8 @@ const useStyles = makeStyles({
     top: "50%",
     left: "50%",
     zIndex: "var(--albumZ)",
-    width: "clamp(280px, 30vw, 390px)",
-    height: "clamp(330px, 34vw, 430px)",
+    width: "clamp(270px, 28vw, 360px)",
+    height: "clamp(318px, 31vw, 402px)",
     overflow: "hidden",
     borderRadius: "28px",
     color: "#fff",
@@ -552,8 +620,8 @@ const useStyles = makeStyles({
     bottom: 0,
     left: 0,
     display: "grid",
-    gap: "6px",
-    padding: "20px",
+    gap: "5px",
+    padding: "18px",
     background: "linear-gradient(180deg, transparent, rgba(31, 24, 48, 0.78))",
   },
   albumMeta: {
@@ -562,8 +630,12 @@ const useStyles = makeStyles({
     fontWeight: tokens.fontWeightBold,
     textTransform: "uppercase",
   },
+  albumTitle: {
+    fontSize: "clamp(1.2rem, 1.8vw, 1.55rem)",
+    lineHeight: "1.12",
+  },
   albumPanel: {
-    width: "min(980px, calc(100vw - 48px))",
+    width: "min(940px, calc(100vw - 48px))",
     marginRight: "auto",
     marginLeft: "auto",
     display: "grid",
@@ -579,7 +651,7 @@ const useStyles = makeStyles({
   },
   albumCaption: {
     display: "grid",
-    gap: "6px",
+    gap: "8px",
   },
   albumControls: {
     display: "inline-flex",
@@ -821,6 +893,13 @@ export function App() {
         return;
       }
 
+      const pageBottom = window.scrollY + window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      if (pageBottom >= documentHeight - 8) {
+        setActiveSection("regulation");
+        return;
+      }
+
       const marker = 140;
       const current =
         sectionIds
@@ -923,8 +1002,10 @@ export function App() {
           "--heroWarmGlow": mode === "dark" ? "rgba(198, 186, 224, 0.12)" : "rgba(236, 224, 241, 0.72)",
           "--heroLine": mode === "dark" ? "rgba(222, 213, 239, 0.14)" : "rgba(113, 101, 144, 0.16)",
           "--figureLight": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(255, 255, 255, 0.78)",
-          "--figureHalo": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(210, 199, 231, 0.42)",
           "--figureShadow": mode === "dark" ? "rgba(6, 4, 12, 0.56)" : "rgba(101, 86, 138, 0.2)",
+          "--heroFadeWarm": mode === "dark" ? "rgba(119, 83, 112, 0.18)" : "rgba(241, 224, 229, 0.72)",
+          "--heroFadeMain": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(198, 186, 224, 0.34)",
+          "--heroFadeCool": mode === "dark" ? "rgba(92, 116, 142, 0.18)" : "rgba(202, 226, 235, 0.62)",
           "--partSurface": mode === "dark" ? "rgba(31, 27, 43, 0.92)" : "rgba(255, 255, 255, 0.9)",
           "--partStroke": mode === "dark" ? "rgba(222, 213, 239, 0.18)" : "rgba(255, 255, 255, 0.82)",
           "--albumGlow": mode === "dark" ? "rgba(198, 186, 224, 0.14)" : "rgba(198, 186, 224, 0.26)",
@@ -1029,6 +1110,40 @@ export function App() {
 
             <aside className={styles.heroArtStage} aria-label="璃音首頁立繪舞台">
               <div className={styles.heroArtBackdrop} aria-hidden="true" />
+              <div className={styles.heroCollageLayer} aria-hidden="true">
+                <span className={`${styles.heroCollagePiece} ${styles.heroCollageTopLeft}`}>
+                  <img
+                    className={styles.heroCollageImage}
+                    src={characterCollage}
+                    alt=""
+                    style={{ objectPosition: "50% 12%" }}
+                  />
+                </span>
+                <span className={`${styles.heroCollagePiece} ${styles.heroCollageTopRight}`}>
+                  <img
+                    className={styles.heroCollageImage}
+                    src={characterCollage}
+                    alt=""
+                    style={{ objectPosition: "50% 36%" }}
+                  />
+                </span>
+                <span className={`${styles.heroCollagePiece} ${styles.heroCollageBottomLeft}`}>
+                  <img
+                    className={styles.heroCollageImage}
+                    src={characterCollage}
+                    alt=""
+                    style={{ objectPosition: "50% 66%" }}
+                  />
+                </span>
+                <span className={`${styles.heroCollagePiece} ${styles.heroCollageBottomRight}`}>
+                  <img
+                    className={styles.heroCollageImage}
+                    src={characterCollage}
+                    alt=""
+                    style={{ objectPosition: "50% 90%" }}
+                  />
+                </span>
+              </div>
               <img className={styles.heroArtImage} src={heroFigure} alt="璃音的淡紫色角色立繪" />
             </aside>
 
@@ -1053,11 +1168,12 @@ export function App() {
                 </a>
               ))}
             </div>
+            <div className={styles.heroTransition} aria-hidden="true" />
           </div>
         </section>
 
         <section className={styles.section} id="charts" aria-labelledby="charts-title">
-          <div className={styles.sectionInner}>
+          <div className={`${styles.sectionInner} ${styles.chartsInner}`}>
             <div className={styles.sectionHeading}>
               <div className={styles.sectionTitleCluster}>
                 <div className={styles.sectionTitleRow}>
@@ -1068,7 +1184,7 @@ export function App() {
                     Charts
                   </Title1>
                 </div>
-                <Text as="p" className={styles.headingCopy}>
+                <Text as="p" className={`${styles.headingCopy} ${styles.chartHeadingCopy}`}>
                   璃音的圖件被放進同一條圖冊軌道：拼貼、肖像與場景會依序成為主位，保留前後素材的連續感。
                 </Text>
               </div>
@@ -1088,10 +1204,10 @@ export function App() {
                       className={`${styles.albumCard} ${isActive ? styles.albumCardActive : ""}`}
                       style={
                         {
-                          "--albumOffset": `${position * 64}%`,
-                          "--albumScale": distance === 0 ? 1 : 0.88,
-                          "--albumOpacity": distance === 0 ? 1 : 0.72,
-                          "--albumRotate": `${position * -2}deg`,
+                          "--albumOffset": `${position * 52}%`,
+                          "--albumScale": distance === 0 ? 1 : 0.9,
+                          "--albumOpacity": distance === 0 ? 1 : 0.76,
+                          "--albumRotate": `${position * -1.6}deg`,
                           "--albumZ": 10 - distance,
                         } as CSSProperties
                       }
@@ -1103,7 +1219,9 @@ export function App() {
                       <img className={styles.albumImage} src={item.image} alt="" />
                       <span className={styles.albumOverlay}>
                         <span className={styles.albumMeta}>{item.meta}</span>
-                        <Title3 as="span">{item.title}</Title3>
+                        <Title3 as="span" className={styles.albumTitle}>
+                          {item.title}
+                        </Title3>
                       </span>
                     </button>
                   );
