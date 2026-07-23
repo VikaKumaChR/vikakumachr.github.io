@@ -1,15 +1,14 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   Badge,
   Button,
   Card,
   CardFooter,
   CardHeader,
+  CardPreview,
   FluentProvider,
   Link,
   Subtitle1,
-  Tab,
-  TabList,
   Text,
   Title1,
   Title2,
@@ -21,17 +20,17 @@ import {
   shorthands,
   tokens,
   type BrandVariants,
-  type SelectTabData,
-  type SelectTabEvent,
   type Theme,
 } from "@fluentui/react-components";
 import {
   ArrowUp24Regular,
   BookOpen24Regular,
+  DocumentBulletList24Regular,
+  GlobeShield24Regular,
   Image24Regular,
+  PanelRightGallery24Regular,
   Person24Regular,
   Share24Regular,
-  Sparkle24Regular,
   WeatherMoon24Regular,
   WeatherSunny24Regular,
 } from "@fluentui/react-icons";
@@ -98,9 +97,9 @@ const useStyles = makeStyles({
     alignItems: "center",
     columnGap: "18px",
     padding: "12px clamp(18px, 4vw, 54px)",
-    backgroundColor: "color-mix(in srgb, var(--colorNeutralBackground1) 82%, transparent)",
+    backgroundColor: "color-mix(in srgb, var(--colorNeutralBackground1) 86%, transparent)",
     ...shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
-    backdropFilter: "blur(22px) saturate(1.2)",
+    backdropFilter: "blur(22px) saturate(1.18)",
     "@media (max-width: 860px)": {
       position: "sticky",
       gridTemplateColumns: "1fr auto",
@@ -152,26 +151,27 @@ const useStyles = makeStyles({
     justifySelf: "center",
     display: "flex",
     alignItems: "center",
-    columnGap: "clamp(10px, 2.6vw, 24px)",
+    columnGap: "clamp(10px, 2.4vw, 22px)",
     color: tokens.colorNeutralForeground2,
     "@media (max-width: 860px)": {
       order: 3,
       gridColumn: "1 / -1",
       width: "100%",
       justifyContent: "center",
-      columnGap: "22px",
+      columnGap: "18px",
     },
-    "@media (max-width: 420px)": {
+    "@media (max-width: 430px)": {
       justifyContent: "space-between",
-      columnGap: "10px",
+      columnGap: "8px",
     },
   },
   navLink: {
-    position: "relative",
     minHeight: "40px",
-    display: "inline-flex",
+    display: "inline-grid",
+    gridTemplateRows: "1fr 3px",
     alignItems: "center",
-    justifyContent: "center",
+    justifyItems: "center",
+    gap: "2px",
     color: tokens.colorNeutralForeground2,
     fontSize: tokens.fontSizeBase300,
     fontWeight: tokens.fontWeightSemibold,
@@ -181,32 +181,30 @@ const useStyles = makeStyles({
     transitionDuration: tokens.durationNormal,
     transitionProperty: "color",
     transitionTimingFunction: tokens.curveEasyEase,
-    "::after": {
-      content: '""',
-      position: "absolute",
-      right: "2px",
-      bottom: "2px",
-      left: "2px",
-      height: "3px",
-      borderRadius: "999px",
-      backgroundColor: "#c6bae0",
-      opacity: 0,
-      transform: "scaleX(0.68)",
-      transformOrigin: "center",
-      transitionDuration: tokens.durationNormal,
-      transitionProperty: "opacity, transform",
-      transitionTimingFunction: tokens.curveEasyEase,
-    },
     ":hover": {
       color: tokens.colorNeutralForeground1,
+    },
+    "@media (max-width: 430px)": {
+      fontSize: tokens.fontSizeBase200,
     },
   },
   navLinkActive: {
     color: tokens.colorNeutralForeground1,
-    "::after": {
-      opacity: 1,
-      transform: "scaleX(1)",
-    },
+  },
+  navUnderline: {
+    width: "100%",
+    height: "3px",
+    borderRadius: "999px",
+    backgroundColor: "#c6bae0",
+    opacity: 0,
+    transform: "scaleX(0.72)",
+    transitionDuration: tokens.durationNormal,
+    transitionProperty: "opacity, transform",
+    transitionTimingFunction: tokens.curveEasyEase,
+  },
+  navUnderlineActive: {
+    opacity: 1,
+    transform: "scaleX(1)",
   },
   headerActions: {
     justifySelf: "end",
@@ -225,12 +223,12 @@ const useStyles = makeStyles({
   },
   hero: {
     position: "relative",
-    minHeight: "90vh",
+    minHeight: "100vh",
     display: "grid",
     alignItems: "center",
     overflow: "hidden",
-    isolation: "isolate",
-    padding: "calc(72px + 48px) clamp(20px, 6vw, 88px) 76px",
+    scrollMarginTop: "72px",
+    padding: "calc(72px + 52px) clamp(20px, 6vw, 88px) 72px",
     backgroundColor: "var(--heroBase)",
     backgroundImage:
       "linear-gradient(135deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(225deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(45deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(315deg, var(--heroDiamond) 25%, var(--heroBase) 25%)",
@@ -238,160 +236,115 @@ const useStyles = makeStyles({
     backgroundSize: "84px 84px",
     "@media (max-width: 860px)": {
       minHeight: "auto",
-      paddingTop: "38px",
-      paddingBottom: "48px",
+      paddingTop: "42px",
+      paddingBottom: "52px",
     },
   },
-  heroOverlay: {
-    position: "absolute",
-    inset: 0,
-    zIndex: 0,
-    background:
-      "linear-gradient(90deg, var(--heroOverlayStrong) 0%, var(--heroOverlayMid) 48%, var(--heroOverlaySoft) 100%), linear-gradient(180deg, transparent 72%, var(--colorNeutralBackground1) 100%)",
-    "@media (max-width: 860px)": {
-      background:
-        "linear-gradient(180deg, var(--heroOverlayStrong) 0%, var(--heroOverlayMid) 62%, var(--colorNeutralBackground1) 100%)",
-    },
-  },
-  heroLayout: {
-    position: "relative",
-    zIndex: 1,
+  storySpread: {
     width: "min(1180px, 100%)",
     marginRight: "auto",
     marginLeft: "auto",
     display: "grid",
-    gridTemplateColumns: "minmax(0, 0.82fr) minmax(360px, 0.9fr)",
-    alignItems: "center",
-    gap: "clamp(28px, 5vw, 68px)",
-    "@media (max-width: 980px)": {
-      gridTemplateColumns: "1fr",
-      alignItems: "start",
-    },
-  },
-  heroContent: {
-    position: "relative",
-    maxWidth: "610px",
-    padding: "clamp(24px, 3.4vw, 40px)",
+    gridTemplateColumns: "minmax(0, 0.95fr) minmax(360px, 0.8fr)",
+    alignItems: "stretch",
+    overflow: "hidden",
     borderRadius: "8px",
-    backgroundColor: "var(--heroCardBackground)",
-    ...shorthands.border("1px", "solid", "var(--heroCardStroke)"),
-    boxShadow: "0 22px 52px rgba(101, 86, 138, 0.14)",
-    backdropFilter: "blur(18px) saturate(1.12)",
-    "::before": {
-      content: '""',
-      position: "absolute",
-      inset: "12px",
-      pointerEvents: "none",
-      borderRadius: "8px",
-      ...shorthands.border("1px", "dashed", "rgba(157, 145, 191, 0.34)"),
+    backgroundColor: "var(--storySurface)",
+    ...shorthands.border("1px", "solid", "var(--storyStroke)"),
+    boxShadow: "0 28px 70px rgba(101, 86, 138, 0.16)",
+    "@media (max-width: 920px)": {
+      gridTemplateColumns: "1fr",
     },
   },
-  heroContentInner: {
-    position: "relative",
-    zIndex: 1,
+  storyCopy: {
+    display: "grid",
+    alignContent: "center",
+    gap: "24px",
+    padding: "clamp(26px, 5vw, 58px)",
   },
   eyebrow: {
-    marginBottom: "12px",
+    margin: 0,
     color: tokens.colorBrandForeground1,
     fontSize: tokens.fontSizeBase200,
     fontWeight: tokens.fontWeightBold,
     textTransform: "uppercase",
   },
   heroTitle: {
-    maxWidth: "11ch",
+    maxWidth: "12ch",
     marginTop: 0,
     marginBottom: 0,
-    fontSize: "clamp(3.2rem, 7vw, 6rem)",
-    lineHeight: "0.94",
+    fontSize: "clamp(3rem, 7vw, 6.4rem)",
+    lineHeight: "0.96",
     overflowWrap: "anywhere",
   },
-  heroCopy: {
-    maxWidth: "40ch",
-    marginTop: "22px",
+  heroLead: {
+    maxWidth: "48ch",
     color: tokens.colorNeutralForeground2,
-    fontSize: tokens.fontSizeBase400,
+    fontSize: tokens.fontSizeBase500,
     lineHeight: tokens.lineHeightBase500,
   },
   heroActions: {
     display: "flex",
     flexWrap: "wrap",
     gap: "10px",
-    marginTop: "28px",
   },
-  heroMedia: {
+  storySteps: {
     display: "grid",
-    gap: "14px",
-    minWidth: 0,
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: "10px",
+    "@media (max-width: 640px)": {
+      gridTemplateColumns: "1fr",
+    },
   },
-  heroImageFrame: {
-    position: "relative",
-    overflow: "hidden",
+  storyStep: {
+    minHeight: "104px",
+    display: "grid",
+    alignContent: "space-between",
+    padding: "14px",
     borderRadius: "8px",
-    backgroundColor: "var(--mediaBackground)",
-    ...shorthands.border("1px", "solid", "var(--heroCardStroke)"),
-    boxShadow: "0 24px 54px rgba(101, 86, 138, 0.16)",
-    aspectRatio: "4 / 3",
+    backgroundColor: tokens.colorNeutralBackground2,
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
   },
-  heroImage: {
+  storyStepIndex: {
+    color: tokens.colorBrandForeground1,
+    fontWeight: tokens.fontWeightBold,
+  },
+  storyStepText: {
+    margin: 0,
+    color: tokens.colorNeutralForeground2,
+    fontSize: tokens.fontSizeBase200,
+  },
+  storyVisual: {
+    display: "grid",
+    gridTemplateRows: "1fr auto",
+    minHeight: "560px",
+    backgroundColor: "var(--imageSurface)",
+    ...shorthands.borderLeft("1px", "solid", tokens.colorNeutralStroke2),
+    "@media (max-width: 920px)": {
+      minHeight: "420px",
+      ...shorthands.borderLeft("0", "solid", "transparent"),
+      ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
+    },
+  },
+  storyImage: {
     width: "100%",
     height: "100%",
+    minHeight: 0,
     display: "block",
     objectFit: "cover",
     objectPosition: "center",
     filter: "saturate(0.94) contrast(0.98)",
   },
-  heroImageLabel: {
-    position: "absolute",
-    left: "16px",
-    bottom: "16px",
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "8px",
-    padding: "8px 10px",
-    borderRadius: "8px",
-    backgroundColor: "var(--imageLabelBackground)",
-    color: tokens.colorNeutralForeground1,
-    boxShadow: tokens.shadow4,
-    backdropFilter: "blur(12px)",
-  },
-  heroGallery: {
+  storyCaption: {
     display: "grid",
-    gridTemplateColumns: "0.88fr 1fr",
-    gap: "14px",
-    "@media (max-width: 540px)": {
-      gridTemplateColumns: "1fr",
-    },
-  },
-  heroThumb: {
-    display: "grid",
-    gridTemplateColumns: "88px minmax(0, 1fr)",
-    gap: "12px",
-    alignItems: "center",
-    padding: "10px",
-    borderRadius: "8px",
-    backgroundColor: "var(--thumbBackground)",
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-    boxShadow: tokens.shadow4,
-  },
-  heroThumbImage: {
-    width: "88px",
-    height: "88px",
-    display: "block",
-    objectFit: "cover",
-    borderRadius: "8px",
-    backgroundColor: tokens.colorNeutralBackground2,
-  },
-  heroThumbTitle: {
-    margin: 0,
-    fontWeight: tokens.fontWeightSemibold,
-  },
-  heroThumbCopy: {
-    color: tokens.colorNeutralForeground2,
-    fontSize: tokens.fontSizeBase200,
-    lineHeight: tokens.lineHeightBase300,
+    gap: "4px",
+    padding: "18px",
+    backgroundColor: tokens.colorNeutralBackground1,
+    ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
   },
   section: {
-    padding: "clamp(64px, 9vw, 112px) clamp(20px, 5vw, 72px)",
+    scrollMarginTop: "0px",
+    padding: "clamp(44px, 5vw, 64px) clamp(20px, 5vw, 72px)",
   },
   sectionMuted: {
     backgroundColor: tokens.colorNeutralBackground2,
@@ -402,23 +355,19 @@ const useStyles = makeStyles({
     marginLeft: "auto",
   },
   sectionHeading: {
-    marginBottom: "34px",
-  },
-  sectionHeadingStack: {
-    display: "grid",
-    gap: "8px",
-    marginBottom: "34px",
-  },
-  sectionHeadingSplit: {
     display: "flex",
     alignItems: "end",
     justifyContent: "space-between",
     gap: "28px",
     marginBottom: "34px",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 820px)": {
       alignItems: "start",
       flexDirection: "column",
     },
+  },
+  sectionTitleCluster: {
+    display: "grid",
+    gap: "8px",
   },
   sectionTitleRow: {
     display: "flex",
@@ -440,132 +389,126 @@ const useStyles = makeStyles({
     maxWidth: "62ch",
     color: tokens.colorNeutralForeground2,
   },
-  characterGrid: {
+  chartsBoard: {
     display: "grid",
-    gridTemplateColumns: "360px minmax(0, 1fr)",
-    gap: "22px",
-    alignItems: "start",
-    "@media (max-width: 900px)": {
-      gridTemplateColumns: "1fr",
-    },
-  },
-  characterProfile: {
-    position: "sticky",
-    top: "96px",
-    "@media (max-width: 900px)": {
-      position: "static",
-    },
-  },
-  card: {
-    overflow: "hidden",
-    borderRadius: "8px",
-    boxShadow: tokens.shadow8,
-  },
-  characterImage: {
-    width: "100%",
-    aspectRatio: "4 / 5",
-    display: "block",
-    objectFit: "cover",
-    objectPosition: "center top",
-    backgroundColor: "var(--imageSurface)",
-  },
-  cardBody: {
-    padding: "22px",
-  },
-  cardCopy: {
-    color: tokens.colorNeutralForeground2,
-  },
-  metaList: {
-    display: "grid",
+    gridTemplateColumns: "minmax(0, 1fr) 332px",
     gap: "12px",
-    marginTop: "20px",
-  },
-  metaTerm: {
-    color: tokens.colorNeutralForeground2,
-    fontSize: tokens.fontSizeBase200,
-  },
-  metaDefinition: {
-    margin: 0,
-    fontWeight: tokens.fontWeightSemibold,
-  },
-  illustrationGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-    gap: "16px",
-    "@media (max-width: 640px)": {
-      gridTemplateColumns: "1fr",
-    },
-  },
-  illustrationCard: {
-    overflow: "hidden",
+    padding: "12px",
     borderRadius: "8px",
     backgroundColor: tokens.colorNeutralBackground1,
     ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
     boxShadow: tokens.shadow8,
+    "@media (max-width: 860px)": {
+      gridTemplateColumns: "1fr",
+    },
   },
-  illustrationPreview: {
-    position: "relative",
-    aspectRatio: "4 / 3",
+  galleryViewport: {
+    display: "grid",
+    gridTemplateRows: "minmax(0, 1fr) auto",
+    minHeight: "548px",
     overflow: "hidden",
+    borderRadius: "8px",
     backgroundColor: "var(--imageSurface)",
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+    "@media (max-width: 620px)": {
+      minHeight: "440px",
+    },
   },
-  illustrationImage: {
+  galleryImage: {
     width: "100%",
     height: "100%",
+    minHeight: 0,
     display: "block",
     objectFit: "cover",
     objectPosition: "center",
   },
-  illustrationMeta: {
-    position: "absolute",
-    top: "12px",
-    right: "12px",
-    left: "12px",
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "12px",
-    color: tokens.colorNeutralForeground1,
-    fontSize: tokens.fontSizeBase200,
-    fontWeight: tokens.fontWeightSemibold,
-  },
-  illustrationBadge: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "6px",
-    padding: "5px 8px",
-    borderRadius: "8px",
-    backgroundColor: "var(--imageLabelBackground)",
-    backdropFilter: "blur(10px)",
-  },
-  illustrationContent: {
+  galleryCaption: {
     display: "grid",
-    gap: "8px",
-    padding: "18px",
-  },
-  illustrationHeading: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-  },
-  illustrationIcon: {
-    width: "30px",
-    height: "30px",
-    flexShrink: 0,
-    display: "inline-grid",
-    placeItems: "center",
-    borderRadius: "8px",
-    backgroundColor: tokens.colorBrandBackground2,
-    color: tokens.colorBrandForeground1,
-  },
-  tabList: {
-    maxWidth: "100%",
-    padding: "4px",
+    gridTemplateColumns: "1fr auto",
+    gap: "18px",
+    alignItems: "end",
+    padding: "20px",
     backgroundColor: tokens.colorNeutralBackground1,
-    borderRadius: "8px",
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-    overflowX: "auto",
+    ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
+    "@media (max-width: 620px)": {
+      gridTemplateColumns: "1fr",
+    },
   },
-  postList: {
+  galleryCaptionText: {
+    margin: 0,
+    color: tokens.colorNeutralForeground2,
+    lineHeight: tokens.lineHeightBase400,
+  },
+  galleryTitle: {
+    display: "block",
+    marginTop: "6px",
+    marginBottom: "8px",
+  },
+  drawerList: {
+    display: "grid",
+    gridAutoRows: "1fr",
+    gap: "8px",
+    minHeight: 0,
+    "@media (max-width: 860px)": {
+      gridTemplateColumns: "repeat(3, minmax(244px, 1fr))",
+      overflowX: "auto",
+      paddingBottom: "2px",
+    },
+  },
+  drawerButton: {
+    width: "100%",
+    minHeight: "176px",
+    display: "grid",
+    gridTemplateColumns: "96px minmax(0, 1fr)",
+    alignItems: "stretch",
+    gap: "12px",
+    padding: "10px",
+    borderRadius: "8px",
+    color: tokens.colorNeutralForeground1,
+    backgroundColor: tokens.colorNeutralBackground1,
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+    cursor: "pointer",
+    textAlign: "left",
+    transitionDuration: tokens.durationNormal,
+    transitionProperty: "background-color, border-color, transform",
+    transitionTimingFunction: tokens.curveEasyEase,
+    ":hover": {
+      ...shorthands.borderColor(tokens.colorBrandStroke1),
+    },
+    "@media (max-width: 860px)": {
+      minHeight: "148px",
+    },
+  },
+  drawerButtonActive: {
+    backgroundColor: "var(--drawerActive)",
+    ...shorthands.borderColor("#c6bae0"),
+  },
+  drawerThumb: {
+    width: "96px",
+    height: "100%",
+    display: "block",
+    objectFit: "cover",
+    borderRadius: "8px",
+    backgroundColor: "var(--imageSurface)",
+  },
+  drawerText: {
+    minWidth: 0,
+    display: "grid",
+    alignContent: "center",
+    gap: "6px",
+  },
+  drawerMeta: {
+    color: tokens.colorBrandForeground1,
+    fontSize: tokens.fontSizeBase200,
+    fontWeight: tokens.fontWeightBold,
+    textTransform: "uppercase",
+  },
+  drawerCopy: {
+    color: tokens.colorNeutralForeground2,
+    fontSize: tokens.fontSizeBase200,
+    lineHeight: tokens.lineHeightBase300,
+  },
+  blogGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
     gap: "16px",
@@ -573,99 +516,83 @@ const useStyles = makeStyles({
       gridTemplateColumns: "1fr",
     },
   },
-  postCard: {
+  blogCard: {
     display: "grid",
     gridTemplateRows: "auto 1fr",
     overflow: "hidden",
     borderRadius: "8px",
     boxShadow: tokens.shadow8,
   },
-  postDate: {
-    minHeight: "118px",
-    display: "flex",
-    alignItems: "end",
-    justifyContent: "space-between",
-    gap: "14px",
-    padding: "18px",
-    background: "linear-gradient(135deg, rgba(255,255,255,0.62), transparent), var(--postAccent)",
-    ...shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
+  blogPreview: {
+    backgroundColor: "var(--imageSurface)",
   },
-  postDay: {
-    fontSize: "2rem",
-    fontWeight: tokens.fontWeightBold,
-    lineHeight: 1,
+  blogImage: {
+    width: "100%",
+    aspectRatio: "16 / 9",
+    display: "block",
+    objectFit: "cover",
+    objectPosition: "center",
   },
-  postMonth: {
-    color: tokens.colorNeutralForeground2,
-    fontWeight: tokens.fontWeightSemibold,
-  },
-  postBody: {
-    minHeight: "220px",
+  blogBody: {
+    minHeight: "250px",
     display: "grid",
     alignContent: "space-between",
-    padding: "22px",
+    gap: "18px",
+    padding: "18px",
   },
-  postMeta: {
+  blogMeta: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "12px",
-    color: tokens.colorNeutralForeground2,
-    fontWeight: tokens.fontWeightSemibold,
+    gap: "8px",
   },
-  postExcerpt: {
+  cardCopy: {
     color: tokens.colorNeutralForeground2,
-    marginBottom: "18px",
   },
-  aboutGrid: {
+  regulationGrid: {
     display: "grid",
     gridTemplateColumns: "minmax(0, 1fr) 360px",
-    gap: "34px",
+    gap: "24px",
     alignItems: "start",
     "@media (max-width: 860px)": {
       gridTemplateColumns: "1fr",
     },
   },
-  aboutLead: {
+  regulationLead: {
     maxWidth: "62ch",
     color: tokens.colorNeutralForeground2,
     fontSize: tokens.fontSizeBase500,
+    lineHeight: tokens.lineHeightBase500,
   },
-  aboutPoints: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    gap: "12px",
-    marginTop: "24px",
-    "@media (max-width: 720px)": {
-      gridTemplateColumns: "1fr",
-    },
-  },
-  aboutPoint: {
-    padding: "16px",
+  statementCard: {
     borderRadius: "8px",
-    backgroundColor: tokens.colorNeutralBackground2,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+    boxShadow: tokens.shadow8,
   },
-  aboutPointTitle: {
-    marginBottom: "8px",
-    color: tokens.colorBrandForeground1,
-    fontWeight: tokens.fontWeightSemibold,
+  statementBody: {
+    padding: "22px",
   },
-  profileList: {
+  statementList: {
     display: "grid",
     gap: "12px",
     margin: 0,
     padding: 0,
     listStyleType: "none",
   },
-  profileItem: {
-    display: "flex",
-    justifyContent: "space-between",
+  statementItem: {
+    display: "grid",
+    gridTemplateColumns: "112px minmax(0, 1fr)",
     gap: "16px",
     paddingTop: "12px",
     ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
+    "@media (max-width: 460px)": {
+      gridTemplateColumns: "1fr",
+      gap: "4px",
+    },
   },
-  profileValue: {
-    textAlign: "right",
+  statementTerm: {
+    color: tokens.colorNeutralForeground2,
+  },
+  statementValue: {
+    fontWeight: tokens.fontWeightSemibold,
   },
   footer: {
     display: "flex",
@@ -682,82 +609,68 @@ const useStyles = makeStyles({
   },
 });
 
+const charts = [
+  {
+    id: "collage",
+    title: "四格拼貼",
+    meta: "Archive drawer",
+    image: characterCollage,
+    alt: "璃音多張處理後插圖組成的四格拼貼",
+    summary: "多張素材先收進同一入口，適合作為角色檔案總覽。",
+    detail: "四格拼貼負責建立角色檔案的第一層：表情、姿態、日常片段與後續補檔線索先被收束在一起。",
+  },
+  {
+    id: "portrait",
+    title: "肖像立繪",
+    meta: "Identity",
+    image: characterPortrait,
+    alt: "璃音的處理後肖像圖",
+    summary: "紫髮、淺色服裝和柔和表情是最穩定的角色識別點。",
+    detail: "肖像圖負責承擔身份錨點，是檔案抽屜中的主要圖件。",
+  },
+  {
+    id: "scene",
+    title: "場景氣質",
+    meta: "World tone",
+    image: characterScene,
+    alt: "璃音站在淡藍紫色場景中的處理後插圖",
+    summary: "淡藍背景、低飽和紫和留白共同形成安靜、柔光的敘事空間。",
+    detail: "場景圖承接首頁的故事感，讓角色資料像章節一樣逐步展開。",
+  },
+] as const;
+
 const posts = [
   {
-    category: "设定",
-    day: "06",
-    month: "Jun",
+    category: "設計札記",
+    date: "06 Jun",
     readTime: "4 min read",
-    accent: "#c6bae0",
-    title: "璃音的视觉关键词：淡紫、冰蓝与柔光",
-    excerpt: "从处理后的角色图中整理出稳定的视觉锚点：紫发、白色服装、浅蓝环境和手账式边框。",
-  },
-  {
-    category: "札记",
-    day: "28",
-    month: "May",
-    readTime: "2 min read",
-    accent: "#cfe9d2",
-    title: "把四格拼贴整理成角色索引",
-    excerpt: "拼贴图更适合承担归档入口：它能同时展示表情、姿态、日常场景和设定碎片。",
-  },
-  {
-    category: "绘图",
-    day: "15",
-    month: "May",
-    readTime: "3 min read",
-    accent: "#b8cbe4",
-    title: "场景立绘里的轻盈感如何延续到页面",
-    excerpt: "页面用低饱和紫、冰蓝和留白承接角色气质，让博客像角色档案而不是普通作品列表。",
-  },
-] as const;
-
-const character = {
-  name: "璃音",
-  type: "主线角色",
-  color: "#c6bae0",
-  summary: "紫发、浅色服装和冷调背景构成她的第一印象；整体气质柔和、安静，适合用档案卡、拼贴和短札记慢慢补完。",
-  keywords: "淡紫、冰蓝、白色服装、手账拼贴",
-  status: "公开页整理中",
-};
-
-const illustrations = [
-  {
-    title: "四格拼贴",
-    tone: "Archive Board",
-    image: characterCollage,
-    alt: "璃音多张处理后插图组成的四格拼贴",
-    caption: "作为首页索引使用，负责快速展示角色的多个状态与页面的手账式组织方式。",
-  },
-  {
-    title: "肖像立绘",
-    tone: "Portrait",
-    image: characterPortrait,
-    alt: "璃音的处理后肖像图",
-    caption: "紫色头发和浅色服装是主要识别点，适合放在角色档案卡中承担身份锚点。",
-  },
-  {
-    title: "场景气质",
-    tone: "Scene",
     image: characterScene,
-    alt: "璃音站在淡蓝紫色场景中的处理后插图",
-    caption: "浅蓝与淡紫背景让角色更像处在柔光世界里，适合延展为博客的空间氛围。",
+    title: "璃音的頁面為什麼需要故事入口",
+    excerpt: "首頁不再只放照片，而是把角色氣質、素材線索和閱讀動線組成一個開場敘事。",
+  },
+  {
+    category: "圖件整理",
+    date: "28 May",
+    readTime: "2 min read",
+    image: characterCollage,
+    title: "拼貼圖件的歸檔方式",
+    excerpt: "同一角色的多張圖件被放進同一組索引，方便之後補充表情、姿態與日常片段。",
+  },
+  {
+    category: "角色觀察",
+    date: "15 May",
+    readTime: "3 min read",
+    image: characterPortrait,
+    title: "紫髮、冰藍與白色服裝的識別作用",
+    excerpt: "從處理後素材裡提取穩定元素，用於角色檔案、貼文封面與後續規範文字。",
   },
 ] as const;
 
-const aboutPoints = [
-  {
-    title: "角色档案",
-    copy: "先集中维护璃音的核心设定、关键词和公开展示素材。",
-  },
-  {
-    title: "插图归档",
-    copy: "同一角色的拼贴、肖像和场景图按阶段补充，不混成杂乱图库。",
-  },
-  {
-    title: "贴文记录",
-    copy: "贴文用于记录修改动机、视觉观察和设定推进，不追求一次定稿。",
-  },
+const regulation = [
+  { term: "原作者", value: "VikaKumaChR" },
+  { term: "角色來源", value: "個人原創角色：璃音" },
+  { term: "展示範圍", value: "本頁僅展示處理後公開素材與整理文字" },
+  { term: "使用聲明", value: "未經確認請勿轉載、二次分發、二改或商用" },
 ] as const;
 
 export function App() {
@@ -769,19 +682,16 @@ export function App() {
     }
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
-  const [filter, setFilter] = useState<string>("all");
-  const [activeSection, setActiveSection] = useState("characters");
-  const [shareHint, setShareHint] = useState("分享此页");
+  const [activeSection, setActiveSection] = useState("hero");
+  const [selectedChart, setSelectedChart] = useState<(typeof charts)[number]["id"]>("collage");
+  const [shareHint, setShareHint] = useState("分享此頁");
   const navigationLockUntil = useRef(0);
 
   const theme = mode === "dark" ? darkTheme : lightTheme;
-  const filteredPosts = useMemo(
-    () => posts.filter((post) => filter === "all" || post.category === filter),
-    [filter],
-  );
+  const selectedChartItem = charts.find((item) => item.id === selectedChart) ?? charts[0];
 
   useEffect(() => {
-    const sectionIds = ["characters", "posts", "about"];
+    const sectionIds = ["hero", "charts", "blog", "regulation"];
     let frame = 0;
 
     const updateActiveSection = () => {
@@ -795,7 +705,7 @@ export function App() {
           .map((id) => ({ id, top: document.getElementById(id)?.getBoundingClientRect().top }))
           .filter((section): section is { id: string; top: number } => typeof section.top === "number")
           .filter((section) => section.top <= marker)
-          .at(-1)?.id ?? "characters";
+          .at(-1)?.id ?? "hero";
 
       setActiveSection(current);
     };
@@ -832,7 +742,7 @@ export function App() {
   const sharePage = async () => {
     const sharePayload = {
       title: "VK Character Log",
-      text: "璃音原创角色档案",
+      text: "璃音原創角色部落格",
       url: window.location.href,
     };
     const browserNavigator = navigator as Navigator & {
@@ -846,17 +756,18 @@ export function App() {
       }
 
       await navigator.clipboard.writeText(window.location.href);
-      setShareHint("链接已复制");
-      window.setTimeout(() => setShareHint("分享此页"), 1600);
+      setShareHint("連結已複製");
+      window.setTimeout(() => setShareHint("分享此頁"), 1600);
     } catch {
-      setShareHint("分享此页");
+      setShareHint("分享此頁");
     }
   };
 
   const navItems = [
-    { id: "characters", label: "原创角色" },
-    { id: "posts", label: "个人贴文" },
-    { id: "about", label: "关于" },
+    { id: "hero", label: "Hero" },
+    { id: "charts", label: "Charts" },
+    { id: "blog", label: "Blog" },
+    { id: "regulation", label: "Regulation" },
   ] as const;
 
   return (
@@ -865,52 +776,49 @@ export function App() {
       className={styles.shell}
       style={
         {
-          "--heroOverlayStrong":
-            mode === "dark" ? "rgba(18, 15, 26, 0.92)" : "rgba(248, 244, 255, 0.86)",
-          "--heroOverlayMid":
-            mode === "dark" ? "rgba(18, 15, 26, 0.62)" : "rgba(248, 244, 255, 0.38)",
-          "--heroOverlaySoft":
-            mode === "dark" ? "rgba(18, 15, 26, 0.24)" : "rgba(248, 244, 255, 0.04)",
           "--heroBase": mode === "dark" ? "#181523" : "#e8def5",
-          "--heroDiamond": mode === "dark" ? "rgba(198, 186, 224, 0.06)" : "rgba(255, 255, 255, 0.25)",
-          "--heroCardBackground":
-            mode === "dark" ? "rgba(30, 26, 43, 0.72)" : "rgba(255, 255, 255, 0.66)",
-          "--heroCardStroke":
-            mode === "dark" ? "rgba(222, 213, 239, 0.22)" : "rgba(255, 255, 255, 0.72)",
-          "--mediaBackground": mode === "dark" ? "rgba(25, 22, 36, 0.74)" : "rgba(255,255,255,0.54)",
-          "--thumbBackground": mode === "dark" ? "rgba(25, 22, 36, 0.78)" : "rgba(255,255,255,0.68)",
-          "--imageLabelBackground":
-            mode === "dark" ? "rgba(25, 22, 36, 0.78)" : "rgba(255,255,255,0.74)",
+          "--heroDiamond": mode === "dark" ? "rgba(198, 186, 224, 0.06)" : "rgba(255, 255, 255, 0.24)",
+          "--storySurface": mode === "dark" ? "rgba(30, 26, 43, 0.82)" : "rgba(255, 255, 255, 0.72)",
+          "--storyStroke": mode === "dark" ? "rgba(222, 213, 239, 0.22)" : "rgba(255, 255, 255, 0.78)",
+          "--drawerActive": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(198, 186, 224, 0.24)",
           "--imageSurface": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(232, 222, 245, 0.58)",
           "--colorNeutralBackground1": theme.colorNeutralBackground1,
         } as CSSProperties
       }
     >
-      <header className={styles.header} aria-label="站点导航">
-        <Link className={styles.brand} href="#top" appearance="subtle" aria-label="回到首页">
+      <header className={styles.header} aria-label="站點導覽">
+        <Link className={styles.brand} href="#hero" appearance="subtle" aria-label="回到 Hero">
           <span className={styles.brandMark}>VK</span>
           <span className={styles.brandCopy}>
             <span className={styles.brandName}>VikaKumaChR</span>
-            <span className={styles.brandMeta}>Character Log</span>
+            <span className={styles.brandMeta}>Character Blog</span>
           </span>
         </Link>
 
-        <nav className={styles.nav} aria-label="主要导航">
-          {navItems.map((item) => (
-            <Link
-              key={item.id}
-              className={`${styles.navLink} ${activeSection === item.id ? styles.navLinkActive : ""}`}
-              href={`#${item.id}`}
-              appearance="subtle"
-              onClick={() => navigateToSection(item.id)}
-              aria-current={activeSection === item.id ? "page" : undefined}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className={styles.nav} aria-label="主要導覽">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+
+            return (
+              <Link
+                key={item.id}
+                className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}
+                href={`#${item.id}`}
+                appearance="subtle"
+                onClick={() => navigateToSection(item.id)}
+                aria-current={isActive ? "page" : undefined}
+              >
+                <span>{item.label}</span>
+                <span
+                  className={`${styles.navUnderline} ${isActive ? styles.navUnderlineActive : ""}`}
+                  aria-hidden="true"
+                />
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className={styles.headerActions} aria-label="页面操作">
+        <div className={styles.headerActions} aria-label="頁面操作">
           <Tooltip content={shareHint} relationship="label">
             <Button
               className={styles.actionButton}
@@ -920,214 +828,190 @@ export function App() {
               aria-label={shareHint}
             />
           </Tooltip>
-          <Tooltip content={mode === "dark" ? "切换到亮色" : "切换到暗色"} relationship="label">
+          <Tooltip content={mode === "dark" ? "切換到亮色" : "切換到暗色"} relationship="label">
             <Button
               className={`${styles.actionButton} ${styles.themeButton}`}
               appearance="subtle"
               icon={mode === "dark" ? <WeatherSunny24Regular /> : <WeatherMoon24Regular />}
               onClick={toggleTheme}
               aria-pressed={mode === "dark"}
-              aria-label={mode === "dark" ? "切换到亮色" : "切换到暗色"}
+              aria-label={mode === "dark" ? "切換到亮色" : "切換到暗色"}
             />
           </Tooltip>
         </div>
       </header>
 
-      <main id="top">
-        <section className={styles.hero} aria-labelledby="hero-title">
-          <div className={styles.heroOverlay} />
-          <div className={styles.heroLayout}>
-            <div className={styles.heroContent}>
-              <div className={styles.heroContentInner}>
+      <main>
+        <section className={styles.hero} id="hero" aria-labelledby="hero-title">
+          <div className={styles.storySpread}>
+            <div className={styles.storyCopy}>
+              <div>
                 <Text as="p" className={styles.eyebrow}>
-                  Original Character Archive
+                  Story archive / Original character
                 </Text>
                 <h1 id="hero-title" className={styles.heroTitle}>
-                  璃音
+                  璃音的檔案
                   <br />
-                  Archive
+                  從一張便箋展開
                 </h1>
-                <Text as="p" className={styles.heroCopy}>
-                  以淡紫、冰蓝和手账式拼贴为视觉线索，整理同一个原创角色的公开档案、插图阶段和创作贴文。
-                </Text>
-                <div className={styles.heroActions}>
-                  <Button
-                    as="a"
-                    href="#characters"
-                    appearance="primary"
-                    icon={<Person24Regular />}
-                    onClick={() => navigateToSection("characters")}
-                  >
-                    浏览角色
-                  </Button>
-                  <Button
-                    as="a"
-                    href="#posts"
-                    appearance="secondary"
-                    icon={<BookOpen24Regular />}
-                    onClick={() => navigateToSection("posts")}
-                  >
-                    阅读贴文
-                  </Button>
-                </div>
+              </div>
+              <Text as="p" className={styles.heroLead}>
+                璃音的部落格像一只被打開的素材抽屜：第一層是柔光場景，第二層是圖件索引，第三層是每次整理背後的札記。
+              </Text>
+              <div className={styles.storySteps} aria-label="閱讀動線">
+                <article className={styles.storyStep}>
+                  <span className={styles.storyStepIndex}>01</span>
+                  <p className={styles.storyStepText}>場景先建立角色的第一印象。</p>
+                </article>
+                <article className={styles.storyStep}>
+                  <span className={styles.storyStepIndex}>02</span>
+                  <p className={styles.storyStepText}>圖件再整理成可比較資料。</p>
+                </article>
+                <article className={styles.storyStep}>
+                  <span className={styles.storyStepIndex}>03</span>
+                  <p className={styles.storyStepText}>貼文記錄設定補完和創作過程。</p>
+                </article>
+              </div>
+              <div className={styles.heroActions}>
+                <Button
+                  as="a"
+                  href="#charts"
+                  appearance="primary"
+                  icon={<PanelRightGallery24Regular />}
+                  onClick={() => navigateToSection("charts")}
+                >
+                  查看 Charts
+                </Button>
+                <Button
+                  as="a"
+                  href="#blog"
+                  appearance="secondary"
+                  icon={<BookOpen24Regular />}
+                  onClick={() => navigateToSection("blog")}
+                >
+                  閱讀 Blog
+                </Button>
               </div>
             </div>
 
-            <aside className={styles.heroMedia} aria-label="璃音视觉档案预览">
-              <div className={styles.heroImageFrame}>
-                <img className={styles.heroImage} src={characterScene} alt="璃音的淡蓝紫场景插图" />
-                <span className={styles.heroImageLabel}>
-                  <Image24Regular />
-                  场景气质 / Pastel scene
-                </span>
-              </div>
-              <div className={styles.heroGallery}>
-                <article className={styles.heroThumb}>
-                  <img className={styles.heroThumbImage} src={characterPortrait} alt="璃音肖像图缩略图" />
-                  <div>
-                    <p className={styles.heroThumbTitle}>紫发肖像</p>
-                    <Text as="p" className={styles.heroThumbCopy}>
-                      角色识别点集中在发色、浅色服装和柔和表情。
-                    </Text>
-                  </div>
-                </article>
-                <article className={styles.heroThumb}>
-                  <img className={styles.heroThumbImage} src={characterCollage} alt="璃音拼贴图缩略图" />
-                  <div>
-                    <p className={styles.heroThumbTitle}>拼贴索引</p>
-                    <Text as="p" className={styles.heroThumbCopy}>
-                      适合承载多张插图、日常片段和后续补档入口。
-                    </Text>
-                  </div>
-                </article>
+            <aside className={styles.storyVisual} aria-label="璃音故事封面">
+              <img className={styles.storyImage} src={characterScene} alt="璃音在淡藍紫色場景中的處理後插圖" />
+              <div className={styles.storyCaption}>
+                <Text weight="semibold">Scene / Pastel memory</Text>
+                <Text className={styles.cardCopy}>淡紫、冰藍、白色服裝和柔光背景共同形成首頁的故事入口。</Text>
               </div>
             </aside>
           </div>
         </section>
 
-        <section className={styles.section} id="characters" aria-labelledby="characters-title">
+        <section className={styles.section} id="charts" aria-labelledby="charts-title">
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeading}>
-              <div className={styles.sectionTitleRow}>
-                <span className={styles.sectionTitleIcon} aria-hidden="true">
-                  <Person24Regular />
-                </span>
-                <Title1 as="h2" id="characters-title">
-                  原创角色：璃音
-                </Title1>
+              <div className={styles.sectionTitleCluster}>
+                <div className={styles.sectionTitleRow}>
+                  <span className={styles.sectionTitleIcon} aria-hidden="true">
+                    <PanelRightGallery24Regular />
+                  </span>
+                  <Title1 as="h2" id="charts-title">
+                    Charts
+                  </Title1>
+                </div>
+                <Text as="p" className={styles.headingCopy}>
+                  璃音的圖件被整理成三個入口：拼貼、肖像、場景。每一格都對應一段補檔線索。
+                </Text>
               </div>
-              <Text as="p" className={styles.headingCopy}>
-                当前仅展示一个原创角色，页面重点放在角色档案与多张处理后插图的阶段性归档。
-              </Text>
+              <Badge appearance="tint">3 files</Badge>
             </div>
 
-            <div className={styles.characterGrid}>
-              <Card className={`${styles.card} ${styles.characterProfile}`}>
-                <img className={styles.characterImage} src={characterPortrait} alt="璃音的处理后肖像图" />
-                <div className={styles.cardBody}>
-                  <Badge appearance="tint">{character.type}</Badge>
-                  <CardHeader header={<Title3 as="h3">{character.name}</Title3>} />
-                  <Text as="p" className={styles.cardCopy}>
-                    {character.summary}
-                  </Text>
-                  <dl className={styles.metaList}>
-                    <div>
-                      <dt className={styles.metaTerm}>关键词</dt>
-                      <dd className={styles.metaDefinition}>{character.keywords}</dd>
-                    </div>
-                    <div>
-                      <dt className={styles.metaTerm}>状态</dt>
-                      <dd className={styles.metaDefinition}>{character.status}</dd>
-                    </div>
-                  </dl>
+            <div className={styles.chartsBoard}>
+              <div className={styles.galleryViewport} aria-live="polite">
+                <img className={styles.galleryImage} src={selectedChartItem.image} alt={selectedChartItem.alt} />
+                <div className={styles.galleryCaption}>
+                  <div>
+                    <Text as="p" className={styles.eyebrow}>
+                      {selectedChartItem.meta}
+                    </Text>
+                    <Title2 as="h3" className={styles.galleryTitle}>
+                      {selectedChartItem.title}
+                    </Title2>
+                    <Text as="p" className={styles.galleryCaptionText}>
+                      {selectedChartItem.detail}
+                    </Text>
+                  </div>
+                  <Button as="a" href="#blog" appearance="secondary" icon={<BookOpen24Regular />} onClick={() => navigateToSection("blog")}>
+                    看相關貼文
+                  </Button>
                 </div>
-              </Card>
+              </div>
 
-              <div className={styles.illustrationGrid} aria-label="璃音插图展示">
-                {illustrations.map((item, index) => (
-                  <article key={item.title} className={styles.illustrationCard}>
-                    <div className={styles.illustrationPreview}>
-                      <img className={styles.illustrationImage} src={item.image} alt={item.alt} />
-                      <div className={styles.illustrationMeta}>
-                        <span>{String(index + 1).padStart(2, "0")}</span>
-                        <span className={styles.illustrationBadge}>
-                          <Image24Regular />
-                          {item.tone}
-                        </span>
-                      </div>
-                    </div>
-                    <div className={styles.illustrationContent}>
-                      <div className={styles.illustrationHeading}>
-                        <span className={styles.illustrationIcon} aria-hidden="true">
-                          <Image24Regular />
-                        </span>
-                        <Title3 as="h3">{item.title}</Title3>
-                      </div>
-                      <Text as="p" className={styles.cardCopy}>
-                        {item.caption}
-                      </Text>
-                    </div>
-                  </article>
-                ))}
+              <div className={styles.drawerList} aria-label="Charts gallery drawers">
+                {charts.map((item) => {
+                  const isSelected = selectedChart === item.id;
+
+                  return (
+                    <button
+                      key={item.id}
+                      className={`${styles.drawerButton} ${isSelected ? styles.drawerButtonActive : ""}`}
+                      type="button"
+                      onClick={() => setSelectedChart(item.id)}
+                      aria-pressed={isSelected}
+                    >
+                      <img className={styles.drawerThumb} src={item.image} alt="" aria-hidden="true" />
+                      <span className={styles.drawerText}>
+                        <span className={styles.drawerMeta}>{item.meta}</span>
+                        <Text weight="semibold">{item.title}</Text>
+                        <span className={styles.drawerCopy}>{item.summary}</span>
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
         </section>
 
-        <section className={`${styles.section} ${styles.sectionMuted}`} id="posts" aria-labelledby="posts-title">
+        <section className={`${styles.section} ${styles.sectionMuted}`} id="blog" aria-labelledby="blog-title">
           <div className={styles.sectionInner}>
-            <div className={styles.sectionHeadingSplit}>
-              <div className={styles.sectionHeadingStack}>
+            <div className={styles.sectionHeading}>
+              <div className={styles.sectionTitleCluster}>
                 <div className={styles.sectionTitleRow}>
                   <span className={styles.sectionTitleIcon} aria-hidden="true">
                     <BookOpen24Regular />
                   </span>
-                  <Title1 as="h2" id="posts-title">
-                    个人贴文
+                  <Title1 as="h2" id="blog-title">
+                    Blog
                   </Title1>
                 </div>
                 <Text as="p" className={styles.headingCopy}>
-                  贴文区改成围绕璃音展开：设定、札记和绘图记录都服务于同一个角色档案。
+                  整理設定札記、圖件歸檔與角色觀察。每篇貼文都有封面、分類與摘要。
                 </Text>
               </div>
-              <TabList
-                className={styles.tabList}
-                selectedValue={filter}
-                onTabSelect={(_: SelectTabEvent, data: SelectTabData) => setFilter(String(data.value))}
-                aria-label="贴文分类"
-              >
-                <Tab value="all">全部</Tab>
-                <Tab value="设定">设定</Tab>
-                <Tab value="札记">札记</Tab>
-                <Tab value="绘图">绘图</Tab>
-              </TabList>
             </div>
 
-            <div className={styles.postList}>
-              {filteredPosts.map((post) => (
-                <Card
-                  key={post.title}
-                  className={styles.postCard}
-                  style={{ "--postAccent": post.accent } as CSSProperties}
-                >
-                  <div className={styles.postDate}>
-                    <span className={styles.postDay}>{post.day}</span>
-                    <span className={styles.postMonth}>{post.month}</span>
-                  </div>
-                  <div className={styles.postBody}>
+            <div className={styles.blogGrid}>
+              {posts.map((post) => (
+                <Card key={post.title} className={styles.blogCard}>
+                  <CardPreview className={styles.blogPreview}>
+                    <img className={styles.blogImage} src={post.image} alt="" />
+                  </CardPreview>
+                  <div className={styles.blogBody}>
                     <div>
-                      <div className={styles.postMeta}>
-                        <span>{post.category}</span>
-                        <span>{post.readTime}</span>
+                      <div className={styles.blogMeta}>
+                        <Badge appearance="tint">{post.category}</Badge>
+                        <Badge appearance="outline">{post.date}</Badge>
                       </div>
-                      <CardHeader header={<Subtitle1 as="h3">{post.title}</Subtitle1>} />
-                      <Text as="p" className={styles.postExcerpt}>
+                      <CardHeader
+                        image={<DocumentBulletList24Regular />}
+                        header={<Subtitle1 as="h3">{post.title}</Subtitle1>}
+                        description={post.readTime}
+                      />
+                      <Text as="p" className={styles.cardCopy}>
                         {post.excerpt}
                       </Text>
                     </div>
                     <CardFooter>
                       <Button appearance="subtle" icon={<BookOpen24Regular />}>
-                        阅读
+                        閱讀
                       </Button>
                     </CardFooter>
                   </div>
@@ -1137,59 +1021,32 @@ export function App() {
           </div>
         </section>
 
-        <section className={styles.section} id="about" aria-labelledby="about-title">
-          <div className={`${styles.sectionInner} ${styles.aboutGrid}`}>
-            <div className={styles.sectionHeading}>
+        <section className={styles.section} id="regulation" aria-labelledby="regulation-title">
+          <div className={`${styles.sectionInner} ${styles.regulationGrid}`}>
+            <div className={styles.sectionTitleCluster}>
               <div className={styles.sectionTitleRow}>
                 <span className={styles.sectionTitleIcon} aria-hidden="true">
-                  <Sparkle24Regular />
+                  <GlobeShield24Regular />
                 </span>
-                <Title1 as="h2" id="about-title">
-                  关于这个博客
+                <Title1 as="h2" id="regulation-title">
+                  Regulation
                 </Title1>
               </div>
-              <Text as="p" className={styles.aboutLead}>
-                这里是 VikaKumaChR 的原创角色整理页。当前公开页只展示处理后的角色资料图和整理文字，用更克制的结构记录璃音的设定、插图和创作更新。
+              <Text as="p" className={styles.regulationLead}>
+                這裡只保留必要聲明：素材來源、原作者、展示範圍與使用限制。關於區不再堆疊額外敘述。
               </Text>
-              <div className={styles.aboutPoints}>
-                {aboutPoints.map((point) => (
-                  <article className={styles.aboutPoint} key={point.title}>
-                    <Text as="p" className={styles.aboutPointTitle}>
-                      {point.title}
-                    </Text>
-                    <Text as="p" className={styles.cardCopy}>
-                      {point.copy}
-                    </Text>
-                  </article>
-                ))}
-              </div>
             </div>
-            <Card className={styles.card}>
-              <div className={styles.cardBody}>
-                <CardHeader
-                  image={<Sparkle24Regular />}
-                  header={<Title2 as="p">创作索引</Title2>}
-                  description="角色、插图与贴文的公开整理入口"
-                />
-                <ul className={styles.profileList}>
-                  <li className={styles.profileItem}>
-                    <Text>主要内容</Text>
-                    <Text className={styles.profileValue} weight="semibold">
-                      璃音 / 插图 / 贴文
-                    </Text>
-                  </li>
-                  <li className={styles.profileItem}>
-                    <Text>更新节奏</Text>
-                    <Text className={styles.profileValue} weight="semibold">
-                      随创作进度补完
-                    </Text>
-                  </li>
-                  <li className={styles.profileItem}>
-                    <Text>转载说明</Text>
-                    <Text className={styles.profileValue} weight="semibold">
-                      请先联系确认
-                    </Text>
-                  </li>
+
+            <Card className={styles.statementCard}>
+              <div className={styles.statementBody}>
+                <CardHeader image={<Person24Regular />} header={<Title3 as="h3">使用聲明</Title3>} />
+                <ul className={styles.statementList}>
+                  {regulation.map((item) => (
+                    <li className={styles.statementItem} key={item.term}>
+                      <Text className={styles.statementTerm}>{item.term}</Text>
+                      <Text className={styles.statementValue}>{item.value}</Text>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </Card>
@@ -1198,9 +1055,9 @@ export function App() {
       </main>
 
       <footer className={styles.footer}>
-        <Text weight="semibold">VK Character Log</Text>
-        <Button as="a" href="#top" appearance="subtle" icon={<ArrowUp24Regular />}>
-          返回顶部
+        <Text weight="semibold">VK Character Blog</Text>
+        <Button as="a" href="#hero" appearance="subtle" icon={<ArrowUp24Regular />}>
+          返回頂部
         </Button>
       </footer>
     </FluentProvider>
