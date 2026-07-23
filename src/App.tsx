@@ -241,6 +241,7 @@ const useStyles = makeStyles({
     ":before": {
       content: '""',
       position: "absolute",
+      zIndex: 0,
       top: "72px",
       right: 0,
       left: 0,
@@ -252,12 +253,13 @@ const useStyles = makeStyles({
     ":after": {
       content: '""',
       position: "absolute",
-      right: "clamp(24px, 8vw, 140px)",
-      bottom: "clamp(72px, 10vh, 120px)",
-      left: "clamp(24px, 8vw, 140px)",
-      height: "1px",
-      background: "linear-gradient(90deg, transparent, var(--heroLine), transparent)",
-      opacity: 0.52,
+      zIndex: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      height: "clamp(128px, 18vh, 190px)",
+      background: "linear-gradient(180deg, transparent 0%, var(--heroBase) 36%, var(--colorNeutralBackground1) 100%)",
+      pointerEvents: "none",
     },
     "@media (max-width: 860px)": {
       minHeight: "auto",
@@ -431,22 +433,6 @@ const useStyles = makeStyles({
       gridTemplateColumns: "1fr",
     },
   },
-  heroTransition: {
-    gridColumn: "1 / -1",
-    height: "clamp(72px, 10vh, 118px)",
-    marginTop: "-14px",
-    background:
-      "radial-gradient(ellipse at 28% 46%, var(--heroFadeWarm) 0, transparent 50%), radial-gradient(ellipse at 70% 48%, var(--heroFadeCool) 0, transparent 52%), linear-gradient(90deg, transparent, var(--heroFadeMain), transparent)",
-    filter: "blur(18px)",
-    opacity: 0.82,
-    WebkitMaskImage: "linear-gradient(180deg, transparent 0%, #000 44%, transparent 100%)",
-    maskImage: "linear-gradient(180deg, transparent 0%, #000 44%, transparent 100%)",
-    pointerEvents: "none",
-    "@media (max-width: 900px)": {
-      height: "64px",
-      marginTop: "-8px",
-    },
-  },
   partCard: {
     minHeight: "106px",
     display: "grid",
@@ -488,7 +474,7 @@ const useStyles = makeStyles({
   },
   section: {
     scrollMarginTop: "0px",
-    padding: "clamp(56px, 7vw, 88px) clamp(20px, 5vw, 72px)",
+    padding: "clamp(58px, 7vw, 88px) clamp(22px, 5vw, 72px)",
   },
   sectionMuted: {
     backgroundColor: tokens.colorNeutralBackground2,
@@ -497,9 +483,6 @@ const useStyles = makeStyles({
     width: "min(1120px, 100%)",
     marginRight: "auto",
     marginLeft: "auto",
-  },
-  chartsInner: {
-    width: "min(1320px, 100%)",
   },
   sectionHeading: {
     display: "flex",
@@ -635,7 +618,7 @@ const useStyles = makeStyles({
     lineHeight: "1.12",
   },
   albumPanel: {
-    width: "min(940px, calc(100vw - 48px))",
+    width: "min(1120px, calc(100vw - 48px))",
     marginRight: "auto",
     marginLeft: "auto",
     display: "grid",
@@ -681,6 +664,7 @@ const useStyles = makeStyles({
     backgroundColor: "#c6bae0",
   },
   blogGrid: {
+    width: "100%",
     display: "grid",
     gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
     gap: "16px",
@@ -1003,9 +987,6 @@ export function App() {
           "--heroLine": mode === "dark" ? "rgba(222, 213, 239, 0.14)" : "rgba(113, 101, 144, 0.16)",
           "--figureLight": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(255, 255, 255, 0.78)",
           "--figureShadow": mode === "dark" ? "rgba(6, 4, 12, 0.56)" : "rgba(101, 86, 138, 0.2)",
-          "--heroFadeWarm": mode === "dark" ? "rgba(119, 83, 112, 0.18)" : "rgba(241, 224, 229, 0.72)",
-          "--heroFadeMain": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(198, 186, 224, 0.34)",
-          "--heroFadeCool": mode === "dark" ? "rgba(92, 116, 142, 0.18)" : "rgba(202, 226, 235, 0.62)",
           "--partSurface": mode === "dark" ? "rgba(31, 27, 43, 0.92)" : "rgba(255, 255, 255, 0.9)",
           "--partStroke": mode === "dark" ? "rgba(222, 213, 239, 0.18)" : "rgba(255, 255, 255, 0.82)",
           "--albumGlow": mode === "dark" ? "rgba(198, 186, 224, 0.14)" : "rgba(198, 186, 224, 0.26)",
@@ -1168,12 +1149,11 @@ export function App() {
                 </a>
               ))}
             </div>
-            <div className={styles.heroTransition} aria-hidden="true" />
           </div>
         </section>
 
         <section className={styles.section} id="charts" aria-labelledby="charts-title">
-          <div className={`${styles.sectionInner} ${styles.chartsInner}`}>
+          <div className={styles.sectionInner}>
             <div className={styles.sectionHeading}>
               <div className={styles.sectionTitleCluster}>
                 <div className={styles.sectionTitleRow}>
