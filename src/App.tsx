@@ -25,9 +25,11 @@ import {
 import {
   ArrowUp24Regular,
   BookOpen24Regular,
+  ChevronLeft24Regular,
+  ChevronRight24Regular,
   DocumentBulletList24Regular,
   GlobeShield24Regular,
-  Image24Regular,
+  Open24Regular,
   PanelRightGallery24Regular,
   Person24Regular,
   Share24Regular,
@@ -97,7 +99,7 @@ const useStyles = makeStyles({
     alignItems: "center",
     columnGap: "18px",
     padding: "12px clamp(18px, 4vw, 54px)",
-    backgroundColor: "color-mix(in srgb, var(--colorNeutralBackground1) 86%, transparent)",
+    backgroundColor: "color-mix(in srgb, var(--colorNeutralBackground1) 88%, transparent)",
     ...shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
     backdropFilter: "blur(22px) saturate(1.18)",
     "@media (max-width: 860px)": {
@@ -227,40 +229,38 @@ const useStyles = makeStyles({
     display: "grid",
     alignItems: "center",
     overflow: "hidden",
+    isolation: "isolate",
     scrollMarginTop: "72px",
-    padding: "calc(72px + 52px) clamp(20px, 6vw, 88px) 72px",
+    padding: "calc(72px + 54px) clamp(20px, 6vw, 92px) 58px",
     backgroundColor: "var(--heroBase)",
     backgroundImage:
-      "linear-gradient(135deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(225deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(45deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(315deg, var(--heroDiamond) 25%, var(--heroBase) 25%)",
-    backgroundPosition: "42px 0, 42px 0, 0 0, 0 0",
-    backgroundSize: "84px 84px",
+      "radial-gradient(circle at 74% 14%, var(--heroGlow) 0 18%, transparent 36%), linear-gradient(135deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(225deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(45deg, var(--heroDiamond) 25%, transparent 25%), linear-gradient(315deg, var(--heroDiamond) 25%, var(--heroBase) 25%)",
+    backgroundPosition: "0 0, 42px 0, 42px 0, 0 0, 0 0",
+    backgroundSize: "100% 100%, 84px 84px, 84px 84px, 84px 84px, 84px 84px",
     "@media (max-width: 860px)": {
       minHeight: "auto",
-      paddingTop: "42px",
-      paddingBottom: "52px",
+      paddingTop: "38px",
+      paddingBottom: "48px",
     },
   },
-  storySpread: {
-    width: "min(1180px, 100%)",
+  heroInner: {
+    position: "relative",
+    zIndex: 1,
+    width: "min(1360px, 100%)",
     marginRight: "auto",
     marginLeft: "auto",
     display: "grid",
-    gridTemplateColumns: "minmax(0, 0.95fr) minmax(360px, 0.8fr)",
-    alignItems: "stretch",
-    overflow: "hidden",
-    borderRadius: "8px",
-    backgroundColor: "var(--storySurface)",
-    ...shorthands.border("1px", "solid", "var(--storyStroke)"),
-    boxShadow: "0 28px 70px rgba(101, 86, 138, 0.16)",
-    "@media (max-width: 920px)": {
+    gridTemplateColumns: "minmax(0, 0.9fr) minmax(360px, 0.78fr)",
+    alignItems: "center",
+    gap: "clamp(28px, 5vw, 72px)",
+    "@media (max-width: 980px)": {
       gridTemplateColumns: "1fr",
     },
   },
-  storyCopy: {
+  heroCopy: {
     display: "grid",
-    alignContent: "center",
-    gap: "24px",
-    padding: "clamp(26px, 5vw, 58px)",
+    gap: "28px",
+    maxWidth: "760px",
   },
   eyebrow: {
     margin: 0,
@@ -270,15 +270,18 @@ const useStyles = makeStyles({
     textTransform: "uppercase",
   },
   heroTitle: {
-    maxWidth: "12ch",
+    maxWidth: "10ch",
     marginTop: 0,
     marginBottom: 0,
-    fontSize: "clamp(3rem, 7vw, 6.4rem)",
-    lineHeight: "0.96",
+    fontSize: "clamp(4rem, 9vw, 8.8rem)",
+    lineHeight: "0.88",
     overflowWrap: "anywhere",
+    "@media (max-width: 520px)": {
+      fontSize: "3.7rem",
+    },
   },
   heroLead: {
-    maxWidth: "48ch",
+    maxWidth: "46ch",
     color: tokens.colorNeutralForeground2,
     fontSize: tokens.fontSizeBase500,
     lineHeight: tokens.lineHeightBase500,
@@ -288,63 +291,99 @@ const useStyles = makeStyles({
     flexWrap: "wrap",
     gap: "10px",
   },
-  storySteps: {
+  heroArtStage: {
+    position: "relative",
+    minHeight: "620px",
     display: "grid",
-    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    gap: "10px",
-    "@media (max-width: 640px)": {
-      gridTemplateColumns: "1fr",
+    alignItems: "end",
+    overflow: "hidden",
+    borderRadius: "28px",
+    backgroundColor: "var(--stageSurface)",
+    boxShadow: "0 28px 82px rgba(101, 86, 138, 0.16)",
+    "@media (max-width: 980px)": {
+      minHeight: "480px",
+    },
+    "@media (max-width: 520px)": {
+      minHeight: "360px",
+      borderRadius: "22px",
     },
   },
-  storyStep: {
-    minHeight: "104px",
-    display: "grid",
-    alignContent: "space-between",
-    padding: "14px",
-    borderRadius: "8px",
-    backgroundColor: tokens.colorNeutralBackground2,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+  heroArtBackdrop: {
+    position: "absolute",
+    inset: 0,
+    background:
+      "linear-gradient(180deg, rgba(255,255,255,0.2), transparent 42%), radial-gradient(circle at 60% 18%, rgba(255,255,255,0.72), transparent 22%), linear-gradient(135deg, rgba(198,186,224,0.36), rgba(184,203,228,0.3))",
   },
-  storyStepIndex: {
-    color: tokens.colorBrandForeground1,
-    fontWeight: tokens.fontWeightBold,
-  },
-  storyStepText: {
-    margin: 0,
-    color: tokens.colorNeutralForeground2,
-    fontSize: tokens.fontSizeBase200,
-  },
-  storyVisual: {
-    display: "grid",
-    gridTemplateRows: "1fr auto",
-    minHeight: "560px",
-    backgroundColor: "var(--imageSurface)",
-    ...shorthands.borderLeft("1px", "solid", tokens.colorNeutralStroke2),
-    "@media (max-width: 920px)": {
-      minHeight: "420px",
-      ...shorthands.borderLeft("0", "solid", "transparent"),
-      ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
-    },
-  },
-  storyImage: {
+  heroArtImage: {
+    position: "relative",
+    zIndex: 1,
     width: "100%",
     height: "100%",
-    minHeight: 0,
+    minHeight: "620px",
     display: "block",
     objectFit: "cover",
     objectPosition: "center",
-    filter: "saturate(0.94) contrast(0.98)",
+    filter: "saturate(0.95) contrast(0.98)",
+    mixBlendMode: "normal",
+    "@media (max-width: 980px)": {
+      minHeight: "480px",
+    },
+    "@media (max-width: 520px)": {
+      minHeight: "360px",
+    },
   },
-  storyCaption: {
+  partGrid: {
+    gridColumn: "1 / -1",
+    display: "grid",
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: "16px",
+    marginTop: "clamp(24px, 4vw, 44px)",
+    "@media (max-width: 900px)": {
+      gridTemplateColumns: "1fr",
+    },
+  },
+  partCard: {
+    minHeight: "128px",
+    display: "grid",
+    gridTemplateColumns: "52px minmax(0, 1fr) 24px",
+    alignItems: "center",
+    gap: "18px",
+    padding: "22px",
+    borderRadius: "22px",
+    color: tokens.colorNeutralForeground1,
+    backgroundColor: "var(--partSurface)",
+    textDecorationLine: "none",
+    boxShadow: tokens.shadow8,
+    ...shorthands.border("1px", "solid", "var(--partStroke)"),
+    transitionDuration: tokens.durationNormal,
+    transitionProperty: "transform, box-shadow, border-color",
+    transitionTimingFunction: tokens.curveEasyEase,
+    ":hover": {
+      transform: "translateY(-3px)",
+      boxShadow: tokens.shadow16,
+      ...shorthands.borderColor("#c6bae0"),
+    },
+  },
+  partIcon: {
+    width: "52px",
+    height: "52px",
+    display: "grid",
+    placeItems: "center",
+    borderRadius: "14px",
+    backgroundColor: tokens.colorBrandBackground2,
+    color: tokens.colorBrandForeground1,
+  },
+  partText: {
+    minWidth: 0,
     display: "grid",
     gap: "4px",
-    padding: "18px",
-    backgroundColor: tokens.colorNeutralBackground1,
-    ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
+  },
+  partCopy: {
+    color: tokens.colorNeutralForeground2,
   },
   section: {
     scrollMarginTop: "0px",
-    padding: "clamp(44px, 5vw, 64px) clamp(20px, 5vw, 72px)",
+    padding: "clamp(56px, 7vw, 88px) clamp(20px, 5vw, 72px)",
   },
   sectionMuted: {
     backgroundColor: tokens.colorNeutralBackground2,
@@ -389,124 +428,124 @@ const useStyles = makeStyles({
     maxWidth: "62ch",
     color: tokens.colorNeutralForeground2,
   },
-  chartsBoard: {
-    display: "grid",
-    gridTemplateColumns: "minmax(0, 1fr) 332px",
-    gap: "12px",
-    padding: "12px",
-    borderRadius: "8px",
-    backgroundColor: tokens.colorNeutralBackground1,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-    boxShadow: tokens.shadow8,
-    "@media (max-width: 860px)": {
-      gridTemplateColumns: "1fr",
-    },
-  },
-  galleryViewport: {
-    display: "grid",
-    gridTemplateRows: "minmax(0, 1fr) auto",
-    minHeight: "548px",
+  albumShell: {
     overflow: "hidden",
-    borderRadius: "8px",
-    backgroundColor: "var(--imageSurface)",
+    borderRadius: "28px",
+    backgroundColor: "var(--albumSurface)",
+    boxShadow: tokens.shadow8,
     ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-    "@media (max-width: 620px)": {
-      minHeight: "440px",
+    "@media (max-width: 560px)": {
+      borderRadius: "22px",
     },
   },
-  galleryImage: {
+  albumViewport: {
+    position: "relative",
+    height: "560px",
+    overflow: "hidden",
+    backgroundColor: "var(--albumViewport)",
+    "@media (max-width: 760px)": {
+      height: "500px",
+    },
+    "@media (max-width: 520px)": {
+      height: "430px",
+    },
+  },
+  albumCard: {
+    position: "absolute",
+    top: "34px",
+    left: "50%",
+    zIndex: "var(--albumZ)",
+    width: "clamp(260px, 34vw, 410px)",
+    height: "calc(100% - 68px)",
+    overflow: "hidden",
+    borderRadius: "28px",
+    color: "#fff",
+    backgroundColor: "var(--imageSurface)",
+    boxShadow: "0 24px 52px rgba(47, 37, 70, 0.2)",
+    transform:
+      "translateX(calc(-50% + var(--albumOffset))) scale(var(--albumScale)) rotate(var(--albumRotate))",
+    opacity: "var(--albumOpacity)",
+    transitionDuration: "560ms",
+    transitionProperty: "transform, opacity, box-shadow",
+    transitionTimingFunction: "cubic-bezier(.2, .8, .2, 1)",
+    ...shorthands.border("0", "solid", "transparent"),
+    cursor: "pointer",
+    "@media (max-width: 520px)": {
+      width: "min(72vw, 286px)",
+      borderRadius: "24px",
+    },
+    "@media (prefers-reduced-motion: reduce)": {
+      transitionDuration: "1ms",
+    },
+  },
+  albumCardActive: {
+    boxShadow: "0 34px 80px rgba(47, 37, 70, 0.28)",
+  },
+  albumImage: {
     width: "100%",
     height: "100%",
-    minHeight: 0,
     display: "block",
     objectFit: "cover",
     objectPosition: "center",
   },
-  galleryCaption: {
+  albumOverlay: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    left: 0,
     display: "grid",
-    gridTemplateColumns: "1fr auto",
-    gap: "18px",
-    alignItems: "end",
-    padding: "20px",
-    backgroundColor: tokens.colorNeutralBackground1,
-    ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
-    "@media (max-width: 620px)": {
-      gridTemplateColumns: "1fr",
-    },
-  },
-  galleryCaptionText: {
-    margin: 0,
-    color: tokens.colorNeutralForeground2,
-    lineHeight: tokens.lineHeightBase400,
-  },
-  galleryTitle: {
-    display: "block",
-    marginTop: "6px",
-    marginBottom: "8px",
-  },
-  drawerList: {
-    display: "grid",
-    gridAutoRows: "1fr",
-    gap: "8px",
-    minHeight: 0,
-    "@media (max-width: 860px)": {
-      gridTemplateColumns: "repeat(3, minmax(244px, 1fr))",
-      overflowX: "auto",
-      paddingBottom: "2px",
-    },
-  },
-  drawerButton: {
-    width: "100%",
-    minHeight: "176px",
-    display: "grid",
-    gridTemplateColumns: "96px minmax(0, 1fr)",
-    alignItems: "stretch",
-    gap: "12px",
-    padding: "10px",
-    borderRadius: "8px",
-    color: tokens.colorNeutralForeground1,
-    backgroundColor: tokens.colorNeutralBackground1,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-    cursor: "pointer",
-    textAlign: "left",
-    transitionDuration: tokens.durationNormal,
-    transitionProperty: "background-color, border-color, transform",
-    transitionTimingFunction: tokens.curveEasyEase,
-    ":hover": {
-      ...shorthands.borderColor(tokens.colorBrandStroke1),
-    },
-    "@media (max-width: 860px)": {
-      minHeight: "148px",
-    },
-  },
-  drawerButtonActive: {
-    backgroundColor: "var(--drawerActive)",
-    ...shorthands.borderColor("#c6bae0"),
-  },
-  drawerThumb: {
-    width: "96px",
-    height: "100%",
-    display: "block",
-    objectFit: "cover",
-    borderRadius: "8px",
-    backgroundColor: "var(--imageSurface)",
-  },
-  drawerText: {
-    minWidth: 0,
-    display: "grid",
-    alignContent: "center",
     gap: "6px",
+    padding: "20px",
+    background: "linear-gradient(180deg, transparent, rgba(31, 24, 48, 0.78))",
   },
-  drawerMeta: {
-    color: tokens.colorBrandForeground1,
+  albumMeta: {
+    color: "rgba(255,255,255,0.82)",
     fontSize: tokens.fontSizeBase200,
     fontWeight: tokens.fontWeightBold,
     textTransform: "uppercase",
   },
-  drawerCopy: {
-    color: tokens.colorNeutralForeground2,
-    fontSize: tokens.fontSizeBase200,
-    lineHeight: tokens.lineHeightBase300,
+  albumPanel: {
+    display: "grid",
+    gridTemplateColumns: "minmax(0, 1fr) auto",
+    gap: "22px",
+    alignItems: "center",
+    padding: "22px",
+    backgroundColor: tokens.colorNeutralBackground1,
+    ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
+    "@media (max-width: 720px)": {
+      gridTemplateColumns: "1fr",
+    },
+  },
+  albumCaption: {
+    display: "grid",
+    gap: "6px",
+  },
+  albumControls: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "end",
+    gap: "8px",
+    flexWrap: "wrap",
+  },
+  albumDots: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "6px",
+    paddingRight: "8px",
+    paddingLeft: "8px",
+  },
+  albumDot: {
+    width: "8px",
+    height: "8px",
+    borderRadius: "999px",
+    backgroundColor: tokens.colorNeutralStroke1,
+    transitionDuration: tokens.durationNormal,
+    transitionProperty: "width, background-color",
+    transitionTimingFunction: tokens.curveEasyEase,
+  },
+  albumDotActive: {
+    width: "24px",
+    backgroundColor: "#c6bae0",
   },
   blogGrid: {
     display: "grid",
@@ -613,11 +652,11 @@ const charts = [
   {
     id: "collage",
     title: "四格拼貼",
-    meta: "Archive drawer",
+    meta: "Character index",
     image: characterCollage,
     alt: "璃音多張處理後插圖組成的四格拼貼",
-    summary: "多張素材先收進同一入口，適合作為角色檔案總覽。",
-    detail: "四格拼貼負責建立角色檔案的第一層：表情、姿態、日常片段與後續補檔線索先被收束在一起。",
+    summary: "多張素材先收進同一入口，作為角色檔案總覽。",
+    detail: "拼貼負責建立角色檔案的第一層：表情、姿態、日常片段與後續補檔線索先被收束在一起。",
   },
   {
     id: "portrait",
@@ -626,7 +665,7 @@ const charts = [
     image: characterPortrait,
     alt: "璃音的處理後肖像圖",
     summary: "紫髮、淺色服裝和柔和表情是最穩定的角色識別點。",
-    detail: "肖像圖負責承擔身份錨點，是檔案抽屜中的主要圖件。",
+    detail: "肖像圖承擔身份錨點，是檔案中最適合放在角色資料頁的主要圖件。",
   },
   {
     id: "scene",
@@ -636,6 +675,27 @@ const charts = [
     alt: "璃音站在淡藍紫色場景中的處理後插圖",
     summary: "淡藍背景、低飽和紫和留白共同形成安靜、柔光的敘事空間。",
     detail: "場景圖承接首頁的故事感，讓角色資料像章節一樣逐步展開。",
+  },
+] as const;
+
+const parts = [
+  {
+    id: "charts",
+    title: "Charts",
+    copy: "整理角色圖件與立繪。",
+    icon: <PanelRightGallery24Regular />,
+  },
+  {
+    id: "blog",
+    title: "Blog",
+    copy: "保存設定札記與創作紀錄。",
+    icon: <BookOpen24Regular />,
+  },
+  {
+    id: "regulation",
+    title: "Regulation",
+    copy: "查看使用聲明與來源資訊。",
+    icon: <GlobeShield24Regular />,
   },
 ] as const;
 
@@ -653,8 +713,8 @@ const posts = [
     date: "28 May",
     readTime: "2 min read",
     image: characterCollage,
-    title: "拼貼圖件的歸檔方式",
-    excerpt: "同一角色的多張圖件被放進同一組索引，方便之後補充表情、姿態與日常片段。",
+    title: "三張圖件如何構成璃音的資料線",
+    excerpt: "拼貼、肖像與場景被安排成連續索引，讓角色印象從總覽延伸到細節。",
   },
   {
     category: "角色觀察",
@@ -688,7 +748,8 @@ export function App() {
   const navigationLockUntil = useRef(0);
 
   const theme = mode === "dark" ? darkTheme : lightTheme;
-  const selectedChartItem = charts.find((item) => item.id === selectedChart) ?? charts[0];
+  const selectedChartIndex = charts.findIndex((item) => item.id === selectedChart);
+  const selectedChartItem = charts[selectedChartIndex] ?? charts[0];
 
   useEffect(() => {
     const sectionIds = ["hero", "charts", "blog", "regulation"];
@@ -739,6 +800,25 @@ export function App() {
     setActiveSection(section);
   };
 
+  const selectPreviousChart = () => {
+    setSelectedChart(charts[(selectedChartIndex - 1 + charts.length) % charts.length].id);
+  };
+
+  const selectNextChart = () => {
+    setSelectedChart(charts[(selectedChartIndex + 1) % charts.length].id);
+  };
+
+  const getAlbumPosition = (index: number) => {
+    let position = index - selectedChartIndex;
+    if (position > charts.length / 2) {
+      position -= charts.length;
+    }
+    if (position < -charts.length / 2) {
+      position += charts.length;
+    }
+    return position;
+  };
+
   const sharePage = async () => {
     const sharePayload = {
       title: "VK Character Log",
@@ -776,11 +856,14 @@ export function App() {
       className={styles.shell}
       style={
         {
-          "--heroBase": mode === "dark" ? "#181523" : "#e8def5",
-          "--heroDiamond": mode === "dark" ? "rgba(198, 186, 224, 0.06)" : "rgba(255, 255, 255, 0.24)",
-          "--storySurface": mode === "dark" ? "rgba(30, 26, 43, 0.82)" : "rgba(255, 255, 255, 0.72)",
-          "--storyStroke": mode === "dark" ? "rgba(222, 213, 239, 0.22)" : "rgba(255, 255, 255, 0.78)",
-          "--drawerActive": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(198, 186, 224, 0.24)",
+          "--heroBase": mode === "dark" ? "#181523" : "#f5effa",
+          "--heroDiamond": mode === "dark" ? "rgba(198, 186, 224, 0.06)" : "rgba(198, 186, 224, 0.18)",
+          "--heroGlow": mode === "dark" ? "rgba(198, 186, 224, 0.14)" : "rgba(184, 203, 228, 0.46)",
+          "--stageSurface": mode === "dark" ? "rgba(30, 26, 43, 0.74)" : "rgba(255, 255, 255, 0.5)",
+          "--partSurface": mode === "dark" ? "rgba(31, 27, 43, 0.92)" : "rgba(255, 255, 255, 0.9)",
+          "--partStroke": mode === "dark" ? "rgba(222, 213, 239, 0.18)" : "rgba(255, 255, 255, 0.82)",
+          "--albumSurface": mode === "dark" ? "#1d1828" : "#fffaff",
+          "--albumViewport": mode === "dark" ? "#17121f" : "#f6effb",
           "--imageSurface": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(232, 222, 245, 0.58)",
           "--colorNeutralBackground1": theme.colorNeutralBackground1,
         } as CSSProperties
@@ -843,35 +926,21 @@ export function App() {
 
       <main>
         <section className={styles.hero} id="hero" aria-labelledby="hero-title">
-          <div className={styles.storySpread}>
-            <div className={styles.storyCopy}>
+          <div className={styles.heroInner}>
+            <div className={styles.heroCopy}>
               <div>
                 <Text as="p" className={styles.eyebrow}>
-                  Story archive / Original character
+                  Original character archive
                 </Text>
                 <h1 id="hero-title" className={styles.heroTitle}>
-                  璃音的檔案
+                  璃音
                   <br />
-                  從一張便箋展開
+                  Character Log
                 </h1>
               </div>
               <Text as="p" className={styles.heroLead}>
-                璃音的部落格像一只被打開的素材抽屜：第一層是柔光場景，第二層是圖件索引，第三層是每次整理背後的札記。
+                以淡紫、冰藍和柔光場景作為入口，收納璃音的角色圖件、創作札記與使用聲明。
               </Text>
-              <div className={styles.storySteps} aria-label="閱讀動線">
-                <article className={styles.storyStep}>
-                  <span className={styles.storyStepIndex}>01</span>
-                  <p className={styles.storyStepText}>場景先建立角色的第一印象。</p>
-                </article>
-                <article className={styles.storyStep}>
-                  <span className={styles.storyStepIndex}>02</span>
-                  <p className={styles.storyStepText}>圖件再整理成可比較資料。</p>
-                </article>
-                <article className={styles.storyStep}>
-                  <span className={styles.storyStepIndex}>03</span>
-                  <p className={styles.storyStepText}>貼文記錄設定補完和創作過程。</p>
-                </article>
-              </div>
               <div className={styles.heroActions}>
                 <Button
                   as="a"
@@ -894,13 +963,32 @@ export function App() {
               </div>
             </div>
 
-            <aside className={styles.storyVisual} aria-label="璃音故事封面">
-              <img className={styles.storyImage} src={characterScene} alt="璃音在淡藍紫色場景中的處理後插圖" />
-              <div className={styles.storyCaption}>
-                <Text weight="semibold">Scene / Pastel memory</Text>
-                <Text className={styles.cardCopy}>淡紫、冰藍、白色服裝和柔光背景共同形成首頁的故事入口。</Text>
-              </div>
+            <aside className={styles.heroArtStage} aria-label="璃音首頁立繪舞台">
+              <div className={styles.heroArtBackdrop} aria-hidden="true" />
+              <img className={styles.heroArtImage} src={characterScene} alt="璃音的淡藍紫色場景插圖" />
             </aside>
+
+            <div className={styles.partGrid} aria-label="特色頁面入口">
+              {parts.map((part) => (
+                <a
+                  className={styles.partCard}
+                  href={`#${part.id}`}
+                  key={part.id}
+                  onClick={() => navigateToSection(part.id)}
+                >
+                  <span className={styles.partIcon} aria-hidden="true">
+                    {part.icon}
+                  </span>
+                  <span className={styles.partText}>
+                    <Title3 as="span">{part.title}</Title3>
+                    <Text as="span" className={styles.partCopy}>
+                      {part.copy}
+                    </Text>
+                  </span>
+                  <Open24Regular aria-hidden="true" />
+                </a>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -917,54 +1005,79 @@ export function App() {
                   </Title1>
                 </div>
                 <Text as="p" className={styles.headingCopy}>
-                  璃音的圖件被整理成三個入口：拼貼、肖像、場景。每一格都對應一段補檔線索。
+                  璃音的圖件被放進同一條圖冊軌道：拼貼、肖像與場景會依序成為主位，保留前後素材的連續感。
                 </Text>
               </div>
-              <Badge appearance="tint">3 files</Badge>
+              <Badge appearance="tint">{charts.length} 件圖件</Badge>
             </div>
 
-            <div className={styles.chartsBoard}>
-              <div className={styles.galleryViewport} aria-live="polite">
-                <img className={styles.galleryImage} src={selectedChartItem.image} alt={selectedChartItem.alt} />
-                <div className={styles.galleryCaption}>
-                  <div>
-                    <Text as="p" className={styles.eyebrow}>
-                      {selectedChartItem.meta}
-                    </Text>
-                    <Title2 as="h3" className={styles.galleryTitle}>
-                      {selectedChartItem.title}
-                    </Title2>
-                    <Text as="p" className={styles.galleryCaptionText}>
-                      {selectedChartItem.detail}
-                    </Text>
-                  </div>
-                  <Button as="a" href="#blog" appearance="secondary" icon={<BookOpen24Regular />} onClick={() => navigateToSection("blog")}>
-                    看相關貼文
-                  </Button>
-                </div>
-              </div>
-
-              <div className={styles.drawerList} aria-label="Charts gallery drawers">
-                {charts.map((item) => {
-                  const isSelected = selectedChart === item.id;
+            <div className={styles.albumShell}>
+              <div className={styles.albumViewport} aria-live="polite">
+                {charts.map((item, index) => {
+                  const position = getAlbumPosition(index);
+                  const distance = Math.abs(position);
+                  const isActive = selectedChart === item.id;
 
                   return (
                     <button
                       key={item.id}
-                      className={`${styles.drawerButton} ${isSelected ? styles.drawerButtonActive : ""}`}
+                      className={`${styles.albumCard} ${isActive ? styles.albumCardActive : ""}`}
+                      style={
+                        {
+                          "--albumOffset": `${position * 72}%`,
+                          "--albumScale": distance === 0 ? 1 : 0.9,
+                          "--albumOpacity": distance === 0 ? 1 : 0.72,
+                          "--albumRotate": `${position * -2}deg`,
+                          "--albumZ": 10 - distance,
+                        } as CSSProperties
+                      }
                       type="button"
                       onClick={() => setSelectedChart(item.id)}
-                      aria-pressed={isSelected}
+                      aria-pressed={isActive}
+                      aria-label={`查看 ${item.title}`}
                     >
-                      <img className={styles.drawerThumb} src={item.image} alt="" aria-hidden="true" />
-                      <span className={styles.drawerText}>
-                        <span className={styles.drawerMeta}>{item.meta}</span>
-                        <Text weight="semibold">{item.title}</Text>
-                        <span className={styles.drawerCopy}>{item.summary}</span>
+                      <img className={styles.albumImage} src={item.image} alt="" />
+                      <span className={styles.albumOverlay}>
+                        <span className={styles.albumMeta}>{item.meta}</span>
+                        <Title3 as="span">{item.title}</Title3>
                       </span>
                     </button>
                   );
                 })}
+              </div>
+
+              <div className={styles.albumPanel}>
+                <div className={styles.albumCaption}>
+                  <Text as="p" className={styles.eyebrow}>
+                    {selectedChartItem.meta}
+                  </Text>
+                  <Title2 as="h3">{selectedChartItem.title}</Title2>
+                  <Text as="p" className={styles.cardCopy}>
+                    {selectedChartItem.detail}
+                  </Text>
+                </div>
+                <div className={styles.albumControls} aria-label="圖冊控制">
+                  <Button
+                    appearance="secondary"
+                    icon={<ChevronLeft24Regular />}
+                    onClick={selectPreviousChart}
+                    aria-label="上一張"
+                  />
+                  <span className={styles.albumDots} aria-hidden="true">
+                    {charts.map((item) => (
+                      <span
+                        key={item.id}
+                        className={`${styles.albumDot} ${selectedChart === item.id ? styles.albumDotActive : ""}`}
+                      />
+                    ))}
+                  </span>
+                  <Button
+                    appearance="secondary"
+                    icon={<ChevronRight24Regular />}
+                    onClick={selectNextChart}
+                    aria-label="下一張"
+                  />
+                </div>
               </div>
             </div>
           </div>

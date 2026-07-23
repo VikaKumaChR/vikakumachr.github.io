@@ -6,3 +6,4 @@ vite.config.d.ts
 .DS_Store
 Thumbs.db
 desktop.ini
+.codex-video-frames/
