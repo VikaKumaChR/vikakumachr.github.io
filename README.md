@@ -1,14 +1,10 @@
 # VkC's blog 
 ## 本地运行
 
-```bash
-npm install
-npm run dev
+```個人部落格
+無需部署......
 ```
 
 ## 构建
 
-```bash
-npm run build
-```
 
