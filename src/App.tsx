@@ -29,7 +29,6 @@ import {
   ChevronRight24Regular,
   DocumentBulletList24Regular,
   GlobeShield24Regular,
-  Open24Regular,
   PanelRightGallery24Regular,
   Person24Regular,
   Share24Regular,
@@ -41,6 +40,7 @@ import characterPortrait from "../Image/Snipaste_2026-07-23_16-22-56.png";
 import characterScene from "../Image/Snipaste_2026-07-23_16-23-18.png";
 import heroFigurePlaceholder from "../Image/hero-figure-placeholder.png";
 
+// 首頁半身立繪替換入口：把上方 import 指向你的透明 PNG，再讓 heroFigure 使用它。
 const heroFigure = heroFigurePlaceholder;
 
 const brandRamp: BrandVariants = {
@@ -87,6 +87,7 @@ const darkTheme: Theme = {
 const useStyles = makeStyles({
   shell: {
     minHeight: "100vh",
+    overflowX: "hidden",
     backgroundColor: tokens.colorNeutralBackground1,
     color: tokens.colorNeutralForeground1,
   },
@@ -425,18 +426,23 @@ const useStyles = makeStyles({
   },
   partGrid: {
     gridColumn: "1 / -1",
+    position: "relative",
+    zIndex: 4,
     display: "grid",
     gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
     gap: "14px",
-    marginTop: "clamp(18px, 3vh, 28px)",
+    marginTop: "clamp(-112px, -9vh, -72px)",
+    paddingTop: "clamp(14px, 2vh, 22px)",
     "@media (max-width: 900px)": {
       gridTemplateColumns: "1fr",
+      marginTop: "28px",
+      paddingTop: 0,
     },
   },
   partCard: {
     minHeight: "106px",
     display: "grid",
-    gridTemplateColumns: "52px minmax(0, 1fr) 24px",
+    gridTemplateColumns: "52px minmax(0, 1fr)",
     alignItems: "center",
     gap: "18px",
     padding: "18px",
@@ -769,7 +775,7 @@ const charts = [
   {
     id: "collage",
     title: "四格拼貼",
-    meta: "Character index",
+    meta: "角色索引",
     image: characterCollage,
     alt: "璃音多張處理後插圖組成的四格拼貼",
     summary: "多張素材先收進同一入口，作為角色檔案總覽。",
@@ -778,7 +784,7 @@ const charts = [
   {
     id: "portrait",
     title: "肖像立繪",
-    meta: "Identity",
+    meta: "身份識別",
     image: characterPortrait,
     alt: "璃音的處理後肖像圖",
     summary: "紫髮、淺色服裝和柔和表情是最穩定的角色識別點。",
@@ -787,7 +793,7 @@ const charts = [
   {
     id: "scene",
     title: "場景氣質",
-    meta: "World tone",
+    meta: "世界氣質",
     image: characterScene,
     alt: "璃音站在淡藍紫色場景中的處理後插圖",
     summary: "淡藍背景、低飽和紫和留白共同形成安靜、柔光的敘事空間。",
@@ -798,19 +804,19 @@ const charts = [
 const parts = [
   {
     id: "charts",
-    title: "Charts",
+    title: "圖件整理",
     copy: "整理角色圖件與立繪。",
     icon: <PanelRightGallery24Regular />,
   },
   {
     id: "blog",
-    title: "Blog",
+    title: "創作札記",
     copy: "保存設定札記與創作紀錄。",
     icon: <BookOpen24Regular />,
   },
   {
     id: "regulation",
-    title: "Regulation",
+    title: "使用聲明",
     copy: "查看使用聲明與來源資訊。",
     icon: <GlobeShield24Regular />,
   },
@@ -945,7 +951,7 @@ export function App() {
 
   const sharePage = async () => {
     const sharePayload = {
-      title: "VK Character Log",
+      title: "璃音 Character Log",
       text: "璃音原創角色部落格",
       url: window.location.href,
     };
@@ -968,10 +974,10 @@ export function App() {
   };
 
   const navItems = [
-    { id: "hero", label: "Hero" },
-    { id: "charts", label: "Charts" },
-    { id: "blog", label: "Blog" },
-    { id: "regulation", label: "Regulation" },
+    { id: "hero", label: "首頁" },
+    { id: "charts", label: "圖件" },
+    { id: "blog", label: "札記" },
+    { id: "regulation", label: "聲明" },
   ] as const;
 
   return (
@@ -995,12 +1001,12 @@ export function App() {
         } as CSSProperties
       }
     >
-      <header className={styles.header} aria-label="站點導覽">
-        <Link className={styles.brand} href="#hero" appearance="subtle" aria-label="回到 Hero">
+      <header className={styles.header} aria-label="部落格導覽">
+        <Link className={styles.brand} href="#hero" appearance="subtle" aria-label="回到首頁">
           <span className={styles.brandMark}>VK</span>
           <span className={styles.brandCopy}>
             <span className={styles.brandName}>VikaKumaChR</span>
-            <span className={styles.brandMeta}>Character Blog</span>
+            <span className={styles.brandMeta}>角色部落格</span>
           </span>
         </Link>
 
@@ -1075,7 +1081,7 @@ export function App() {
                   icon={<PanelRightGallery24Regular />}
                   onClick={() => navigateToSection("charts")}
                 >
-                  查看 Charts
+                  查看圖件
                 </Button>
                 <Button
                   as="a"
@@ -1084,7 +1090,7 @@ export function App() {
                   icon={<BookOpen24Regular />}
                   onClick={() => navigateToSection("blog")}
                 >
-                  閱讀 Blog
+                  閱讀札記
                 </Button>
               </div>
             </div>
@@ -1145,7 +1151,6 @@ export function App() {
                       {part.copy}
                     </Text>
                   </span>
-                  <Open24Regular aria-hidden="true" />
                 </a>
               ))}
             </div>
@@ -1161,7 +1166,7 @@ export function App() {
                     <PanelRightGallery24Regular />
                   </span>
                   <Title1 as="h2" id="charts-title">
-                    Charts
+                    圖件
                   </Title1>
                 </div>
                 <Text as="p" className={`${styles.headingCopy} ${styles.chartHeadingCopy}`}>
@@ -1254,7 +1259,7 @@ export function App() {
                     <BookOpen24Regular />
                   </span>
                   <Title1 as="h2" id="blog-title">
-                    Blog
+                    札記
                   </Title1>
                 </div>
                 <Text as="p" className={styles.headingCopy}>
@@ -1304,7 +1309,7 @@ export function App() {
                   <GlobeShield24Regular />
                 </span>
                 <Title1 as="h2" id="regulation-title">
-                  Regulation
+                  使用聲明
                 </Title1>
               </div>
               <Text as="p" className={styles.regulationLead}>
@@ -1330,9 +1335,9 @@ export function App() {
       </main>
 
       <footer className={styles.footer}>
-        <Text weight="semibold">VK Character Blog</Text>
+        <Text weight="semibold">璃音角色部落格</Text>
         <Button as="a" href="#hero" appearance="subtle" icon={<ArrowUp24Regular />}>
-          返回頂部
+          返回首頁
         </Button>
       </footer>
     </FluentProvider>
