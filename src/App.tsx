@@ -13,7 +13,6 @@ import {
   Title1,
   Title2,
   Title3,
-  Tooltip,
   createDarkTheme,
   createLightTheme,
   makeStyles,
@@ -311,11 +310,6 @@ const useStyles = makeStyles({
     fontSize: tokens.fontSizeBase500,
     lineHeight: tokens.lineHeightBase500,
   },
-  heroActions: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "10px",
-  },
   heroArtStage: {
     position: "relative",
     minHeight: "clamp(420px, 56vh, 610px)",
@@ -430,9 +424,9 @@ const useStyles = makeStyles({
     zIndex: 4,
     display: "grid",
     gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    gap: "14px",
+    gap: "18px",
     marginTop: "clamp(-112px, -9vh, -72px)",
-    paddingTop: "clamp(14px, 2vh, 22px)",
+    paddingTop: "clamp(12px, 2vh, 22px)",
     "@media (max-width: 900px)": {
       gridTemplateColumns: "1fr",
       marginTop: "28px",
@@ -440,37 +434,70 @@ const useStyles = makeStyles({
     },
   },
   partCard: {
-    minHeight: "106px",
+    position: "relative",
+    minHeight: "clamp(124px, 9vw, 150px)",
     display: "grid",
-    gridTemplateColumns: "52px minmax(0, 1fr)",
+    gridTemplateColumns: "64px minmax(0, 1fr)",
     alignItems: "center",
-    gap: "18px",
-    padding: "18px",
-    borderRadius: "8px",
+    gap: "22px",
+    overflow: "hidden",
+    padding: "24px 28px",
+    borderRadius: "24px",
     color: tokens.colorNeutralForeground1,
-    backgroundColor: "var(--partSurface)",
+    backgroundColor: "var(--partMicaBase)",
+    backgroundImage:
+      "radial-gradient(circle at 12% 8%, var(--partMicaHighlight) 0, transparent 34%), linear-gradient(135deg, var(--partMicaSheen) 0%, transparent 44%), linear-gradient(180deg, var(--partMicaTint), var(--partMicaBase))",
     textDecorationLine: "none",
-    boxShadow: tokens.shadow8,
+    boxShadow: "var(--partShadow)",
     ...shorthands.border("1px", "solid", "var(--partStroke)"),
+    backdropFilter: "blur(18px) saturate(1.08)",
     transitionDuration: tokens.durationNormal,
     transitionProperty: "transform, box-shadow, border-color",
     transitionTimingFunction: tokens.curveEasyEase,
+    ":before": {
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      pointerEvents: "none",
+      background:
+        "linear-gradient(180deg, rgba(255,255,255,0.34), transparent 42%), radial-gradient(circle at 92% 0%, rgba(198,186,224,0.2), transparent 30%)",
+      opacity: "var(--partMicaOverlayOpacity)",
+    },
     ":hover": {
-      transform: "translateY(-3px)",
-      boxShadow: tokens.shadow16,
+      transform: "translateY(-4px)",
+      boxShadow: "var(--partShadowHover)",
       ...shorthands.borderColor("#c6bae0"),
+    },
+    ":active": {
+      transform: "translateY(-1px)",
+    },
+    "@media (max-width: 520px)": {
+      minHeight: "112px",
+      gridTemplateColumns: "56px minmax(0, 1fr)",
+      gap: "16px",
+      padding: "20px",
+      borderRadius: "20px",
     },
   },
   partIcon: {
-    width: "52px",
-    height: "52px",
+    position: "relative",
+    zIndex: 1,
+    width: "64px",
+    height: "64px",
     display: "grid",
     placeItems: "center",
-    borderRadius: "14px",
-    backgroundColor: tokens.colorBrandBackground2,
+    borderRadius: "16px",
+    backgroundColor: "var(--partIconSurface)",
     color: tokens.colorBrandForeground1,
+    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.52)",
+    "@media (max-width: 520px)": {
+      width: "56px",
+      height: "56px",
+    },
   },
   partText: {
+    position: "relative",
+    zIndex: 1,
     minWidth: 0,
     display: "grid",
     gap: "4px",
@@ -868,11 +895,27 @@ export function App() {
   const [activeSection, setActiveSection] = useState("hero");
   const [selectedChart, setSelectedChart] = useState<(typeof charts)[number]["id"]>("collage");
   const [shareHint, setShareHint] = useState("分享此頁");
+  const [themeSettling, setThemeSettling] = useState(false);
   const navigationLockUntil = useRef(0);
+  const themeSettleTimer = useRef<number | null>(null);
 
   const theme = mode === "dark" ? darkTheme : lightTheme;
   const selectedChartIndex = charts.findIndex((item) => item.id === selectedChart);
   const selectedChartItem = charts[selectedChartIndex] ?? charts[0];
+
+  useEffect(() => {
+    document.documentElement.style.colorScheme = mode;
+    document.documentElement.dataset.theme = mode;
+    document.body.style.backgroundColor = theme.colorNeutralBackground1;
+  }, [mode, theme.colorNeutralBackground1]);
+
+  useEffect(() => {
+    return () => {
+      if (themeSettleTimer.current !== null) {
+        window.clearTimeout(themeSettleTimer.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const sectionIds = ["hero", "charts", "blog", "regulation"];
@@ -921,8 +964,16 @@ export function App() {
 
   const toggleTheme = () => {
     const nextMode = mode === "dark" ? "light" : "dark";
+    if (themeSettleTimer.current !== null) {
+      window.clearTimeout(themeSettleTimer.current);
+    }
+    setThemeSettling(true);
     setMode(nextMode);
     localStorage.setItem("theme", nextMode);
+    themeSettleTimer.current = window.setTimeout(() => {
+      setThemeSettling(false);
+      themeSettleTimer.current = null;
+    }, 260);
   };
 
   const navigateToSection = (section: string) => {
@@ -983,9 +1034,10 @@ export function App() {
   return (
     <FluentProvider
       theme={theme}
-      className={styles.shell}
+      className={`${styles.shell} ${themeSettling ? "theme-settling" : ""}`}
       style={
         {
+          colorScheme: mode,
           "--heroBase": mode === "dark" ? "#15131d" : "#fbf9fd",
           "--heroPaper": mode === "dark" ? "#1d1828" : "#f6f1fa",
           "--heroCoolGlow": mode === "dark" ? "rgba(129, 159, 186, 0.16)" : "rgba(184, 203, 228, 0.42)",
@@ -993,8 +1045,15 @@ export function App() {
           "--heroLine": mode === "dark" ? "rgba(222, 213, 239, 0.14)" : "rgba(113, 101, 144, 0.16)",
           "--figureLight": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(255, 255, 255, 0.78)",
           "--figureShadow": mode === "dark" ? "rgba(6, 4, 12, 0.56)" : "rgba(101, 86, 138, 0.2)",
-          "--partSurface": mode === "dark" ? "rgba(31, 27, 43, 0.92)" : "rgba(255, 255, 255, 0.9)",
-          "--partStroke": mode === "dark" ? "rgba(222, 213, 239, 0.18)" : "rgba(255, 255, 255, 0.82)",
+          "--partMicaBase": mode === "dark" ? "#211d2b" : "#ffffff",
+          "--partMicaTint": mode === "dark" ? "rgba(198, 186, 224, 0.07)" : "rgba(247, 244, 252, 0.96)",
+          "--partMicaSheen": mode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.92)",
+          "--partMicaHighlight": mode === "dark" ? "rgba(198, 186, 224, 0.14)" : "rgba(230, 223, 246, 0.82)",
+          "--partMicaOverlayOpacity": mode === "dark" ? 0.18 : 0.64,
+          "--partIconSurface": mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(244, 242, 247, 0.92)",
+          "--partStroke": mode === "dark" ? "rgba(222, 213, 239, 0.22)" : "rgba(58, 48, 75, 0.12)",
+          "--partShadow": mode === "dark" ? "0 22px 54px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.08)" : "0 18px 42px rgba(47,37,70,0.14), 0 2px 8px rgba(47,37,70,0.08), inset 0 1px 0 rgba(255,255,255,0.88)",
+          "--partShadowHover": mode === "dark" ? "0 30px 72px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.1)" : "0 28px 62px rgba(47,37,70,0.18), 0 4px 14px rgba(47,37,70,0.1), inset 0 1px 0 rgba(255,255,255,0.92)",
           "--albumGlow": mode === "dark" ? "rgba(198, 186, 224, 0.14)" : "rgba(198, 186, 224, 0.26)",
           "--imageSurface": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(232, 222, 245, 0.58)",
           "--colorNeutralBackground1": theme.colorNeutralBackground1,
@@ -1034,25 +1093,23 @@ export function App() {
         </nav>
 
         <div className={styles.headerActions} aria-label="頁面操作">
-          <Tooltip content={shareHint} relationship="label">
-            <Button
-              className={styles.actionButton}
-              appearance="subtle"
-              icon={<Share24Regular />}
-              onClick={sharePage}
-              aria-label={shareHint}
-            />
-          </Tooltip>
-          <Tooltip content={mode === "dark" ? "切換到亮色" : "切換到暗色"} relationship="label">
-            <Button
-              className={`${styles.actionButton} ${styles.themeButton}`}
-              appearance="subtle"
-              icon={mode === "dark" ? <WeatherSunny24Regular /> : <WeatherMoon24Regular />}
-              onClick={toggleTheme}
-              aria-pressed={mode === "dark"}
-              aria-label={mode === "dark" ? "切換到亮色" : "切換到暗色"}
-            />
-          </Tooltip>
+          <Button
+            className={styles.actionButton}
+            appearance="subtle"
+            icon={<Share24Regular />}
+            onClick={sharePage}
+            title={shareHint}
+            aria-label={shareHint}
+          />
+          <Button
+            className={`${styles.actionButton} ${styles.themeButton}`}
+            appearance="subtle"
+            icon={mode === "dark" ? <WeatherSunny24Regular /> : <WeatherMoon24Regular />}
+            onClick={toggleTheme}
+            title={mode === "dark" ? "切換到亮色" : "切換到暗色"}
+            aria-pressed={mode === "dark"}
+            aria-label={mode === "dark" ? "切換到亮色" : "切換到暗色"}
+          />
         </div>
       </header>
 
@@ -1073,26 +1130,6 @@ export function App() {
               <Text as="p" className={styles.heroLead}>
                 以淡紫、冰藍和柔光場景作為入口，收納璃音的角色圖件、創作札記與使用聲明。
               </Text>
-              <div className={styles.heroActions}>
-                <Button
-                  as="a"
-                  href="#charts"
-                  appearance="primary"
-                  icon={<PanelRightGallery24Regular />}
-                  onClick={() => navigateToSection("charts")}
-                >
-                  查看圖件
-                </Button>
-                <Button
-                  as="a"
-                  href="#blog"
-                  appearance="secondary"
-                  icon={<BookOpen24Regular />}
-                  onClick={() => navigateToSection("blog")}
-                >
-                  閱讀札記
-                </Button>
-              </div>
             </div>
 
             <aside className={styles.heroArtStage} aria-label="璃音首頁立繪舞台">
