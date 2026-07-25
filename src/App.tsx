@@ -34,10 +34,10 @@ import {
   WeatherMoon24Regular,
   WeatherSunny24Regular,
 } from "@fluentui/react-icons";
-import characterCollage from "../Image/Snipaste_2026-07-23_16-09-13.png";
-import characterPortrait from "../Image/Snipaste_2026-07-23_16-22-56.png";
-import characterScene from "../Image/Snipaste_2026-07-23_16-23-18.png";
-import heroFigurePlaceholder from "../Image/Snipaste_2026-07-23_16-22-56.png";
+import characterCollage from "../Image/LifeFourCuts.png";
+import characterPortrait from "../Image/VikaKumaChR_Stand.png";
+import characterScene from "../Image/VikaKumaChR_Scene.png";
+import heroFigurePlaceholder from "../Image/VikaKumaChR_Stand.png";
 
 // 首頁半身立繪替換入口：把上方 import 指向你的透明 PNG，再讓 heroFigure 使用它。
 const heroFigure = heroFigurePlaceholder;
@@ -121,15 +121,22 @@ const useStyles = makeStyles({
     textDecorationLine: "none",
   },
   brandMark: {
-    width: "40px",
-    height: "40px",
+    width: "48px",
+    height: "48px",
     flexShrink: 0,
     display: "grid",
     placeItems: "center",
-    borderRadius: "8px",
-    backgroundColor: "#c6bae0",
-    color: "#211936",
+    overflow: "visible",
+    borderRadius: 0,
+    backgroundColor: "transparent",
+    color: tokens.colorBrandForeground1,
     fontWeight: tokens.fontWeightBold,
+  },
+  brandAvatar: {
+    width: "100%",
+    height: "100%",
+    display: "block",
+    objectFit: "contain",
   },
   brandCopy: {
     display: "grid",
@@ -575,7 +582,7 @@ const useStyles = makeStyles({
   },
   albumShell: {
     position: "relative",
-    width: "min(1120px, calc(100vw - 32px))",
+    width: "min(1440px, calc(100vw - 32px))",
     marginLeft: "50%",
     overflow: "visible",
     backgroundColor: "transparent",
@@ -584,52 +591,56 @@ const useStyles = makeStyles({
     ...shorthands.border("0", "solid", "transparent"),
   },
   albumViewport: {
-    position: "relative",
-    height: "452px",
-    overflow: "visible",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "clamp(12px, 1.8vw, 24px)",
+    minHeight: "clamp(382px, 42vw, 540px)",
+    overflowX: "auto",
+    overflowY: "visible",
+    padding: "34px clamp(12px, 2.2vw, 34px) 40px",
     backgroundColor: "transparent",
-    ":before": {
-      content: '""',
-      position: "absolute",
-      zIndex: 0,
-      top: "22%",
-      right: "7%",
-      bottom: "12%",
-      left: "7%",
-      borderRadius: "999px",
-      background: "radial-gradient(ellipse at center, var(--albumGlow) 0, transparent 70%)",
-      filter: "blur(20px)",
+    scrollPaddingInline: "clamp(12px, 2.2vw, 34px)",
+    scrollSnapType: "x mandatory",
+    scrollbarWidth: "none",
+    "::-webkit-scrollbar": {
+      display: "none",
     },
     "@media (max-width: 760px)": {
-      height: "460px",
+      justifyContent: "flex-start",
+      minHeight: "440px",
     },
     "@media (max-width: 520px)": {
-      height: "420px",
+      minHeight: "392px",
+      paddingTop: "24px",
+      paddingBottom: "30px",
     },
   },
   albumCard: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: "relative",
+    order: "var(--albumOrder)",
     zIndex: "var(--albumZ)",
-    width: "clamp(270px, 28vw, 360px)",
-    height: "clamp(318px, 31vw, 402px)",
+    flexGrow: 0,
+    flexShrink: 0,
+    flexBasis: "var(--albumBasis)",
+    height: "var(--albumHeight)",
+    scrollSnapAlign: "center",
     overflow: "hidden",
     borderRadius: "28px",
     color: "#fff",
     backgroundColor: "var(--imageSurface)",
-    boxShadow: "0 24px 52px rgba(47, 37, 70, 0.2)",
-    transform:
-      "translateX(calc(-50% + var(--albumOffset))) translateY(-50%) scale(var(--albumScale)) rotate(var(--albumRotate))",
+    boxShadow: "0 18px 42px rgba(47, 37, 70, 0.16)",
+    transform: "scale(var(--albumScale))",
+    transformOrigin: "center",
     opacity: "var(--albumOpacity)",
     transitionDuration: "560ms",
-    transitionProperty: "transform, opacity, box-shadow",
+    transitionProperty: "flex-basis, height, transform, opacity, box-shadow",
     transitionTimingFunction: "cubic-bezier(.2, .8, .2, 1)",
     ...shorthands.border("0", "solid", "transparent"),
     cursor: "pointer",
     "@media (max-width: 520px)": {
-      width: "min(72vw, 286px)",
-      height: "360px",
+      flexBasis: "var(--albumMobileBasis)",
+      height: "var(--albumMobileHeight)",
       borderRadius: "24px",
     },
     "@media (prefers-reduced-motion: reduce)": {
@@ -637,7 +648,7 @@ const useStyles = makeStyles({
     },
   },
   albumCardActive: {
-    boxShadow: "0 34px 80px rgba(47, 37, 70, 0.28)",
+    boxShadow: "0 24px 64px rgba(47, 37, 70, 0.22)",
   },
   albumImage: {
     width: "100%",
@@ -667,7 +678,7 @@ const useStyles = makeStyles({
     lineHeight: "1.12",
   },
   albumPanel: {
-    width: "min(1120px, calc(100vw - 48px))",
+    width: "min(1260px, calc(100vw - 48px))",
     marginRight: "auto",
     marginLeft: "auto",
     display: "grid",
@@ -914,6 +925,8 @@ export function App() {
   const [themeSettling, setThemeSettling] = useState(false);
   const navigationLockUntil = useRef(0);
   const themeSettleTimer = useRef<number | null>(null);
+  const albumViewportRef = useRef<HTMLDivElement | null>(null);
+  const activeAlbumCardRef = useRef<HTMLButtonElement | null>(null);
 
   const theme = mode === "dark" ? darkTheme : lightTheme;
   const selectedChartIndex = charts.findIndex((item) => item.id === selectedChart);
@@ -932,6 +945,24 @@ export function App() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const viewport = albumViewportRef.current;
+    const activeCard = activeAlbumCardRef.current;
+
+    if (!viewport || !activeCard) {
+      return;
+    }
+
+    const nextLeft = activeCard.offsetLeft - (viewport.clientWidth - activeCard.offsetWidth) / 2;
+    const maxLeft = viewport.scrollWidth - viewport.clientWidth;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    viewport.scrollTo({
+      left: Math.max(0, Math.min(nextLeft, maxLeft)),
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
+  }, [selectedChart]);
 
   useEffect(() => {
     const sectionIds = ["hero", "charts", "blog", "regulation"];
@@ -1078,7 +1109,10 @@ export function App() {
     >
       <header className={styles.header} aria-label="部落格導覽">
         <Link className={styles.brand} href="#hero" appearance="subtle" aria-label="回到首頁">
-          <span className={styles.brandMark}>VK</span>
+          <span className={styles.brandMark} aria-hidden="true">
+            {/* QQ 人插圖入口：將下方文字替換為 <img className={styles.brandAvatar} src={你的圖片} alt="" />。 */}
+            VK
+          </span>
           <span className={styles.brandCopy}>
             <span className={styles.brandName}>VikaKumaChR</span>
             <span className={styles.brandMeta}>角色部落格</span>
@@ -1230,7 +1264,7 @@ export function App() {
             </div>
 
             <div className={styles.albumShell}>
-              <div className={styles.albumViewport} aria-live="polite">
+              <div className={styles.albumViewport} ref={albumViewportRef} aria-live="polite">
                 {charts.map((item, index) => {
                   const position = getAlbumPosition(index);
                   const distance = Math.abs(position);
@@ -1242,14 +1276,18 @@ export function App() {
                       className={`${styles.albumCard} ${isActive ? styles.albumCardActive : ""}`}
                       style={
                         {
-                          "--albumOffset": `${position * 52}%`,
-                          "--albumScale": distance === 0 ? 1 : 0.9,
-                          "--albumOpacity": distance === 0 ? 1 : 0.76,
-                          "--albumRotate": `${position * -1.6}deg`,
+                          "--albumOrder": position + 2,
+                          "--albumBasis": isActive ? "clamp(390px, 36vw, 560px)" : "clamp(250px, 23vw, 360px)",
+                          "--albumHeight": isActive ? "clamp(370px, 39vw, 500px)" : "clamp(310px, 32vw, 420px)",
+                          "--albumMobileBasis": isActive ? "min(78vw, 340px)" : "min(60vw, 260px)",
+                          "--albumMobileHeight": isActive ? "360px" : "318px",
+                          "--albumScale": distance === 0 ? 1 : 0.96,
+                          "--albumOpacity": distance === 0 ? 1 : 0.84,
                           "--albumZ": 10 - distance,
                         } as CSSProperties
                       }
                       type="button"
+                      ref={isActive ? activeAlbumCardRef : undefined}
                       onClick={() => setSelectedChart(item.id)}
                       aria-pressed={isActive}
                       aria-label={`查看 ${item.title}`}
