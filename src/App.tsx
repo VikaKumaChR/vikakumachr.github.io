@@ -34,10 +34,10 @@ import {
   WeatherMoon24Regular,
   WeatherSunny24Regular,
 } from "@fluentui/react-icons";
-import characterCollage from "../Image/LifeFourCuts.png";
-import characterPortrait from "../Image/VikaKumaChR_Stand.png";
-import characterScene from "../Image/VikaKumaChR_Scene.png";
-import heroFigurePlaceholder from "../Image/VikaKumaChR_Stand.png";
+import characterCollage from "../Image/Snipaste_2026-07-23_16-09-13.png";
+import characterPortrait from "../Image/Snipaste_2026-07-23_16-22-56.png";
+import characterScene from "../Image/Snipaste_2026-07-23_16-23-18.png";
+import heroFigurePlaceholder from "../Image/Snipaste_2026-07-23_16-22-56.png";
 
 // 首頁半身立繪替換入口：把上方 import 指向你的透明 PNG，再讓 heroFigure 使用它。
 const heroFigure = heroFigurePlaceholder;
