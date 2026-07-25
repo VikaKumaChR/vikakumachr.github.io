@@ -530,13 +530,13 @@ const useStyles = makeStyles({
   },
   section: {
     scrollMarginTop: "0px",
-    padding: "clamp(58px, 7vw, 88px) clamp(22px, 5vw, 72px)",
+    padding: "clamp(44px, 5vw, 60px) clamp(22px, 5vw, 72px)",
   },
   sectionMuted: {
     backgroundColor: tokens.colorNeutralBackground2,
   },
   sectionInner: {
-    width: "min(1120px, 100%)",
+    width: "min(1280px, 100%)",
     marginRight: "auto",
     marginLeft: "auto",
   },
@@ -545,7 +545,7 @@ const useStyles = makeStyles({
     alignItems: "end",
     justifyContent: "space-between",
     gap: "28px",
-    marginBottom: "34px",
+    marginBottom: "clamp(26px, 3vw, 38px)",
     "@media (max-width: 820px)": {
       alignItems: "start",
       flexDirection: "column",
@@ -553,15 +553,24 @@ const useStyles = makeStyles({
   },
   sectionTitleCluster: {
     display: "grid",
-    gap: "8px",
+    gridTemplateColumns: "36px minmax(0, 1fr)",
+    columnGap: "14px",
+    rowGap: "18px",
+    alignItems: "center",
+    maxWidth: "720px",
   },
   sectionTitleRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-    flexWrap: "wrap",
+    display: "contents",
+  },
+  sectionTitleText: {
+    gridColumn: 2,
+    marginTop: 0,
+    marginBottom: 0,
+    lineHeight: "1.08",
   },
   sectionTitleIcon: {
+    gridColumn: 1,
+    gridRow: 1,
     width: "36px",
     height: "36px",
     flexShrink: 0,
@@ -572,6 +581,9 @@ const useStyles = makeStyles({
     color: tokens.colorBrandForeground1,
   },
   headingCopy: {
+    gridColumn: 2,
+    marginTop: 0,
+    marginBottom: 0,
     maxWidth: "62ch",
     color: tokens.colorNeutralForeground2,
   },
@@ -582,65 +594,57 @@ const useStyles = makeStyles({
   },
   albumShell: {
     position: "relative",
-    width: "min(1440px, calc(100vw - 32px))",
-    marginLeft: "50%",
-    overflow: "visible",
+    width: "100%",
+    overflow: "hidden",
     backgroundColor: "transparent",
     boxShadow: "none",
-    transform: "translateX(-50%)",
     ...shorthands.border("0", "solid", "transparent"),
   },
   albumViewport: {
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "clamp(12px, 1.8vw, 24px)",
-    minHeight: "clamp(382px, 42vw, 540px)",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+    gap: "12px",
+    height: "clamp(316px, 30vw, 404px)",
     overflowX: "auto",
-    overflowY: "visible",
-    padding: "34px clamp(12px, 2.2vw, 34px) 40px",
+    overflowY: "hidden",
+    padding: 0,
     backgroundColor: "transparent",
-    scrollPaddingInline: "clamp(12px, 2.2vw, 34px)",
+    scrollPaddingInline: 0,
     scrollSnapType: "x mandatory",
     scrollbarWidth: "none",
     "::-webkit-scrollbar": {
       display: "none",
     },
     "@media (max-width: 760px)": {
-      justifyContent: "flex-start",
-      minHeight: "440px",
+      height: "374px",
     },
     "@media (max-width: 520px)": {
-      minHeight: "392px",
-      paddingTop: "24px",
-      paddingBottom: "30px",
+      height: "332px",
     },
   },
   albumCard: {
     position: "relative",
     order: "var(--albumOrder)",
-    zIndex: "var(--albumZ)",
     flexGrow: 0,
     flexShrink: 0,
     flexBasis: "var(--albumBasis)",
-    height: "var(--albumHeight)",
+    height: "100%",
     scrollSnapAlign: "center",
     overflow: "hidden",
     borderRadius: "28px",
     color: "#fff",
     backgroundColor: "var(--imageSurface)",
-    boxShadow: "0 18px 42px rgba(47, 37, 70, 0.16)",
-    transform: "scale(var(--albumScale))",
-    transformOrigin: "center",
-    opacity: "var(--albumOpacity)",
-    transitionDuration: "560ms",
-    transitionProperty: "flex-basis, height, transform, opacity, box-shadow",
-    transitionTimingFunction: "cubic-bezier(.2, .8, .2, 1)",
+    boxShadow: "none",
+    transitionDuration: "520ms",
+    transitionProperty: "flex-basis, border-radius",
+    transitionTimingFunction: "cubic-bezier(.2, 0, 0, 1)",
     ...shorthands.border("0", "solid", "transparent"),
     cursor: "pointer",
-    "@media (max-width: 520px)": {
+    "@media (max-width: 760px)": {
       flexBasis: "var(--albumMobileBasis)",
-      height: "var(--albumMobileHeight)",
+    },
+    "@media (max-width: 520px)": {
       borderRadius: "24px",
     },
     "@media (prefers-reduced-motion: reduce)": {
@@ -648,7 +652,7 @@ const useStyles = makeStyles({
     },
   },
   albumCardActive: {
-    boxShadow: "0 24px 64px rgba(47, 37, 70, 0.22)",
+    boxShadow: "none",
   },
   albumImage: {
     width: "100%",
@@ -678,9 +682,10 @@ const useStyles = makeStyles({
     lineHeight: "1.12",
   },
   albumPanel: {
-    width: "min(1260px, calc(100vw - 48px))",
-    marginRight: "auto",
-    marginLeft: "auto",
+    width: "100%",
+    marginTop: "clamp(22px, 2.5vw, 32px)",
+    marginRight: 0,
+    marginLeft: 0,
     display: "grid",
     gridTemplateColumns: "minmax(0, 1fr) auto",
     gap: "22px",
@@ -774,6 +779,9 @@ const useStyles = makeStyles({
     },
   },
   regulationLead: {
+    gridColumn: 2,
+    marginTop: 0,
+    marginBottom: 0,
     maxWidth: "62ch",
     color: tokens.colorNeutralForeground2,
     fontSize: tokens.fontSizeBase500,
@@ -926,7 +934,6 @@ export function App() {
   const navigationLockUntil = useRef(0);
   const themeSettleTimer = useRef<number | null>(null);
   const albumViewportRef = useRef<HTMLDivElement | null>(null);
-  const activeAlbumCardRef = useRef<HTMLButtonElement | null>(null);
 
   const theme = mode === "dark" ? darkTheme : lightTheme;
   const selectedChartIndex = charts.findIndex((item) => item.id === selectedChart);
@@ -948,18 +955,15 @@ export function App() {
 
   useEffect(() => {
     const viewport = albumViewportRef.current;
-    const activeCard = activeAlbumCardRef.current;
 
-    if (!viewport || !activeCard) {
+    if (!viewport) {
       return;
     }
 
-    const nextLeft = activeCard.offsetLeft - (viewport.clientWidth - activeCard.offsetWidth) / 2;
-    const maxLeft = viewport.scrollWidth - viewport.clientWidth;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     viewport.scrollTo({
-      left: Math.max(0, Math.min(nextLeft, maxLeft)),
+      left: 0,
       behavior: prefersReducedMotion ? "auto" : "smooth",
     });
   }, [selectedChart]);
@@ -1034,17 +1038,6 @@ export function App() {
 
   const selectNextChart = () => {
     setSelectedChart(charts[(selectedChartIndex + 1) % charts.length].id);
-  };
-
-  const getAlbumPosition = (index: number) => {
-    let position = index - selectedChartIndex;
-    if (position > charts.length / 2) {
-      position -= charts.length;
-    }
-    if (position < -charts.length / 2) {
-      position += charts.length;
-    }
-    return position;
   };
 
   const sharePage = async () => {
@@ -1252,7 +1245,7 @@ export function App() {
                   <span className={styles.sectionTitleIcon} aria-hidden="true">
                     <PanelRightGallery24Regular />
                   </span>
-                  <Title1 as="h2" id="charts-title">
+                  <Title1 as="h2" id="charts-title" className={styles.sectionTitleText}>
                     圖件
                   </Title1>
                 </div>
@@ -1266,9 +1259,9 @@ export function App() {
             <div className={styles.albumShell}>
               <div className={styles.albumViewport} ref={albumViewportRef} aria-live="polite">
                 {charts.map((item, index) => {
-                  const position = getAlbumPosition(index);
-                  const distance = Math.abs(position);
+                  const position = (index - selectedChartIndex + charts.length) % charts.length;
                   const isActive = selectedChart === item.id;
+                  const isMedium = position === 1;
 
                   return (
                     <button
@@ -1276,18 +1269,16 @@ export function App() {
                       className={`${styles.albumCard} ${isActive ? styles.albumCardActive : ""}`}
                       style={
                         {
-                          "--albumOrder": position + 2,
-                          "--albumBasis": isActive ? "clamp(390px, 36vw, 560px)" : "clamp(250px, 23vw, 360px)",
-                          "--albumHeight": isActive ? "clamp(370px, 39vw, 500px)" : "clamp(310px, 32vw, 420px)",
-                          "--albumMobileBasis": isActive ? "min(78vw, 340px)" : "min(60vw, 260px)",
-                          "--albumMobileHeight": isActive ? "360px" : "318px",
-                          "--albumScale": distance === 0 ? 1 : 0.96,
-                          "--albumOpacity": distance === 0 ? 1 : 0.84,
-                          "--albumZ": 10 - distance,
+                          "--albumOrder": position,
+                          "--albumBasis": isActive
+                            ? "52%"
+                            : isMedium
+                              ? "31%"
+                              : "clamp(96px, calc(17% - 24px), 190px)",
+                          "--albumMobileBasis": isActive ? "72vw" : isMedium ? "46vw" : "22vw",
                         } as CSSProperties
                       }
                       type="button"
-                      ref={isActive ? activeAlbumCardRef : undefined}
                       onClick={() => setSelectedChart(item.id)}
                       aria-pressed={isActive}
                       aria-label={`查看 ${item.title}`}
@@ -1349,7 +1340,7 @@ export function App() {
                   <span className={styles.sectionTitleIcon} aria-hidden="true">
                     <BookOpen24Regular />
                   </span>
-                  <Title1 as="h2" id="blog-title">
+                  <Title1 as="h2" id="blog-title" className={styles.sectionTitleText}>
                     札記
                   </Title1>
                 </div>
@@ -1399,7 +1390,7 @@ export function App() {
                 <span className={styles.sectionTitleIcon} aria-hidden="true">
                   <GlobeShield24Regular />
                 </span>
-                <Title1 as="h2" id="regulation-title">
+                <Title1 as="h2" id="regulation-title" className={styles.sectionTitleText}>
                   使用聲明
                 </Title1>
               </div>
