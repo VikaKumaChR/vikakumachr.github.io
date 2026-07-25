@@ -37,7 +37,7 @@ import {
 import characterCollage from "../Image/LifeFourCuts.png";
 import characterPortrait from "../Image/VikaKumaChR_Stand.png";
 import characterScene from "../Image/VikaKumaChR_Scene.png";
-import heroFigurePlaceholder from "../Image/hero-figure-placeholder.png";
+import heroFigurePlaceholder from "../Image/VikaKumaChR_Stand.png";
 
 // 首頁半身立繪替換入口：把上方 import 指向你的透明 PNG，再讓 heroFigure 使用它。
 const heroFigure = heroFigurePlaceholder;
