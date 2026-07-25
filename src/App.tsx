@@ -1058,7 +1058,7 @@ export function App() {
 
   const sharePage = async () => {
     const sharePayload = {
-      title: "璃音 Character Log",
+      title: "璃音角色部落格",
       text: "璃音原創角色部落格",
       url: window.location.href,
     };
