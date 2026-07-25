@@ -35,6 +35,12 @@ import {
   WeatherSunny24Regular,
 } from "@fluentui/react-icons";
 import characterCollage from "../Image/LifeFourCuts.png";
+
+// 首頁四個手帳拼貼塊替換入口：用你的四張透明 PNG 覆蓋 Image/LifePanel_01.png 到 LifePanel_04.png。
+import lifePanel01 from "../Image/LifePanel_01.png";
+import lifePanel02 from "../Image/LifePanel_02.png";
+import lifePanel03 from "../Image/LifePanel_03.png";
+import lifePanel04 from "../Image/LifePanel_04.png";
 import characterPortrait from "../Image/VikaKumaChR_Stand.png";
 import characterScene from "../Image/VikaKumaChR_Scene.png";
 import heroFigurePlaceholder from "../Image/VikaKumaChR_Stand.png";
@@ -355,55 +361,65 @@ const useStyles = makeStyles({
   },
   heroCollageLayer: {
     position: "absolute",
-    zIndex: 1,
-    inset: 0,
+    zIndex: 2,
+    inset: "-4% -12% 0 -18%",
     pointerEvents: "none",
+    userSelect: "none",
     "@media (max-width: 640px)": {
-      opacity: 0.42,
+      inset: "0 -18% 0 -18%",
+      opacity: 0.68,
     },
   },
-  heroCollagePiece: {
+  heroLifePanel: {
     position: "absolute",
-    overflow: "hidden",
-    borderRadius: "8px",
-    opacity: 0.54,
-    backgroundColor: "rgba(255, 255, 255, 0.38)",
-    boxShadow: "0 20px 42px rgba(82, 68, 111, 0.12)",
-    ...shorthands.border("1px", "solid", "rgba(198, 186, 224, 0.32)"),
-  },
-  heroCollageImage: {
-    width: "100%",
-    height: "100%",
     display: "block",
-    objectFit: "cover",
+    width: "clamp(150px, 16vw, 230px)",
+    height: "auto",
+    objectFit: "contain",
+    opacity: 0.78,
+    mixBlendMode: "multiply",
+    filter: "saturate(0.94) drop-shadow(0 18px 28px rgba(82, 68, 111, 0.16))",
+    transformOrigin: "center",
+    "@media (max-width: 640px)": {
+      width: "clamp(96px, 30vw, 132px)",
+      opacity: 0.46,
+    },
   },
-  heroCollageTopLeft: {
-    top: "12%",
-    left: "4%",
-    width: "128px",
-    height: "96px",
-    transform: "rotate(-7deg)",
+  heroLifePanelOne: {
+    top: "10%",
+    left: "1%",
+    transform: "rotate(-8deg)",
+    "@media (max-width: 640px)": {
+      top: "8%",
+      left: "2%",
+    },
   },
-  heroCollageTopRight: {
+  heroLifePanelTwo: {
     top: "7%",
-    right: "6%",
-    width: "142px",
-    height: "108px",
-    transform: "rotate(6deg)",
+    right: "-1%",
+    transform: "rotate(7deg)",
+    "@media (max-width: 640px)": {
+      top: "12%",
+      right: "0%",
+    },
   },
-  heroCollageBottomLeft: {
-    bottom: "22%",
-    left: "0%",
-    width: "154px",
-    height: "112px",
-    transform: "rotate(5deg)",
+  heroLifePanelThree: {
+    top: "46%",
+    left: "-8%",
+    transform: "rotate(4deg)",
+    "@media (max-width: 640px)": {
+      top: "48%",
+      left: "-1%",
+    },
   },
-  heroCollageBottomRight: {
-    right: "1%",
-    bottom: "12%",
-    width: "132px",
-    height: "102px",
-    transform: "rotate(-5deg)",
+  heroLifePanelFour: {
+    right: "-7%",
+    bottom: "15%",
+    transform: "rotate(-6deg)",
+    "@media (max-width: 640px)": {
+      right: "-3%",
+      bottom: "20%",
+    },
   },
   heroArtImage: {
     position: "relative",
@@ -1178,38 +1194,10 @@ export function App() {
             <aside className={styles.heroArtStage} aria-label="璃音首頁立繪舞台">
               <div className={styles.heroArtBackdrop} aria-hidden="true" />
               <div className={styles.heroCollageLayer} aria-hidden="true">
-                <span className={`${styles.heroCollagePiece} ${styles.heroCollageTopLeft}`}>
-                  <img
-                    className={styles.heroCollageImage}
-                    src={characterCollage}
-                    alt=""
-                    style={{ objectPosition: "50% 12%" }}
-                  />
-                </span>
-                <span className={`${styles.heroCollagePiece} ${styles.heroCollageTopRight}`}>
-                  <img
-                    className={styles.heroCollageImage}
-                    src={characterCollage}
-                    alt=""
-                    style={{ objectPosition: "50% 36%" }}
-                  />
-                </span>
-                <span className={`${styles.heroCollagePiece} ${styles.heroCollageBottomLeft}`}>
-                  <img
-                    className={styles.heroCollageImage}
-                    src={characterCollage}
-                    alt=""
-                    style={{ objectPosition: "50% 66%" }}
-                  />
-                </span>
-                <span className={`${styles.heroCollagePiece} ${styles.heroCollageBottomRight}`}>
-                  <img
-                    className={styles.heroCollageImage}
-                    src={characterCollage}
-                    alt=""
-                    style={{ objectPosition: "50% 90%" }}
-                  />
-                </span>
+                <img className={`${styles.heroLifePanel} ${styles.heroLifePanelOne}`} src={lifePanel01} alt="" />
+                <img className={`${styles.heroLifePanel} ${styles.heroLifePanelTwo}`} src={lifePanel02} alt="" />
+                <img className={`${styles.heroLifePanel} ${styles.heroLifePanelThree}`} src={lifePanel03} alt="" />
+                <img className={`${styles.heroLifePanel} ${styles.heroLifePanelFour}`} src={lifePanel04} alt="" />
               </div>
               <img className={styles.heroArtImage} src={heroFigure} alt="璃音的淡紫色角色立繪" />
             </aside>
