@@ -855,7 +855,7 @@ const charts = [
     title: "四格拼貼",
     meta: "角色索引",
     image: characterCollage,
-    alt: "璃音多張處理後插圖組成的四格拼貼",
+    alt: "维嘉多張處理後插圖組成的四格拼貼",
     summary: "多張素材先收進同一入口，作為角色檔案總覽。",
     detail: "拼貼負責建立角色檔案的第一層：表情、姿態、日常片段與後續補檔線索先被收束在一起。",
   },
@@ -864,7 +864,7 @@ const charts = [
     title: "肖像立繪",
     meta: "身份識別",
     image: characterPortrait,
-    alt: "璃音的處理後肖像圖",
+    alt: "维嘉的處理後肖像圖",
     summary: "紫髮、淺色服裝和柔和表情是最穩定的角色識別點。",
     detail: "肖像圖承擔身份錨點，是檔案中最適合放在角色資料頁的主要圖件。",
   },
@@ -873,7 +873,7 @@ const charts = [
     title: "場景氣質",
     meta: "世界氣質",
     image: characterScene,
-    alt: "璃音站在淡藍紫色場景中的處理後插圖",
+    alt: "维嘉站在淡藍紫色場景中的處理後插圖",
     summary: "淡藍背景、低飽和紫和留白共同形成安靜、柔光的敘事空間。",
     detail: "場景圖承接首頁的故事感，讓角色資料像章節一樣逐步展開。",
   },
@@ -906,7 +906,7 @@ const posts = [
     date: "06 Jun",
     readTime: "4 min read",
     image: characterScene,
-    title: "璃音的頁面為什麼需要故事入口",
+    title: "维嘉的頁面為什麼需要故事入口",
     excerpt: "首頁不再只放照片，而是把角色氣質、素材線索和閱讀動線組成一個開場敘事。",
   },
   {
@@ -914,7 +914,7 @@ const posts = [
     date: "28 May",
     readTime: "2 min read",
     image: characterCollage,
-    title: "三張圖件如何構成璃音的資料線",
+    title: "三張圖件如何構成维嘉的資料線",
     excerpt: "拼貼、肖像與場景被安排成連續索引，讓角色印象從總覽延伸到細節。",
   },
   {
@@ -929,7 +929,7 @@ const posts = [
 
 const regulation = [
   { term: "原作者", value: "VikaKumaChR" },
-  { term: "角色來源", value: "個人原創角色：璃音" },
+  { term: "角色來源", value: "個人角色：维嘉" },
   { term: "展示範圍", value: "本頁僅展示處理後公開素材與整理文字" },
   { term: "使用聲明", value: "未經確認請勿轉載、二次分發、二改或商用" },
 ] as const;
@@ -1058,8 +1058,8 @@ export function App() {
 
   const sharePage = async () => {
     const sharePayload = {
-      title: "璃音角色部落格",
-      text: "璃音原創角色部落格",
+      title: "维嘉角色部落格",
+      text: "维嘉原創角色部落格",
       url: window.location.href,
     };
     const browserNavigator = navigator as Navigator & {
@@ -1178,20 +1178,20 @@ export function App() {
             <div className={styles.heroCopy}>
               <div>
                 <Text as="p" className={styles.eyebrow}>
-                  Original character archive
+                  Insider Archive
                 </Text>
                 <h1 id="hero-title" className={styles.heroTitle}>
-                  璃音
+                  维嘉VkC
                   <br />
-                  Character Log
+                  Blog site~
                 </h1>
               </div>
               <Text as="p" className={styles.heroLead}>
-                以淡紫、冰藍和柔光場景作為入口，收納璃音的角色圖件、創作札記與使用聲明。
+                以淡紫、冰藍和柔光場景作為入口，收納维嘉的角色圖件、創作札記與使用聲明。
               </Text>
             </div>
 
-            <aside className={styles.heroArtStage} aria-label="璃音首頁立繪舞台">
+            <aside className={styles.heroArtStage} aria-label="维嘉首頁立繪舞台">
               <div className={styles.heroArtBackdrop} aria-hidden="true" />
               <div className={styles.heroCollageLayer} aria-hidden="true">
                 <img className={`${styles.heroLifePanel} ${styles.heroLifePanelOne}`} src={lifePanel01} alt="" />
@@ -1199,7 +1199,7 @@ export function App() {
                 <img className={`${styles.heroLifePanel} ${styles.heroLifePanelThree}`} src={lifePanel03} alt="" />
                 <img className={`${styles.heroLifePanel} ${styles.heroLifePanelFour}`} src={lifePanel04} alt="" />
               </div>
-              <img className={styles.heroArtImage} src={heroFigure} alt="璃音的淡紫色角色立繪" />
+              <img className={styles.heroArtImage} src={heroFigure} alt="维嘉的淡紫色角色立繪" />
             </aside>
 
             <div className={styles.partGrid} aria-label="特色頁面入口">
@@ -1238,7 +1238,7 @@ export function App() {
                   </Title1>
                 </div>
                 <Text as="p" className={`${styles.headingCopy} ${styles.chartHeadingCopy}`}>
-                  璃音的圖件被放進同一條圖冊軌道：拼貼、肖像與場景會依序成為主位，保留前後素材的連續感。
+                  维嘉的圖件被放進同一條圖冊軌道：拼貼、肖像與場景會依序成為主位，保留前後素材的連續感。
                 </Text>
               </div>
               <Badge appearance="tint">{charts.length} 件圖件</Badge>
@@ -1405,7 +1405,7 @@ export function App() {
       </main>
 
       <footer className={styles.footer}>
-        <Text weight="semibold">璃音角色部落格</Text>
+        <Text weight="semibold">维嘉VkC's Blog</Text>
         <Button as="a" href="#hero" appearance="subtle" icon={<ArrowUp24Regular />}>
           返回首頁
         </Button>
