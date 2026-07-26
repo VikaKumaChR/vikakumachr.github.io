@@ -336,9 +336,9 @@ const useStyles = makeStyles({
     userSelect: "none",
   },
   heroLaceTopRight: {
-    top: "clamp(82px, 9vh, 112px)",
-    right: "clamp(4px, 1.5vw, 24px)",
-    width: "clamp(240px, 23vw, 410px)",
+    top: "clamp(96px, 10vh, 132px)",
+    right: "clamp(24px, 3vw, 52px)",
+    width: "clamp(168px, 15vw, 278px)",
     transform: "rotate(0deg)",
     "@media (max-width: 860px)": {
       top: "146px",
@@ -348,9 +348,9 @@ const useStyles = makeStyles({
     },
   },
   heroLaceBottomLeft: {
-    bottom: "clamp(74px, 10vh, 112px)",
-    left: "clamp(0px, 1.5vw, 24px)",
-    width: "clamp(300px, 31vw, 520px)",
+    bottom: "clamp(96px, 13vh, 136px)",
+    left: "clamp(22px, 3vw, 56px)",
+    width: "clamp(220px, 21vw, 360px)",
     transform: "rotate(0deg)",
     "@media (max-width: 860px)": {
       bottom: "84px",
