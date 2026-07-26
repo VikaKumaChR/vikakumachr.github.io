@@ -784,8 +784,26 @@ const useStyles = makeStyles({
     flexDirection: "column",
     overflow: "hidden",
     borderRadius: "8px",
-    boxShadow: tokens.shadow8,
+    boxShadow: tokens.shadow4,
     backgroundColor: tokens.colorNeutralBackground1,
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+    transitionDuration: tokens.durationNormal,
+    transitionProperty: "box-shadow, border-color, transform",
+    transitionTimingFunction: tokens.curveEasyEase,
+    ":hover": {
+      boxShadow: tokens.shadow8,
+      borderTopColor: tokens.colorNeutralStroke1,
+      borderRightColor: tokens.colorNeutralStroke1,
+      borderBottomColor: tokens.colorNeutralStroke1,
+      borderLeftColor: tokens.colorNeutralStroke1,
+      transform: "translateY(-1px)",
+    },
+    ":focus-within": {
+      outlineStyle: "solid",
+      outlineWidth: "2px",
+      outlineColor: tokens.colorBrandStroke1,
+      outlineOffset: "2px",
+    },
   },
   blogPreview: {
     backgroundColor: "var(--imageSurface)",
@@ -798,16 +816,18 @@ const useStyles = makeStyles({
     objectPosition: "center",
   },
   blogBody: {
-    minHeight: "256px",
     display: "flex",
     flexDirection: "column",
     gap: "16px",
-    padding: "20px 22px 22px",
+    padding: "24px 32px",
+    "@media (max-width: 640px)": {
+      padding: "24px",
+    },
   },
   blogContent: {
     display: "flex",
     flexDirection: "column",
-    gap: "12px",
+    gap: "16px",
   },
   blogHeader: {
     alignItems: "center",
@@ -847,13 +867,19 @@ const useStyles = makeStyles({
     lineHeight: tokens.lineHeightBase400,
   },
   blogFooter: {
-    marginTop: "auto",
-    paddingTop: "4px",
+    paddingTop: "0",
     justifyContent: "flex-start",
   },
   blogReadButton: {
-    minWidth: "96px",
+    minWidth: "88px",
     fontWeight: tokens.fontWeightSemibold,
+    borderRadius: "6px",
+    ":focus-visible": {
+      outlineStyle: "solid",
+      outlineWidth: "2px",
+      outlineColor: tokens.colorBrandStroke1,
+      outlineOffset: "2px",
+    },
   },
   regulationGrid: {
     display: "grid",
@@ -1462,7 +1488,12 @@ export function App() {
                       </Text>
                     </div>
                     <CardFooter className={styles.blogFooter}>
-                      <Button className={styles.blogReadButton} appearance="primary" icon={<BookOpen24Regular />}>
+                      <Button
+                        className={styles.blogReadButton}
+                        appearance="primary"
+                        icon={<BookOpen24Regular />}
+                        aria-label={`閱讀：${post.title}`}
+                      >
                         閱讀
                       </Button>
                     </CardFooter>
