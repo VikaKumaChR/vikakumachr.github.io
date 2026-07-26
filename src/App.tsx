@@ -45,6 +45,8 @@ import lifePanel04 from "../Image/LifePanel_04.png";
 import characterPortrait from "../Image/VikaKumaChR_Stand.png";
 import characterScene from "../Image/VikaKumaChR_Scene.png";
 import heroFigurePlaceholder from "../Image/VikaKumaChR_Stand.png";
+import heroCornerBottomLeft from "../Image/MainPageComponent/MainPageCorner_BottomLeft.webp";
+import heroCornerTopRight from "../Image/MainPageComponent/MainPageCorner_TopRight.webp";
 
 // 首頁半身立繪替換入口：把上方 import 指向你的透明 PNG，再讓 heroFigure 使用它。
 const heroFigure = heroFigurePlaceholder;
@@ -318,6 +320,41 @@ const useStyles = makeStyles({
     transform: "rotate(4deg)",
     "@media (max-width: 980px)": {
       left: "66%",
+    },
+  },
+  heroCornerDecor: {
+    position: "absolute",
+    zIndex: 0,
+    display: "block",
+    width: "clamp(420px, 43vw, 760px)",
+    height: "auto",
+    opacity: "var(--heroCornerOpacity)",
+    filter: "var(--heroCornerFilter)",
+    pointerEvents: "none",
+    userSelect: "none",
+  },
+  heroCornerTopRight: {
+    top: "clamp(26px, 4vh, 48px)",
+    right: "max(-210px, -10vw)",
+    transform: "rotate(1deg)",
+    WebkitMaskImage: "linear-gradient(180deg, black 0%, black 74%, transparent 100%)",
+    maskImage: "linear-gradient(180deg, black 0%, black 74%, transparent 100%)",
+    "@media (max-width: 860px)": {
+      right: "-240px",
+      width: "620px",
+    },
+  },
+  heroCornerBottomLeft: {
+    bottom: "clamp(10px, 3vh, 34px)",
+    left: "max(-250px, -13vw)",
+    width: "clamp(440px, 48vw, 800px)",
+    transform: "rotate(-2deg)",
+    WebkitMaskImage: "linear-gradient(0deg, black 0%, black 76%, transparent 100%)",
+    maskImage: "linear-gradient(0deg, black 0%, black 76%, transparent 100%)",
+    "@media (max-width: 860px)": {
+      left: "-310px",
+      bottom: "96px",
+      width: "680px",
     },
   },
   heroCopy: {
@@ -1204,6 +1241,9 @@ export function App() {
           "--heroCoolGlow": mode === "dark" ? "rgba(129, 159, 186, 0.16)" : "rgba(184, 203, 228, 0.42)",
           "--heroWarmGlow": mode === "dark" ? "rgba(198, 186, 224, 0.12)" : "rgba(236, 224, 241, 0.72)",
           "--heroLine": mode === "dark" ? "rgba(222, 213, 239, 0.14)" : "rgba(113, 101, 144, 0.16)",
+          "--heroCornerOpacity": mode === "dark" ? "0.24" : "0.36",
+          "--heroCornerFilter":
+            mode === "dark" ? "hue-rotate(-26deg) saturate(0.66) brightness(0.9)" : "hue-rotate(-18deg) saturate(0.74)",
           "--figureLight": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(255, 255, 255, 0.78)",
           "--figureShadow": mode === "dark" ? "rgba(6, 4, 12, 0.56)" : "rgba(101, 86, 138, 0.2)",
           "--partMaterialBase": mode === "dark" ? "#1f1b2a" : "#ffffff",
@@ -1280,6 +1320,8 @@ export function App() {
       <main>
         <section className={styles.hero} id="hero" aria-labelledby="hero-title">
           <div className={styles.heroScrapbookLayer} aria-hidden="true">
+            <img className={mergeClasses(styles.heroCornerDecor, styles.heroCornerTopRight)} src={heroCornerTopRight} alt="" />
+            <img className={mergeClasses(styles.heroCornerDecor, styles.heroCornerBottomLeft)} src={heroCornerBottomLeft} alt="" />
             <span className={mergeClasses(styles.scrapbookDots, styles.scrapbookDotsOne)} />
           </div>
           <div className={styles.heroInner}>
