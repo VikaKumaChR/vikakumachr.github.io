@@ -45,7 +45,7 @@ import lifePanel04 from "../Image/LifePanel_04.png";
 import characterPortrait from "../Image/VikaKumaChR_Stand.png";
 import characterScene from "../Image/VikaKumaChR_Scene.png";
 import heroFigurePlaceholder from "../Image/VikaKumaChR_Stand.png";
-import heroLaceBottomLeft from "../Image/MainPageComponent/MainPageCorner_BottomLeft.webp";
+import heroGuideLeft from "../Image/MainPageComponent/4_guide.png";
 import heroLaceTopRight from "../Image/MainPageComponent/MainPageCorner_TopRight.webp";
 
 // 首頁半身立繪替換入口：把上方 import 指向你的透明 PNG，再讓 heroFigure 使用它。
@@ -336,27 +336,35 @@ const useStyles = makeStyles({
     userSelect: "none",
   },
   heroLaceTopRight: {
-    top: "clamp(96px, 10vh, 132px)",
-    right: "clamp(24px, 3vw, 52px)",
-    width: "clamp(168px, 15vw, 278px)",
+    top: "clamp(88px, 9vh, 116px)",
+    right: "-48px",
+    width: "clamp(148px, 13vw, 232px)",
     transform: "rotate(0deg)",
     "@media (max-width: 860px)": {
       top: "146px",
-      right: "-20px",
-      width: "190px",
+      right: "-24px",
+      width: "156px",
       opacity: "var(--heroLaceMobileOpacity)",
     },
   },
-  heroLaceBottomLeft: {
-    bottom: "clamp(96px, 13vh, 136px)",
-    left: "clamp(22px, 3vw, 56px)",
-    width: "clamp(220px, 21vw, 360px)",
-    transform: "rotate(0deg)",
+  heroGuideLeftEdge: {
+    position: "absolute",
+    zIndex: 0,
+    left: 0,
+    bottom: "clamp(88px, 12vh, 124px)",
+    width: "clamp(156px, 13vw, 210px)",
+    height: "auto",
+    display: "block",
+    objectFit: "contain",
+    opacity: "var(--heroGuideOpacity)",
+    filter: "var(--heroGuideFilter)",
+    mixBlendMode: "normal",
+    pointerEvents: "none",
+    userSelect: "none",
     "@media (max-width: 860px)": {
-      bottom: "84px",
-      left: "-34px",
-      width: "220px",
-      opacity: "var(--heroLaceMobileOpacity)",
+      bottom: "112px",
+      width: "168px",
+      opacity: "var(--heroGuideMobileOpacity)",
     },
   },
   heroCopy: {
@@ -486,18 +494,15 @@ const useStyles = makeStyles({
       bottom: "18%",
     },
   },
-  heroArtImage: {
+  heroFigureFrame: {
     position: "relative",
     zIndex: 3,
     width: "min(92%, 500px)",
-    height: "auto",
     maxHeight: "clamp(420px, 68vh, 660px)",
-    minHeight: 0,
-    display: "block",
-    objectFit: "contain",
-    objectPosition: "bottom center",
-    filter: "saturate(0.96) contrast(0.98) drop-shadow(0 32px 48px rgba(66, 52, 95, 0.22))",
-    mixBlendMode: "normal",
+    display: "grid",
+    placeItems: "end center",
+    lineHeight: 0,
+    userSelect: "none",
     "@media (max-width: 980px)": {
       maxHeight: "480px",
     },
@@ -505,6 +510,28 @@ const useStyles = makeStyles({
       width: "min(96%, 340px)",
       maxHeight: "380px",
     },
+  },
+  heroArtImage: {
+    position: "relative",
+    zIndex: 1,
+    width: "100%",
+    height: "auto",
+    maxHeight: "inherit",
+    minHeight: 0,
+    display: "block",
+    objectFit: "contain",
+    objectPosition: "bottom center",
+    filter: "saturate(0.96) contrast(0.98) drop-shadow(0 32px 48px rgba(66, 52, 95, 0.22))",
+    mixBlendMode: "normal",
+  },
+  heroFigureGuard: {
+    position: "absolute",
+    zIndex: 2,
+    inset: 0,
+    backgroundColor: "transparent",
+    cursor: "default",
+    pointerEvents: "auto",
+    userSelect: "none",
   },
   partGrid: {
     gridColumn: "1 / -1",
@@ -1244,9 +1271,12 @@ export function App() {
           "--heroWarmGlow": mode === "dark" ? "rgba(198, 186, 224, 0.12)" : "rgba(236, 224, 241, 0.72)",
           "--heroGridLine": mode === "dark" ? "rgba(198, 186, 224, 0.055)" : "rgba(198, 186, 224, 0.16)",
           "--heroLine": mode === "dark" ? "rgba(222, 213, 239, 0.14)" : "rgba(113, 101, 144, 0.16)",
-          "--heroLaceOpacity": mode === "dark" ? "0.3" : "0.38",
-          "--heroLaceMobileOpacity": mode === "dark" ? "0.18" : "0.24",
+          "--heroLaceOpacity": mode === "dark" ? "0.2" : "0.3",
+          "--heroLaceMobileOpacity": mode === "dark" ? "0.14" : "0.2",
           "--heroLaceFilter": mode === "dark" ? "saturate(0.78) brightness(0.86)" : "saturate(0.86)",
+          "--heroGuideOpacity": mode === "dark" ? "0.09" : "0.3",
+          "--heroGuideMobileOpacity": mode === "dark" ? "0.08" : "0.16",
+          "--heroGuideFilter": mode === "dark" ? "saturate(0.72) brightness(0.58)" : "saturate(0.82)",
           "--figureLight": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(255, 255, 255, 0.78)",
           "--figureShadow": mode === "dark" ? "rgba(6, 4, 12, 0.56)" : "rgba(101, 86, 138, 0.2)",
           "--partMaterialBase": mode === "dark" ? "#1f1b2a" : "#ffffff",
@@ -1322,9 +1352,9 @@ export function App() {
 
       <main>
         <section className={styles.hero} id="hero" aria-labelledby="hero-title">
+          <img className={styles.heroGuideLeftEdge} src={heroGuideLeft} alt="" aria-hidden="true" />
           <div className={styles.heroScrapbookLayer} aria-hidden="true">
             <img className={mergeClasses(styles.heroLaceDecor, styles.heroLaceTopRight)} src={heroLaceTopRight} alt="" />
-            <img className={mergeClasses(styles.heroLaceDecor, styles.heroLaceBottomLeft)} src={heroLaceBottomLeft} alt="" />
             <span className={mergeClasses(styles.scrapbookDots, styles.scrapbookDotsOne)} />
           </div>
           <div className={styles.heroInner}>
@@ -1352,7 +1382,20 @@ export function App() {
                 <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelThree)} src={lifePanel03} alt="" />
                 <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelFour)} src={lifePanel04} alt="" />
               </div>
-              <img className={styles.heroArtImage} src={heroFigure} alt="维嘉的淡紫色角色立繪" />
+              <div className={styles.heroFigureFrame} onContextMenu={(event) => event.preventDefault()}>
+                <img
+                  className={styles.heroArtImage}
+                  src={heroFigure}
+                  alt="维嘉的淡紫色角色立繪"
+                  draggable={false}
+                />
+                <span
+                  className={styles.heroFigureGuard}
+                  data-figure-guard="true"
+                  aria-hidden="true"
+                  onContextMenu={(event) => event.preventDefault()}
+                />
+              </div>
             </aside>
 
             <div className={styles.partGrid} aria-label="特色頁面入口">
