@@ -902,25 +902,25 @@ const parts = [
 
 const posts = [
   {
-    category: "設計札記",
-    date: "06 Jun",
-    readTime: "4 min read",
+    /*category: "設計札記",*/
+    /*date: "06 Jun",*/
+    /*readTime: "4 min read",*/
     image: characterScene,
     title: "维嘉的頁面為什麼需要故事入口",
     excerpt: "首頁不再只放照片，而是把角色氣質、素材線索和閱讀動線組成一個開場敘事。",
   },
   {
-    category: "圖件整理",
-    date: "28 May",
-    readTime: "2 min read",
+    /*category: "圖件整理",*/
+    /*date: "28 May",*/
+    /*readTime: "2 min read",*/
     image: characterCollage,
     title: "三張圖件如何構成维嘉的資料線",
     excerpt: "拼貼、肖像與場景被安排成連續索引，讓角色印象從總覽延伸到細節。",
   },
   {
-    category: "角色觀察",
-    date: "15 May",
-    readTime: "3 min read",
+    /*category: "角色觀察",*/
+    /*date: "15 May",*/
+    /*readTime: "3 min read",*/
     image: characterPortrait,
     title: "紫髮、冰藍與白色服裝的識別作用",
     excerpt: "從處理後素材裡提取穩定元素，用於角色檔案、貼文封面與後續規範文字。",
@@ -928,10 +928,10 @@ const posts = [
 ] as const;
 
 const regulation = [
-  { term: "原作者", value: "VikaKumaChR" },
+  { term: "畫師媽咪", value: "几维不是猕猴桃" },
   { term: "角色來源", value: "個人角色：维嘉" },
   { term: "展示範圍", value: "本頁僅展示處理後公開素材與整理文字" },
-  { term: "使用聲明", value: "未經確認請勿轉載、二次分發、二改或商用" },
+  { term: "使用聲明", value: "未經確認請勿轉載、訓練AI、二次分發、二改或商用" },
 ] as const;
 
 export function App() {
@@ -1178,16 +1178,16 @@ export function App() {
             <div className={styles.heroCopy}>
               <div>
                 <Text as="p" className={styles.eyebrow}>
-                  Insider Archive
+
                 </Text>
                 <h1 id="hero-title" className={styles.heroTitle}>
                   维嘉VkC
                   <br />
-                  Blog site~
+                  Blog
                 </h1>
               </div>
               <Text as="p" className={styles.heroLead}>
-                以淡紫、冰藍和柔光場景作為入口，收納维嘉的角色圖件、創作札記與使用聲明。
+                欢迎访问^^ Welcome to my world~ 
               </Text>
             </div>
 
