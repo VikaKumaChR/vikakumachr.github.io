@@ -45,8 +45,6 @@ import lifePanel04 from "../Image/LifePanel_04.png";
 import characterPortrait from "../Image/VikaKumaChR_Stand.png";
 import characterScene from "../Image/VikaKumaChR_Scene.png";
 import heroFigurePlaceholder from "../Image/VikaKumaChR_Stand.png";
-import heroCornerBottomLeft from "../Image/MainPageComponent/MainPageCorner_BottomLeft.webp";
-import heroCornerTopRight from "../Image/MainPageComponent/MainPageCorner_TopRight.webp";
 
 // 首頁半身立繪替換入口：把上方 import 指向你的透明 PNG，再讓 heroFigure 使用它。
 const heroFigure = heroFigurePlaceholder;
@@ -253,7 +251,9 @@ const useStyles = makeStyles({
     padding: "calc(72px + clamp(38px, 6vh, 66px)) clamp(20px, 6vw, 92px) clamp(34px, 5vh, 54px)",
     backgroundColor: "var(--heroBase)",
     backgroundImage:
-      "radial-gradient(ellipse at 72% 18%, var(--heroCoolGlow) 0, transparent 44%), radial-gradient(ellipse at 24% 88%, var(--heroWarmGlow) 0, transparent 36%), linear-gradient(180deg, var(--heroBase) 0%, var(--heroPaper) 58%, var(--heroBase) 100%)",
+      "linear-gradient(135deg, transparent 0 47.5%, var(--heroGridLine) 48.5% 51.5%, transparent 52.5% 100%), linear-gradient(45deg, transparent 0 47.5%, var(--heroGridLine) 48.5% 51.5%, transparent 52.5% 100%), radial-gradient(ellipse at 72% 18%, var(--heroCoolGlow) 0, transparent 44%), radial-gradient(ellipse at 24% 88%, var(--heroWarmGlow) 0, transparent 36%), linear-gradient(180deg, var(--heroBase) 0%, var(--heroPaper) 58%, var(--heroBase) 100%)",
+    backgroundSize: "112px 112px, 112px 112px, auto, auto, auto",
+    backgroundPosition: "center, center, center, center, center",
     ":before": {
       content: '""',
       position: "absolute",
@@ -322,36 +322,125 @@ const useStyles = makeStyles({
       left: "66%",
     },
   },
-  heroCornerDecor: {
+  heroStickerCluster: {
     position: "absolute",
     zIndex: 0,
-    display: "block",
-    width: "clamp(180px, 18vw, 320px)",
-    height: "auto",
-    opacity: "var(--heroCornerOpacity)",
-    filter: "var(--heroCornerFilter)",
+    width: "clamp(170px, 15vw, 260px)",
+    height: "clamp(156px, 14vw, 232px)",
+    opacity: "var(--heroStickerOpacity)",
+    color: "var(--heroStickerColor)",
     pointerEvents: "none",
     userSelect: "none",
+    mixBlendMode: "normal",
   },
-  heroCornerTopRight: {
-    top: "clamp(112px, 13vh, 148px)",
-    right: "max(28px, calc((100vw - 1240px) / 2 + 18px))",
-    transform: "rotate(-5deg)",
+  heroStickerTopRight: {
+    top: "clamp(96px, 10vh, 128px)",
+    right: "clamp(28px, 4vw, 76px)",
+    width: "clamp(154px, 13vw, 224px)",
+    height: "clamp(138px, 12vw, 204px)",
     "@media (max-width: 860px)": {
-      top: "300px",
-      right: "-78px",
-      width: "220px",
-      opacity: 0.14,
+      top: "150px",
+      right: "18px",
+      width: "154px",
+      height: "138px",
+      opacity: "var(--heroStickerMobileOpacity)",
     },
   },
-  heroCornerBottomLeft: {
-    bottom: "clamp(128px, 17vh, 178px)",
-    left: "max(24px, calc((100vw - 1240px) / 2 + 8px))",
-    width: "clamp(200px, 20vw, 340px)",
-    transform: "rotate(4deg)",
+  heroStickerBottomLeft: {
+    bottom: "clamp(154px, 18vh, 212px)",
+    left: "max(34px, calc((100vw - 1240px) / 2 + 20px))",
+    width: "clamp(190px, 17vw, 292px)",
+    height: "clamp(164px, 15vw, 248px)",
     "@media (max-width: 860px)": {
       display: "none",
     },
+  },
+  heroStickerBand: {
+    position: "absolute",
+    width: "70%",
+    height: "26px",
+    borderRadius: "999px",
+    background:
+      "linear-gradient(90deg, transparent 0, var(--heroStickerLine) 16%, var(--heroStickerLine) 84%, transparent 100%)",
+    ...shorthands.borderTop("1px", "solid", "var(--heroStickerStroke)"),
+    ...shorthands.borderBottom("1px", "solid", "var(--heroStickerStroke)"),
+    transform: "rotate(-34deg)",
+  },
+  heroStickerBandAlt: {
+    width: "78%",
+    transform: "rotate(49deg)",
+  },
+  heroStickerHeart: {
+    position: "absolute",
+    width: "30px",
+    height: "30px",
+    transform: "rotate(-45deg)",
+    borderRadius: "6px",
+    backgroundColor: "var(--heroStickerFill)",
+    boxShadow: "0 0 0 1px var(--heroStickerStroke)",
+    ":before": {
+      content: '""',
+      position: "absolute",
+      top: "-50%",
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      backgroundColor: "inherit",
+    },
+    ":after": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      left: "50%",
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      backgroundColor: "inherit",
+    },
+  },
+  heroStickerOutline: {
+    backgroundColor: "transparent",
+    boxShadow: "inset 0 0 0 2px var(--heroStickerStroke)",
+    ":before": {
+      backgroundColor: "transparent",
+      boxShadow: "inset 0 0 0 2px var(--heroStickerStroke)",
+    },
+    ":after": {
+      backgroundColor: "transparent",
+      boxShadow: "inset 0 0 0 2px var(--heroStickerStroke)",
+    },
+  },
+  heroStickerOne: {
+    top: "6%",
+    right: "8%",
+    width: "38px",
+    height: "38px",
+  },
+  heroStickerTwo: {
+    right: "42%",
+    bottom: "18%",
+    width: "18px",
+    height: "18px",
+  },
+  heroStickerThree: {
+    left: "14%",
+    bottom: "12%",
+    width: "42px",
+    height: "42px",
+  },
+  heroStickerFour: {
+    top: "36%",
+    left: "58%",
+    width: "20px",
+    height: "20px",
+  },
+  heroStickerDot: {
+    position: "absolute",
+    width: "10px",
+    height: "10px",
+    borderRadius: "50%",
+    backgroundColor: "var(--heroStickerFill)",
   },
   heroCopy: {
     display: "grid",
@@ -425,8 +514,8 @@ const useStyles = makeStyles({
     pointerEvents: "none",
     userSelect: "none",
     "@media (max-width: 640px)": {
-      inset: "0 -18% 0 -18%",
-      opacity: 0.68,
+      inset: "0",
+      opacity: 0.56,
     },
   },
   heroLifePanel: {
@@ -440,8 +529,8 @@ const useStyles = makeStyles({
     filter: "saturate(0.94) drop-shadow(0 18px 28px rgba(82, 68, 111, 0.16))",
     transformOrigin: "center",
     "@media (max-width: 640px)": {
-      width: "clamp(96px, 30vw, 132px)",
-      opacity: 0.46,
+      width: "clamp(78px, 25vw, 112px)",
+      opacity: 0.4,
     },
   },
   heroLifePanelOne: {
@@ -449,8 +538,8 @@ const useStyles = makeStyles({
     left: "1%",
     transform: "rotate(-8deg)",
     "@media (max-width: 640px)": {
-      top: "8%",
-      left: "2%",
+      top: "12%",
+      left: "8%",
     },
   },
   heroLifePanelTwo: {
@@ -458,8 +547,8 @@ const useStyles = makeStyles({
     right: "-1%",
     transform: "rotate(7deg)",
     "@media (max-width: 640px)": {
-      top: "12%",
-      right: "0%",
+      top: "18%",
+      right: "8%",
     },
   },
   heroLifePanelThree: {
@@ -467,8 +556,8 @@ const useStyles = makeStyles({
     left: "-8%",
     transform: "rotate(4deg)",
     "@media (max-width: 640px)": {
-      top: "48%",
-      left: "-1%",
+      top: "54%",
+      left: "8%",
     },
   },
   heroLifePanelFour: {
@@ -476,8 +565,8 @@ const useStyles = makeStyles({
     bottom: "15%",
     transform: "rotate(-6deg)",
     "@media (max-width: 640px)": {
-      right: "-3%",
-      bottom: "20%",
+      right: "8%",
+      bottom: "18%",
     },
   },
   heroArtImage: {
@@ -1236,10 +1325,14 @@ export function App() {
           "--heroPaper": mode === "dark" ? "#1d1828" : "#f6f1fa",
           "--heroCoolGlow": mode === "dark" ? "rgba(129, 159, 186, 0.16)" : "rgba(184, 203, 228, 0.42)",
           "--heroWarmGlow": mode === "dark" ? "rgba(198, 186, 224, 0.12)" : "rgba(236, 224, 241, 0.72)",
+          "--heroGridLine": mode === "dark" ? "rgba(198, 186, 224, 0.055)" : "rgba(198, 186, 224, 0.16)",
           "--heroLine": mode === "dark" ? "rgba(222, 213, 239, 0.14)" : "rgba(113, 101, 144, 0.16)",
-          "--heroCornerOpacity": mode === "dark" ? "0.18" : "0.32",
-          "--heroCornerFilter":
-            mode === "dark" ? "saturate(0.72) brightness(0.84)" : "saturate(0.9)",
+          "--heroStickerOpacity": mode === "dark" ? "0.14" : "0.24",
+          "--heroStickerMobileOpacity": mode === "dark" ? "0.1" : "0.16",
+          "--heroStickerColor": mode === "dark" ? "#ded5ef" : "#9d91bf",
+          "--heroStickerFill": mode === "dark" ? "rgba(198, 186, 224, 0.18)" : "rgba(198, 186, 224, 0.38)",
+          "--heroStickerLine": mode === "dark" ? "rgba(222, 213, 239, 0.2)" : "rgba(157, 145, 191, 0.32)",
+          "--heroStickerStroke": mode === "dark" ? "rgba(222, 213, 239, 0.24)" : "rgba(113, 101, 144, 0.2)",
           "--figureLight": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(255, 255, 255, 0.78)",
           "--figureShadow": mode === "dark" ? "rgba(6, 4, 12, 0.56)" : "rgba(101, 86, 138, 0.2)",
           "--partMaterialBase": mode === "dark" ? "#1f1b2a" : "#ffffff",
@@ -1316,8 +1409,18 @@ export function App() {
       <main>
         <section className={styles.hero} id="hero" aria-labelledby="hero-title">
           <div className={styles.heroScrapbookLayer} aria-hidden="true">
-            <img className={mergeClasses(styles.heroCornerDecor, styles.heroCornerTopRight)} src={heroCornerTopRight} alt="" />
-            <img className={mergeClasses(styles.heroCornerDecor, styles.heroCornerBottomLeft)} src={heroCornerBottomLeft} alt="" />
+            <div className={mergeClasses(styles.heroStickerCluster, styles.heroStickerTopRight)}>
+              <span className={styles.heroStickerBand} style={{ top: "24%", right: "2%" }} />
+              <span className={mergeClasses(styles.heroStickerHeart, styles.heroStickerOutline, styles.heroStickerOne)} />
+              <span className={mergeClasses(styles.heroStickerHeart, styles.heroStickerTwo)} />
+              <span className={styles.heroStickerDot} style={{ left: "22%", top: "18%" }} />
+            </div>
+            <div className={mergeClasses(styles.heroStickerCluster, styles.heroStickerBottomLeft)}>
+              <span className={mergeClasses(styles.heroStickerBand, styles.heroStickerBandAlt)} style={{ left: "8%", bottom: "28%" }} />
+              <span className={mergeClasses(styles.heroStickerHeart, styles.heroStickerOutline, styles.heroStickerThree)} />
+              <span className={mergeClasses(styles.heroStickerHeart, styles.heroStickerFour)} />
+              <span className={styles.heroStickerDot} style={{ right: "22%", bottom: "34%" }} />
+            </div>
             <span className={mergeClasses(styles.scrapbookDots, styles.scrapbookDotsOne)} />
           </div>
           <div className={styles.heroInner}>
