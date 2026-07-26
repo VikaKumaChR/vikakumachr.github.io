@@ -16,6 +16,7 @@ import {
   createDarkTheme,
   createLightTheme,
   makeStyles,
+  mergeClasses,
   shorthands,
   tokens,
   type BrandVariants,
@@ -302,28 +303,6 @@ const useStyles = makeStyles({
     pointerEvents: "none",
     userSelect: "none",
   },
-  scrapbookTape: {
-    position: "absolute",
-    display: "block",
-    height: "18px",
-    background:
-      "linear-gradient(90deg, rgba(198, 186, 224, 0.1), rgba(198, 186, 224, 0.34), rgba(184, 203, 228, 0.18))",
-    ...shorthands.border("1px", "solid", "rgba(198, 186, 224, 0.18)"),
-    opacity: 0.78,
-    mixBlendMode: "multiply",
-  },
-  scrapbookTapeOne: {
-    top: "18%",
-    left: "clamp(24px, 8vw, 132px)",
-    width: "clamp(132px, 13vw, 210px)",
-    transform: "rotate(-7deg)",
-  },
-  scrapbookTapeTwo: {
-    top: "68%",
-    left: "clamp(24px, 11vw, 176px)",
-    width: "clamp(104px, 10vw, 162px)",
-    transform: "rotate(5deg)",
-  },
   scrapbookDots: {
     position: "absolute",
     width: "168px",
@@ -340,20 +319,6 @@ const useStyles = makeStyles({
     "@media (max-width: 980px)": {
       left: "66%",
     },
-  },
-  scrapbookRule: {
-    position: "absolute",
-    width: "clamp(160px, 18vw, 260px)",
-    height: "104px",
-    backgroundImage:
-      "repeating-linear-gradient(180deg, transparent 0, transparent 17px, rgba(113, 101, 144, 0.16) 18px, transparent 19px)",
-    opacity: 0.42,
-    mixBlendMode: "multiply",
-  },
-  scrapbookRuleOne: {
-    right: "clamp(24px, 6vw, 108px)",
-    bottom: "18%",
-    transform: "rotate(-5deg)",
   },
   heroCopy: {
     display: "grid",
@@ -833,32 +798,35 @@ const useStyles = makeStyles({
     objectPosition: "center",
   },
   blogBody: {
-    minHeight: "236px",
+    minHeight: "256px",
     display: "flex",
     flexDirection: "column",
-    gap: "14px",
-    padding: "20px 22px 18px",
+    gap: "16px",
+    padding: "20px 22px 22px",
   },
   blogContent: {
-    display: "grid",
-    gap: "14px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
   },
   blogHeader: {
-    display: "grid",
-    alignItems: "start",
-    columnGap: "12px",
+    alignItems: "center",
   },
   blogHeaderIcon: {
-    width: "32px",
-    height: "32px",
+    width: "40px",
+    height: "40px",
     display: "inline-grid",
     placeItems: "center",
-    color: tokens.colorNeutralForeground2,
+    flexShrink: 0,
+    borderRadius: "8px",
+    backgroundColor: "color-mix(in srgb, #c6bae0 22%, var(--colorNeutralBackground1))",
+    color: tokens.colorBrandForeground1,
+    ...shorthands.border("1px", "solid", "color-mix(in srgb, #c6bae0 42%, transparent)"),
   },
   blogTitle: {
     marginTop: 0,
     marginBottom: 0,
-    lineHeight: "1.28",
+    lineHeight: "1.25",
   },
   blogMetaLine: {
     display: "inline-flex",
@@ -880,7 +848,12 @@ const useStyles = makeStyles({
   },
   blogFooter: {
     marginTop: "auto",
+    paddingTop: "4px",
     justifyContent: "flex-start",
+  },
+  blogReadButton: {
+    minWidth: "96px",
+    fontWeight: tokens.fontWeightSemibold,
   },
   regulationGrid: {
     display: "grid",
@@ -1196,7 +1169,7 @@ export function App() {
   return (
     <FluentProvider
       theme={theme}
-      className={`${styles.shell} ${themeSettling ? "theme-settling" : ""}`}
+      className={mergeClasses(styles.shell, themeSettling ? "theme-settling" : undefined)}
       style={
         {
           colorScheme: mode,
@@ -1241,7 +1214,7 @@ export function App() {
             return (
               <Link
                 key={item.id}
-                className={`${styles.navLink} ${isActive ? styles.navLinkActive : ""}`}
+                className={mergeClasses(styles.navLink, isActive ? styles.navLinkActive : undefined)}
                 href={`#${item.id}`}
                 appearance="subtle"
                 onClick={() => navigateToSection(item.id)}
@@ -1249,7 +1222,7 @@ export function App() {
               >
                 <span>{item.label}</span>
                 <span
-                  className={`${styles.navUnderline} ${isActive ? styles.navUnderlineActive : ""}`}
+                  className={mergeClasses(styles.navUnderline, isActive ? styles.navUnderlineActive : undefined)}
                   aria-hidden="true"
                 />
               </Link>
@@ -1267,7 +1240,7 @@ export function App() {
             aria-label={shareHint}
           />
           <Button
-            className={`${styles.actionButton} ${styles.themeButton}`}
+            className={mergeClasses(styles.actionButton, styles.themeButton)}
             appearance="subtle"
             icon={mode === "dark" ? <WeatherSunny24Regular /> : <WeatherMoon24Regular />}
             onClick={toggleTheme}
@@ -1281,10 +1254,7 @@ export function App() {
       <main>
         <section className={styles.hero} id="hero" aria-labelledby="hero-title">
           <div className={styles.heroScrapbookLayer} aria-hidden="true">
-            <span className={`${styles.scrapbookTape} ${styles.scrapbookTapeOne}`} />
-            <span className={`${styles.scrapbookTape} ${styles.scrapbookTapeTwo}`} />
-            <span className={`${styles.scrapbookDots} ${styles.scrapbookDotsOne}`} />
-            <span className={`${styles.scrapbookRule} ${styles.scrapbookRuleOne}`} />
+            <span className={mergeClasses(styles.scrapbookDots, styles.scrapbookDotsOne)} />
           </div>
           <div className={styles.heroInner}>
             <div className={styles.heroCopy}>
@@ -1306,10 +1276,10 @@ export function App() {
             <aside className={styles.heroArtStage} aria-label="维嘉首頁立繪舞台">
               <div className={styles.heroArtBackdrop} aria-hidden="true" />
               <div className={styles.heroCollageLayer} aria-hidden="true">
-                <img className={`${styles.heroLifePanel} ${styles.heroLifePanelOne}`} src={lifePanel01} alt="" />
-                <img className={`${styles.heroLifePanel} ${styles.heroLifePanelTwo}`} src={lifePanel02} alt="" />
-                <img className={`${styles.heroLifePanel} ${styles.heroLifePanelThree}`} src={lifePanel03} alt="" />
-                <img className={`${styles.heroLifePanel} ${styles.heroLifePanelFour}`} src={lifePanel04} alt="" />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelOne)} src={lifePanel01} alt="" />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelTwo)} src={lifePanel02} alt="" />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelThree)} src={lifePanel03} alt="" />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelFour)} src={lifePanel04} alt="" />
               </div>
               <img className={styles.heroArtImage} src={heroFigure} alt="维嘉的淡紫色角色立繪" />
             </aside>
@@ -1349,7 +1319,7 @@ export function App() {
                     圖件
                   </Title1>
                 </div>
-                <Text as="p" className={`${styles.headingCopy} ${styles.chartHeadingCopy}`}>
+                <Text as="p" className={mergeClasses(styles.headingCopy, styles.chartHeadingCopy)}>
                   维嘉的圖件被放進同一條圖冊軌道：拼貼、肖像與場景會依序成為主位，保留前後素材的連續感。
                 </Text>
               </div>
@@ -1366,7 +1336,7 @@ export function App() {
                   return (
                     <button
                       key={item.id}
-                      className={`${styles.albumCard} ${isActive ? styles.albumCardActive : ""}`}
+                      className={mergeClasses(styles.albumCard, isActive ? styles.albumCardActive : undefined)}
                       style={
                         {
                           "--albumOrder": position,
@@ -1416,7 +1386,7 @@ export function App() {
                     {charts.map((item) => (
                       <span
                         key={item.id}
-                        className={`${styles.albumDot} ${selectedChart === item.id ? styles.albumDotActive : ""}`}
+                        className={mergeClasses(styles.albumDot, selectedChart === item.id ? styles.albumDotActive : undefined)}
                       />
                     ))}
                   </span>
@@ -1432,7 +1402,7 @@ export function App() {
           </div>
         </section>
 
-        <section className={`${styles.section} ${styles.sectionMuted}`} id="blog" aria-labelledby="blog-title">
+        <section className={mergeClasses(styles.section, styles.sectionMuted)} id="blog" aria-labelledby="blog-title">
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeading}>
               <div className={styles.sectionTitleCluster}>
@@ -1492,7 +1462,7 @@ export function App() {
                       </Text>
                     </div>
                     <CardFooter className={styles.blogFooter}>
-                      <Button appearance="subtle" icon={<BookOpen24Regular />}>
+                      <Button className={styles.blogReadButton} appearance="primary" icon={<BookOpen24Regular />}>
                         閱讀
                       </Button>
                     </CardFooter>
@@ -1504,7 +1474,7 @@ export function App() {
         </section>
 
         <section className={styles.section} id="regulation" aria-labelledby="regulation-title">
-          <div className={`${styles.sectionInner} ${styles.regulationGrid}`}>
+          <div className={mergeClasses(styles.sectionInner, styles.regulationGrid)}>
             <div className={styles.sectionTitleCluster}>
               <div className={styles.sectionTitleRow}>
                 <span className={styles.sectionTitleIcon} aria-hidden="true">
