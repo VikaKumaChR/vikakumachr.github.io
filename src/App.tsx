@@ -294,6 +294,67 @@ const useStyles = makeStyles({
       gridTemplateColumns: "1fr",
     },
   },
+  heroScrapbookLayer: {
+    position: "absolute",
+    zIndex: 0,
+    inset: "72px 0 0",
+    overflow: "hidden",
+    pointerEvents: "none",
+    userSelect: "none",
+  },
+  scrapbookTape: {
+    position: "absolute",
+    display: "block",
+    height: "18px",
+    background:
+      "linear-gradient(90deg, rgba(198, 186, 224, 0.1), rgba(198, 186, 224, 0.34), rgba(184, 203, 228, 0.18))",
+    ...shorthands.border("1px", "solid", "rgba(198, 186, 224, 0.18)"),
+    opacity: 0.78,
+    mixBlendMode: "multiply",
+  },
+  scrapbookTapeOne: {
+    top: "18%",
+    left: "clamp(24px, 8vw, 132px)",
+    width: "clamp(132px, 13vw, 210px)",
+    transform: "rotate(-7deg)",
+  },
+  scrapbookTapeTwo: {
+    top: "68%",
+    left: "clamp(24px, 11vw, 176px)",
+    width: "clamp(104px, 10vw, 162px)",
+    transform: "rotate(5deg)",
+  },
+  scrapbookDots: {
+    position: "absolute",
+    width: "168px",
+    height: "128px",
+    backgroundImage: "radial-gradient(circle, rgba(113, 101, 144, 0.2) 1.4px, transparent 1.6px)",
+    backgroundSize: "16px 16px",
+    opacity: 0.46,
+    mixBlendMode: "multiply",
+  },
+  scrapbookDotsOne: {
+    top: "28%",
+    left: "44%",
+    transform: "rotate(4deg)",
+    "@media (max-width: 980px)": {
+      left: "66%",
+    },
+  },
+  scrapbookRule: {
+    position: "absolute",
+    width: "clamp(160px, 18vw, 260px)",
+    height: "104px",
+    backgroundImage:
+      "repeating-linear-gradient(180deg, transparent 0, transparent 17px, rgba(113, 101, 144, 0.16) 18px, transparent 19px)",
+    opacity: 0.42,
+    mixBlendMode: "multiply",
+  },
+  scrapbookRuleOne: {
+    right: "clamp(24px, 6vw, 108px)",
+    bottom: "18%",
+    transform: "rotate(-5deg)",
+  },
   heroCopy: {
     display: "grid",
     gap: "22px",
@@ -754,11 +815,12 @@ const useStyles = makeStyles({
     },
   },
   blogCard: {
-    display: "grid",
-    gridTemplateRows: "auto 1fr",
+    display: "flex",
+    flexDirection: "column",
     overflow: "hidden",
     borderRadius: "8px",
     boxShadow: tokens.shadow8,
+    backgroundColor: tokens.colorNeutralBackground1,
   },
   blogPreview: {
     backgroundColor: "var(--imageSurface)",
@@ -771,19 +833,54 @@ const useStyles = makeStyles({
     objectPosition: "center",
   },
   blogBody: {
-    minHeight: "250px",
-    display: "grid",
-    alignContent: "space-between",
-    gap: "18px",
-    padding: "18px",
-  },
-  blogMeta: {
+    minHeight: "236px",
     display: "flex",
-    flexWrap: "wrap",
+    flexDirection: "column",
+    gap: "14px",
+    padding: "20px 22px 18px",
+  },
+  blogContent: {
+    display: "grid",
+    gap: "14px",
+  },
+  blogHeader: {
+    display: "grid",
+    alignItems: "start",
+    columnGap: "12px",
+  },
+  blogHeaderIcon: {
+    width: "32px",
+    height: "32px",
+    display: "inline-grid",
+    placeItems: "center",
+    color: tokens.colorNeutralForeground2,
+  },
+  blogTitle: {
+    marginTop: 0,
+    marginBottom: 0,
+    lineHeight: "1.28",
+  },
+  blogMetaLine: {
+    display: "inline-flex",
+    alignItems: "center",
     gap: "8px",
+    flexWrap: "wrap",
+    color: tokens.colorNeutralForeground3,
+    fontSize: tokens.fontSizeBase200,
+    lineHeight: tokens.lineHeightBase200,
+  },
+  blogDot: {
+    color: tokens.colorNeutralForeground4,
   },
   cardCopy: {
+    marginTop: 0,
+    marginBottom: 0,
     color: tokens.colorNeutralForeground2,
+    lineHeight: tokens.lineHeightBase400,
+  },
+  blogFooter: {
+    marginTop: "auto",
+    justifyContent: "flex-start",
   },
   regulationGrid: {
     display: "grid",
@@ -900,7 +997,16 @@ const parts = [
   },
 ] as const;
 
-const posts = [
+type BlogPost = {
+  image: string;
+  title: string;
+  excerpt: string;
+  category?: string;
+  date?: string;
+  readTime?: string;
+};
+
+const posts: readonly BlogPost[] = [
   {
     /*category: "設計札記",*/
     /*date: "06 Jun",*/
@@ -1174,6 +1280,12 @@ export function App() {
 
       <main>
         <section className={styles.hero} id="hero" aria-labelledby="hero-title">
+          <div className={styles.heroScrapbookLayer} aria-hidden="true">
+            <span className={`${styles.scrapbookTape} ${styles.scrapbookTapeOne}`} />
+            <span className={`${styles.scrapbookTape} ${styles.scrapbookTapeTwo}`} />
+            <span className={`${styles.scrapbookDots} ${styles.scrapbookDotsOne}`} />
+            <span className={`${styles.scrapbookRule} ${styles.scrapbookRuleOne}`} />
+          </div>
           <div className={styles.heroInner}>
             <div className={styles.heroCopy}>
               <div>
@@ -1345,21 +1457,41 @@ export function App() {
                     <img className={styles.blogImage} src={post.image} alt="" />
                   </CardPreview>
                   <div className={styles.blogBody}>
-                    <div>
-                      <div className={styles.blogMeta}>
-                        <Badge appearance="tint">{post.category}</Badge>
-                        <Badge appearance="outline">{post.date}</Badge>
-                      </div>
+                    <div className={styles.blogContent}>
                       <CardHeader
-                        image={<DocumentBulletList24Regular />}
-                        header={<Subtitle1 as="h3">{post.title}</Subtitle1>}
-                        description={post.readTime}
+                        className={styles.blogHeader}
+                        image={
+                          <span className={styles.blogHeaderIcon} aria-hidden="true">
+                            <DocumentBulletList24Regular />
+                          </span>
+                        }
+                        header={
+                          <Subtitle1 as="h3" className={styles.blogTitle}>
+                            {post.title}
+                          </Subtitle1>
+                        }
+                        description={
+                          post.category || post.date || post.readTime ? (
+                            <span className={styles.blogMetaLine}>
+                              {post.category ? <Badge appearance="tint">{post.category}</Badge> : null}
+                              {post.date ? <Text as="span">{post.date}</Text> : null}
+                              {post.readTime ? (
+                                <>
+                                  <Text as="span" className={styles.blogDot}>
+                                    /
+                                  </Text>
+                                  <Text as="span">{post.readTime}</Text>
+                                </>
+                              ) : null}
+                            </span>
+                          ) : undefined
+                        }
                       />
                       <Text as="p" className={styles.cardCopy}>
                         {post.excerpt}
                       </Text>
                     </div>
-                    <CardFooter>
+                    <CardFooter className={styles.blogFooter}>
                       <Button appearance="subtle" icon={<BookOpen24Regular />}>
                         閱讀
                       </Button>
