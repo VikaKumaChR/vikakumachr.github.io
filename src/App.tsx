@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from "react";
 import {
   Badge,
   Button,
@@ -337,13 +337,13 @@ const useStyles = makeStyles({
   },
   heroLaceTopRight: {
     top: 0,
-    right: 0,
-    width: "clamp(168px, 14vw, 248px)",
+    right: "-22px",
+    width: "clamp(196px, 15.8vw, 284px)",
     transform: "rotate(0deg)",
     "@media (max-width: 860px)": {
       top: 0,
-      right: 0,
-      width: "148px",
+      right: "-14px",
+      width: "172px",
       opacity: "var(--heroLaceMobileOpacity)",
     },
   },
@@ -532,6 +532,21 @@ const useStyles = makeStyles({
     cursor: "default",
     pointerEvents: "auto",
     userSelect: "none",
+  },
+  protectedImage: {
+    userSelect: "none",
+    WebkitUserSelect: "none",
+    WebkitUserDrag: "none",
+  },
+  mediaGuard: {
+    position: "absolute",
+    zIndex: 1,
+    inset: 0,
+    backgroundColor: "transparent",
+    cursor: "default",
+    pointerEvents: "auto",
+    userSelect: "none",
+    WebkitUserSelect: "none",
   },
   partGrid: {
     gridColumn: "1 / -1",
@@ -771,6 +786,7 @@ const useStyles = makeStyles({
   },
   albumOverlay: {
     position: "absolute",
+    zIndex: 2,
     right: 0,
     bottom: 0,
     left: 0,
@@ -778,6 +794,7 @@ const useStyles = makeStyles({
     gap: "5px",
     padding: "18px",
     background: "linear-gradient(180deg, transparent, rgba(31, 24, 48, 0.78))",
+    pointerEvents: "none",
   },
   albumMeta: {
     color: "rgba(255,255,255,0.82)",
@@ -872,6 +889,7 @@ const useStyles = makeStyles({
     },
   },
   blogPreview: {
+    position: "relative",
     backgroundColor: "var(--imageSurface)",
   },
   blogImage: {
@@ -1251,6 +1269,17 @@ export function App() {
     }
   };
 
+  const preventMediaContextMenu = (event: MouseEvent<HTMLElement>) => {
+    const target = event.target;
+
+    if (
+      target instanceof Element &&
+      target.closest("img, [data-media-guard='true'], [data-protect-media='true']")
+    ) {
+      event.preventDefault();
+    }
+  };
+
   const navItems = [
     { id: "hero", label: "首頁" },
     { id: "charts", label: "圖件" },
@@ -1262,6 +1291,7 @@ export function App() {
     <FluentProvider
       theme={theme}
       className={mergeClasses(styles.shell, themeSettling ? "theme-settling" : undefined)}
+      onContextMenu={preventMediaContextMenu}
       style={
         {
           colorScheme: mode,
@@ -1271,8 +1301,8 @@ export function App() {
           "--heroWarmGlow": mode === "dark" ? "rgba(198, 186, 224, 0.12)" : "rgba(236, 224, 241, 0.72)",
           "--heroGridLine": mode === "dark" ? "rgba(198, 186, 224, 0.055)" : "rgba(198, 186, 224, 0.16)",
           "--heroLine": mode === "dark" ? "rgba(222, 213, 239, 0.14)" : "rgba(113, 101, 144, 0.16)",
-          "--heroLaceOpacity": mode === "dark" ? "0.32" : "0.42",
-          "--heroLaceMobileOpacity": mode === "dark" ? "0.22" : "0.3",
+          "--heroLaceOpacity": mode === "dark" ? "0.38" : "0.48",
+          "--heroLaceMobileOpacity": mode === "dark" ? "0.26" : "0.34",
           "--heroLaceFilter": mode === "dark" ? "saturate(0.78) brightness(0.86)" : "saturate(0.86)",
           "--heroGuideOpacity": "1",
           "--heroGuideMobileOpacity": "1",
@@ -1352,9 +1382,9 @@ export function App() {
 
       <main>
         <section className={styles.hero} id="hero" aria-labelledby="hero-title">
-          <img className={styles.heroGuideLeftEdge} src={heroGuideLeft} alt="" aria-hidden="true" />
+          <img className={mergeClasses(styles.heroGuideLeftEdge, styles.protectedImage)} src={heroGuideLeft} alt="" aria-hidden="true" draggable={false} />
           <div className={styles.heroScrapbookLayer} aria-hidden="true">
-            <img className={mergeClasses(styles.heroLaceDecor, styles.heroLaceTopRight)} src={heroLaceTopRight} alt="" />
+            <img className={mergeClasses(styles.heroLaceDecor, styles.heroLaceTopRight, styles.protectedImage)} src={heroLaceTopRight} alt="" draggable={false} />
             <span className={mergeClasses(styles.scrapbookDots, styles.scrapbookDotsOne)} />
           </div>
           <div className={styles.heroInner}>
@@ -1377,14 +1407,14 @@ export function App() {
             <aside className={styles.heroArtStage} aria-label="维嘉首頁立繪舞台">
               <div className={styles.heroArtBackdrop} aria-hidden="true" />
               <div className={styles.heroCollageLayer} aria-hidden="true">
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelOne)} src={lifePanel01} alt="" />
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelTwo)} src={lifePanel02} alt="" />
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelThree)} src={lifePanel03} alt="" />
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelFour)} src={lifePanel04} alt="" />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelOne, styles.protectedImage)} src={lifePanel01} alt="" draggable={false} />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelTwo, styles.protectedImage)} src={lifePanel02} alt="" draggable={false} />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelThree, styles.protectedImage)} src={lifePanel03} alt="" draggable={false} />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelFour, styles.protectedImage)} src={lifePanel04} alt="" draggable={false} />
               </div>
               <div className={styles.heroFigureFrame} onContextMenu={(event) => event.preventDefault()}>
                 <img
-                  className={styles.heroArtImage}
+                  className={mergeClasses(styles.heroArtImage, styles.protectedImage)}
                   src={heroFigure}
                   alt="维嘉的淡紫色角色立繪"
                   draggable={false}
@@ -1466,8 +1496,10 @@ export function App() {
                       onClick={() => setSelectedChart(item.id)}
                       aria-pressed={isActive}
                       aria-label={`查看 ${item.title}`}
+                      data-protect-media="true"
                     >
-                      <img className={styles.albumImage} src={item.image} alt="" />
+                      <img className={mergeClasses(styles.albumImage, styles.protectedImage)} src={item.image} alt="" draggable={false} />
+                      <span className={styles.mediaGuard} data-media-guard="true" aria-hidden="true" />
                       <span className={styles.albumOverlay}>
                         <span className={styles.albumMeta}>{item.meta}</span>
                         <Title3 as="span" className={styles.albumTitle}>
@@ -1537,8 +1569,9 @@ export function App() {
             <div className={styles.blogGrid}>
               {posts.map((post) => (
                 <Card key={post.title} className={styles.blogCard}>
-                  <CardPreview className={styles.blogPreview}>
-                    <img className={styles.blogImage} src={post.image} alt="" />
+                  <CardPreview className={styles.blogPreview} data-protect-media="true">
+                    <img className={mergeClasses(styles.blogImage, styles.protectedImage)} src={post.image} alt="" draggable={false} />
+                    <span className={styles.mediaGuard} data-media-guard="true" aria-hidden="true" />
                   </CardPreview>
                   <div className={styles.blogBody}>
                     <div className={styles.blogContent}>
