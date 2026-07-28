@@ -49,6 +49,7 @@ import characterScene from "../Image/VikaKumaChR_Scene.png";
 import heroFigurePlaceholder from "../Image/VikaKumaChR_Stand.png";
 import heroGuideLeft from "../Image/MainPageComponent/4_guide.png";
 import heroLaceTopRight from "../Image/MainPageComponent/MainPageCorner_TopRight.webp";
+import brandAvatar from "../Image/BrandAvatar.png";
 
 // 首頁半身立繪替換入口：把上方 import 指向你的透明 PNG，再讓 heroFigure 使用它。
 const heroFigure = heroFigurePlaceholder;
@@ -1716,7 +1717,7 @@ export function App() {
         <Link className={styles.brand} href="#hero" appearance="subtle" aria-label={copy.aria.home}>
           <span className={styles.brandMark} aria-hidden="true">
             {/* QQ 人插圖入口：將下方文字替換為 <img className={styles.brandAvatar} src={你的圖片} alt="" />。 */}
-            VK
+            <img className={styles.brandAvatar} src={brandAvatar} alt="" />
           </span>
           <span className={styles.brandCopy}>
             <span className={styles.brandName}>{copy.appTitle}</span>
