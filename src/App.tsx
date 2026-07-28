@@ -8,6 +8,7 @@ import {
   CardPreview,
   FluentProvider,
   Link,
+  PopoverSurface,
   Subtitle1,
   Text,
   Title1,
@@ -297,12 +298,19 @@ const useStyles = makeStyles({
       pointerEvents: "none",
     },
     "@media (max-width: 860px)": {
-      minHeight: "100svh",
+      minHeight: "calc(100svh - 118px)",
       alignItems: "start",
       paddingTop: "clamp(28px, 5vw, 42px)",
       paddingRight: "clamp(18px, 4vw, 34px)",
       paddingBottom: "34px",
       paddingLeft: "clamp(18px, 4vw, 34px)",
+    },
+    "@media (max-width: 520px)": {
+      minHeight: "calc(100svh - 112px)",
+      paddingTop: "24px",
+      paddingRight: "clamp(16px, 5vw, 22px)",
+      paddingBottom: "24px",
+      paddingLeft: "clamp(16px, 5vw, 22px)",
     },
   },
   heroInner: {
@@ -322,6 +330,9 @@ const useStyles = makeStyles({
     "@media (max-width: 860px)": {
       alignItems: "start",
       gap: "16px",
+    },
+    "@media (max-width: 520px)": {
+      gap: "10px",
     },
   },
   heroScrapbookLayer: {
@@ -393,11 +404,19 @@ const useStyles = makeStyles({
       width: "clamp(270px, 42vw, 360px)",
       opacity: "var(--heroGuideMobileOpacity)",
     },
+    "@media (max-width: 520px)": {
+      top: "clamp(226px, 25vh, 252px)",
+      width: "clamp(300px, 82vw, 350px)",
+      left: "-62px",
+    },
   },
   heroCopy: {
     display: "grid",
     gap: "22px",
     maxWidth: "660px",
+    "@media (max-width: 520px)": {
+      gap: "16px",
+    },
   },
   eyebrow: {
     margin: 0,
@@ -417,7 +436,8 @@ const useStyles = makeStyles({
       fontSize: "clamp(3.7rem, 10.4vw, 5.35rem)",
     },
     "@media (max-width: 520px)": {
-      fontSize: "3.35rem",
+      fontSize: "clamp(3.05rem, 13.2vw, 3.42rem)",
+      maxWidth: "8.6ch",
     },
   },
   heroLead: {
@@ -425,6 +445,11 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground2,
     fontSize: tokens.fontSizeBase500,
     lineHeight: tokens.lineHeightBase500,
+    "@media (max-width: 520px)": {
+      maxWidth: "31ch",
+      fontSize: tokens.fontSizeBase400,
+      lineHeight: tokens.lineHeightBase400,
+    },
   },
   heroArtStage: {
     position: "relative",
@@ -452,11 +477,14 @@ const useStyles = makeStyles({
     },
     "@media (max-width: 860px)": {
       width: "100%",
-      minHeight: "clamp(390px, 60vw, 500px)",
+      minHeight: "clamp(276px, 60vw, 500px)",
       placeItems: "end center",
     },
     "@media (max-width: 520px)": {
-      minHeight: "380px",
+      minHeight: "clamp(308px, 78vw, 356px)",
+    },
+    "@media (max-width: 520px) and (max-height: 860px)": {
+      minHeight: "clamp(268px, 70vw, 316px)",
     },
   },
   heroArtBackdrop: {
@@ -481,6 +509,10 @@ const useStyles = makeStyles({
       inset: "0",
       opacity: 0.56,
     },
+    "@media (max-width: 520px)": {
+      inset: "-2% -2% 0",
+      opacity: 0.5,
+    },
   },
   heroLifePanel: {
     position: "absolute",
@@ -499,6 +531,9 @@ const useStyles = makeStyles({
     "@media (max-width: 640px)": {
       width: "clamp(78px, 25vw, 112px)",
       opacity: 0.4,
+    },
+    "@media (max-width: 520px)": {
+      width: "clamp(72px, 22vw, 96px)",
     },
   },
   heroLifePanelOne: {
@@ -570,8 +605,12 @@ const useStyles = makeStyles({
       maxHeight: "clamp(350px, 54vh, 480px)",
     },
     "@media (max-width: 520px)": {
-      width: "min(68vw, 320px)",
-      maxHeight: "380px",
+      width: "min(60vw, 252px)",
+      maxHeight: "330px",
+    },
+    "@media (max-width: 520px) and (max-height: 860px)": {
+      width: "min(56vw, 232px)",
+      maxHeight: "300px",
     },
   },
   heroArtImage: {
@@ -628,8 +667,12 @@ const useStyles = makeStyles({
     },
     "@media (max-width: 680px)": {
       gridTemplateColumns: "1fr",
-      marginTop: "22px",
+      marginTop: "-18px",
       paddingTop: 0,
+    },
+    "@media (max-width: 520px)": {
+      marginTop: "-18px",
+      gap: "12px",
     },
   },
   partCard: {
@@ -1096,6 +1139,24 @@ const useStyles = makeStyles({
       flexDirection: "column",
     },
   },
+  workPopoverSurface: {
+    position: "fixed",
+    zIndex: 1000,
+    left: "50%",
+    bottom: "max(24px, calc(env(safe-area-inset-bottom) + 18px))",
+    transform: "translateX(-50%)",
+    maxWidth: "min(320px, calc(100vw - 32px))",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    pointerEvents: "none",
+    padding: "12px 16px",
+    borderRadius: tokens.borderRadiusMedium,
+    color: tokens.colorNeutralForeground1,
+    backgroundColor: tokens.colorNeutralBackground1,
+    boxShadow: tokens.shadow16,
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+  },
 });
 
 type Locale = "zh-TW" | "zh-CN";
@@ -1198,6 +1259,8 @@ const partIcons: Record<PartId, ReactElement> = {
   blog: <BookOpen24Regular />,
   regulation: <GlobeShield24Regular />,
 };
+
+const workInProgressText = "Work in progress...";
 
 const contentByLocale: Record<Locale, LocaleContent> = {
   "zh-TW": {
@@ -1439,8 +1502,10 @@ export function App() {
   const [selectedChart, setSelectedChart] = useState<ChartId>("collage");
   const [shareHint, setShareHint] = useState(contentByLocale["zh-TW"].actions.share);
   const [themeSettling, setThemeSettling] = useState(false);
+  const [workPopoverOpen, setWorkPopoverOpen] = useState(false);
   const navigationLockUntil = useRef(0);
   const themeSettleTimer = useRef<number | null>(null);
+  const workPopoverTimer = useRef<number | null>(null);
   const albumViewportRef = useRef<HTMLDivElement | null>(null);
 
   const theme = mode === "dark" ? darkTheme : lightTheme;
@@ -1463,6 +1528,9 @@ export function App() {
     return () => {
       if (themeSettleTimer.current !== null) {
         window.clearTimeout(themeSettleTimer.current);
+      }
+      if (workPopoverTimer.current !== null) {
+        window.clearTimeout(workPopoverTimer.current);
       }
     };
   }, []);
@@ -1582,6 +1650,18 @@ export function App() {
     } catch {
       setShareHint(copy.actions.share);
     }
+  };
+
+  const showWorkInProgress = () => {
+    if (workPopoverTimer.current !== null) {
+      window.clearTimeout(workPopoverTimer.current);
+    }
+
+    setWorkPopoverOpen(true);
+    workPopoverTimer.current = window.setTimeout(() => {
+      setWorkPopoverOpen(false);
+      workPopoverTimer.current = null;
+    }, 1800);
   };
 
   const preventMediaContextMenu = (event: MouseEvent<HTMLElement>) => {
@@ -1932,6 +2012,7 @@ export function App() {
                         className={styles.blogReadButton}
                         appearance="primary"
                         icon={<BookOpen24Regular />}
+                        onClick={showWorkInProgress}
                         aria-label={copy.sections.readPost(post.title)}
                       >
                         {copy.sections.read}
@@ -1976,6 +2057,12 @@ export function App() {
           </div>
         </section>
       </main>
+
+      {workPopoverOpen ? (
+        <PopoverSurface className={styles.workPopoverSurface} role="status" aria-live="polite" aria-atomic="true">
+          <Text weight="semibold">{workInProgressText}</Text>
+        </PopoverSurface>
+      ) : null}
 
       <footer className={styles.footer}>
         <Text weight="semibold">{copy.footer.name}</Text>
