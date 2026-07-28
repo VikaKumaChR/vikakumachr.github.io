@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactElement } from "react";
 import {
   Badge,
   Button,
@@ -32,6 +32,7 @@ import {
   PanelRightGallery24Regular,
   Person24Regular,
   Share24Regular,
+  Translate24Regular,
   WeatherMoon24Regular,
   WeatherSunny24Regular,
 } from "@fluentui/react-icons";
@@ -232,12 +233,27 @@ const useStyles = makeStyles({
     display: "inline-flex",
     alignItems: "center",
     gap: "6px",
+    "@media (max-width: 430px)": {
+      gap: "4px",
+    },
   },
   actionButton: {
     minWidth: "40px",
     width: "40px",
     height: "40px",
     borderRadius: "8px",
+  },
+  languageButton: {
+    width: "auto",
+    minWidth: "58px",
+    paddingRight: "10px",
+    paddingLeft: "10px",
+    fontWeight: tokens.fontWeightSemibold,
+    "@media (max-width: 430px)": {
+      minWidth: "52px",
+      paddingRight: "8px",
+      paddingLeft: "8px",
+    },
   },
   themeButton: {
     color: tokens.colorBrandForeground1,
@@ -271,18 +287,22 @@ const useStyles = makeStyles({
     ":after": {
       content: '""',
       position: "absolute",
-      zIndex: 0,
+      zIndex: 1,
       right: 0,
       bottom: 0,
       left: 0,
-      height: "clamp(128px, 18vh, 190px)",
-      background: "linear-gradient(180deg, transparent 0%, var(--heroBase) 36%, var(--colorNeutralBackground1) 100%)",
+      height: "clamp(170px, 24vh, 250px)",
+      background:
+        "linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--heroBase) 58%, transparent) 58%, var(--colorNeutralBackground1) 100%)",
       pointerEvents: "none",
     },
     "@media (max-width: 860px)": {
-      minHeight: "auto",
-      paddingTop: "42px",
-      paddingBottom: "48px",
+      minHeight: "100svh",
+      alignItems: "start",
+      paddingTop: "clamp(28px, 5vw, 42px)",
+      paddingRight: "clamp(18px, 4vw, 34px)",
+      paddingBottom: "34px",
+      paddingLeft: "clamp(18px, 4vw, 34px)",
     },
   },
   heroInner: {
@@ -297,6 +317,11 @@ const useStyles = makeStyles({
     gap: "clamp(24px, 4.4vw, 58px)",
     "@media (max-width: 980px)": {
       gridTemplateColumns: "1fr",
+      gap: "22px",
+    },
+    "@media (max-width: 860px)": {
+      alignItems: "start",
+      gap: "16px",
     },
   },
   heroScrapbookLayer: {
@@ -351,7 +376,7 @@ const useStyles = makeStyles({
     position: "absolute",
     zIndex: 1,
     left: 0,
-    top: "clamp(396px, 54vh, 500px)",
+    top: "clamp(280px, 38vh, 360px)",
     width: "clamp(320px, 25vw, 440px)",
     height: "auto",
     display: "block",
@@ -359,11 +384,13 @@ const useStyles = makeStyles({
     opacity: "var(--heroGuideOpacity)",
     filter: "var(--heroGuideFilter)",
     mixBlendMode: "normal",
+    WebkitMaskImage: "linear-gradient(180deg, #000 0%, #000 70%, transparent 100%)",
+    maskImage: "linear-gradient(180deg, #000 0%, #000 70%, transparent 100%)",
     pointerEvents: "none",
     userSelect: "none",
     "@media (max-width: 860px)": {
-      top: "320px",
-      width: "260px",
+      top: "clamp(228px, 30vh, 300px)",
+      width: "clamp(270px, 42vw, 360px)",
       opacity: "var(--heroGuideMobileOpacity)",
     },
   },
@@ -386,6 +413,9 @@ const useStyles = makeStyles({
     fontSize: "clamp(3.7rem, 7.5vw, 7.4rem)",
     lineHeight: "0.92",
     overflowWrap: "anywhere",
+    "@media (max-width: 860px)": {
+      fontSize: "clamp(3.7rem, 10.4vw, 5.35rem)",
+    },
     "@media (max-width: 520px)": {
       fontSize: "3.35rem",
     },
@@ -418,7 +448,12 @@ const useStyles = makeStyles({
       filter: "blur(18px)",
     },
     "@media (max-width: 980px)": {
-      minHeight: "480px",
+      minHeight: "clamp(420px, 58vw, 520px)",
+    },
+    "@media (max-width: 860px)": {
+      width: "100%",
+      minHeight: "clamp(390px, 60vw, 500px)",
+      placeItems: "end center",
     },
     "@media (max-width: 520px)": {
       minHeight: "380px",
@@ -438,6 +473,10 @@ const useStyles = makeStyles({
     inset: "-4% -12% 0 -18%",
     pointerEvents: "none",
     userSelect: "none",
+    "@media (max-width: 860px)": {
+      inset: "0 4% 0",
+      opacity: 0.68,
+    },
     "@media (max-width: 640px)": {
       inset: "0",
       opacity: 0.56,
@@ -453,6 +492,10 @@ const useStyles = makeStyles({
     mixBlendMode: "multiply",
     filter: "saturate(0.94) drop-shadow(0 18px 28px rgba(82, 68, 111, 0.16))",
     transformOrigin: "center",
+    "@media (max-width: 860px)": {
+      width: "clamp(92px, 18vw, 140px)",
+      opacity: 0.55,
+    },
     "@media (max-width: 640px)": {
       width: "clamp(78px, 25vw, 112px)",
       opacity: 0.4,
@@ -462,6 +505,10 @@ const useStyles = makeStyles({
     top: "10%",
     left: "1%",
     transform: "rotate(-8deg)",
+    "@media (max-width: 860px)": {
+      top: "9%",
+      left: "18%",
+    },
     "@media (max-width: 640px)": {
       top: "12%",
       left: "8%",
@@ -471,6 +518,10 @@ const useStyles = makeStyles({
     top: "7%",
     right: "-1%",
     transform: "rotate(7deg)",
+    "@media (max-width: 860px)": {
+      top: "10%",
+      right: "14%",
+    },
     "@media (max-width: 640px)": {
       top: "18%",
       right: "8%",
@@ -480,6 +531,10 @@ const useStyles = makeStyles({
     top: "46%",
     left: "-8%",
     transform: "rotate(4deg)",
+    "@media (max-width: 860px)": {
+      top: "44%",
+      left: "14%",
+    },
     "@media (max-width: 640px)": {
       top: "54%",
       left: "8%",
@@ -489,6 +544,10 @@ const useStyles = makeStyles({
     right: "-7%",
     bottom: "15%",
     transform: "rotate(-6deg)",
+    "@media (max-width: 860px)": {
+      right: "15%",
+      bottom: "18%",
+    },
     "@media (max-width: 640px)": {
       right: "8%",
       bottom: "18%",
@@ -506,8 +565,12 @@ const useStyles = makeStyles({
     "@media (max-width: 980px)": {
       maxHeight: "480px",
     },
+    "@media (max-width: 860px)": {
+      width: "min(52vw, 360px)",
+      maxHeight: "clamp(350px, 54vh, 480px)",
+    },
     "@media (max-width: 520px)": {
-      width: "min(96%, 340px)",
+      width: "min(68vw, 320px)",
       maxHeight: "380px",
     },
   },
@@ -557,9 +620,15 @@ const useStyles = makeStyles({
     gap: "16px",
     marginTop: "clamp(-112px, -9vh, -72px)",
     paddingTop: "clamp(10px, 2vh, 18px)",
-    "@media (max-width: 900px)": {
+    "@media (min-width: 681px) and (max-width: 900px)": {
+      gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+      gap: "12px",
+      marginTop: "clamp(-132px, -16vw, -84px)",
+      paddingTop: "8px",
+    },
+    "@media (max-width: 680px)": {
       gridTemplateColumns: "1fr",
-      marginTop: "28px",
+      marginTop: "22px",
       paddingTop: 0,
     },
   },
@@ -1029,59 +1098,29 @@ const useStyles = makeStyles({
   },
 });
 
-const charts = [
-  {
-    id: "collage",
-    title: "四格拼貼",
-    meta: "角色索引",
-    image: characterCollage,
-    alt: "维嘉多張處理後插圖組成的四格拼貼",
-    summary: "多張素材先收進同一入口，作為角色檔案總覽。",
-    detail: "拼貼負責建立角色檔案的第一層：表情、姿態、日常片段與後續補檔線索先被收束在一起。",
-  },
-  {
-    id: "portrait",
-    title: "肖像立繪",
-    meta: "身份識別",
-    image: characterPortrait,
-    alt: "维嘉的處理後肖像圖",
-    summary: "紫髮、淺色服裝和柔和表情是最穩定的角色識別點。",
-    detail: "肖像圖承擔身份錨點，是檔案中最適合放在角色資料頁的主要圖件。",
-  },
-  {
-    id: "scene",
-    title: "場景氣質",
-    meta: "世界氣質",
-    image: characterScene,
-    alt: "维嘉站在淡藍紫色場景中的處理後插圖",
-    summary: "淡藍背景、低飽和紫和留白共同形成安靜、柔光的敘事空間。",
-    detail: "場景圖承接首頁的故事感，讓角色資料像章節一樣逐步展開。",
-  },
-] as const;
+type Locale = "zh-TW" | "zh-CN";
+type ChartId = "collage" | "portrait" | "scene";
+type PartId = "charts" | "blog" | "regulation";
+type SectionId = "hero" | PartId;
+type PostImageId = "characterScene" | "characterCollage" | "characterPortrait";
 
-const parts = [
-  {
-    id: "charts",
-    title: "圖件整理",
-    copy: "整理角色圖件與立繪。",
-    icon: <PanelRightGallery24Regular />,
-  },
-  {
-    id: "blog",
-    title: "創作札記",
-    copy: "保存設定札記與創作紀錄。",
-    icon: <BookOpen24Regular />,
-  },
-  {
-    id: "regulation",
-    title: "使用聲明",
-    copy: "查看使用聲明與來源資訊。",
-    icon: <GlobeShield24Regular />,
-  },
-] as const;
+type ChartCopy = {
+  id: ChartId;
+  title: string;
+  meta: string;
+  alt: string;
+  summary: string;
+  detail: string;
+};
 
-type BlogPost = {
-  image: string;
+type PartCopy = {
+  id: PartId;
+  title: string;
+  copy: string;
+};
+
+type BlogPostCopy = {
+  image: PostImageId;
   title: string;
   excerpt: string;
   category?: string;
@@ -1089,39 +1128,293 @@ type BlogPost = {
   readTime?: string;
 };
 
-const posts: readonly BlogPost[] = [
-  {
-    /*category: "設計札記",*/
-    /*date: "06 Jun",*/
-    /*readTime: "4 min read",*/
-    image: characterScene,
-    title: "维嘉的頁面為什麼需要故事入口",
-    excerpt: "首頁不再只放照片，而是把角色氣質、素材線索和閱讀動線組成一個開場敘事。",
-  },
-  {
-    /*category: "圖件整理",*/
-    /*date: "28 May",*/
-    /*readTime: "2 min read",*/
-    image: characterCollage,
-    title: "三張圖件如何構成维嘉的資料線",
-    excerpt: "拼貼、肖像與場景被安排成連續索引，讓角色印象從總覽延伸到細節。",
-  },
-  {
-    /*category: "角色觀察",*/
-    /*date: "15 May",*/
-    /*readTime: "3 min read",*/
-    image: characterPortrait,
-    title: "紫髮、冰藍與白色服裝的識別作用",
-    excerpt: "從處理後素材裡提取穩定元素，用於角色檔案、貼文封面與後續規範文字。",
-  },
-] as const;
+type LocaleContent = {
+  appTitle: string;
+  htmlLang: string;
+  brandMeta: string;
+  navItems: readonly { id: SectionId; label: string }[];
+  hero: {
+    titleLine1: string;
+    titleLine2: string;
+    lead: string;
+    artLabel: string;
+    figureAlt: string;
+    partLabel: string;
+  };
+  actions: {
+    share: string;
+    copied: string;
+    shareText: string;
+    themeToLight: string;
+    themeToDark: string;
+    languageShort: string;
+    languageTitle: string;
+  };
+  aria: {
+    header: string;
+    home: string;
+    nav: string;
+    actions: string;
+  };
+  sections: {
+    chartsTitle: string;
+    chartsCopy: string;
+    chartsCount: (count: number) => string;
+    albumControls: string;
+    previousChart: string;
+    nextChart: string;
+    viewChart: (title: string) => string;
+    blogTitle: string;
+    blogCopy: string;
+    read: string;
+    readPost: (title: string) => string;
+    regulationTitle: string;
+    regulationCopy: string;
+  };
+  charts: readonly ChartCopy[];
+  parts: readonly PartCopy[];
+  posts: readonly BlogPostCopy[];
+  regulation: readonly { term: string; value: string }[];
+  footer: {
+    name: string;
+    back: string;
+  };
+};
 
-const regulation = [
-  { term: "畫師媽咪", value: "几维不是猕猴桃" },
-  { term: "角色來源", value: "個人角色：维嘉" },
-  { term: "展示範圍", value: "本頁僅展示處理後公開素材與整理文字" },
-  { term: "使用聲明", value: "未經確認請勿轉載、訓練AI、二次分發、二改或商用" },
-] as const;
+const chartImages: Record<ChartId, string> = {
+  collage: characterCollage,
+  portrait: characterPortrait,
+  scene: characterScene,
+};
+
+const postImages: Record<PostImageId, string> = {
+  characterScene,
+  characterCollage,
+  characterPortrait,
+};
+
+const partIcons: Record<PartId, ReactElement> = {
+  charts: <PanelRightGallery24Regular />,
+  blog: <BookOpen24Regular />,
+  regulation: <GlobeShield24Regular />,
+};
+
+const contentByLocale: Record<Locale, LocaleContent> = {
+  "zh-TW": {
+    appTitle: "VkC's Blog",
+    htmlLang: "zh-Hant-TW",
+    brandMeta: "角色部落格",
+    navItems: [
+      { id: "hero", label: "首頁" },
+      { id: "charts", label: "圖件" },
+      { id: "blog", label: "札記" },
+      { id: "regulation", label: "聲明" },
+    ],
+    hero: {
+      titleLine1: "维嘉VkC",
+      titleLine2: "Blog",
+      lead: "歡迎訪問^^ Welcome to my world~",
+      artLabel: "维嘉首頁立繪舞台",
+      figureAlt: "维嘉的淡紫色角色立繪",
+      partLabel: "特色頁面入口",
+    },
+    actions: {
+      share: "分享此頁",
+      copied: "連結已複製",
+      shareText: "维嘉原創角色部落格",
+      themeToLight: "切換到亮色",
+      themeToDark: "切換到暗色",
+      languageShort: "简",
+      languageTitle: "切換為簡體中文",
+    },
+    aria: {
+      header: "部落格導覽",
+      home: "回到首頁",
+      nav: "主要導覽",
+      actions: "頁面操作",
+    },
+    sections: {
+      chartsTitle: "圖件",
+      chartsCopy: "维嘉的圖件被放進同一條圖冊軌道：拼貼、肖像與場景會依序成為主位，保留前後素材的連續感。",
+      chartsCount: (count) => `${count} 件圖件`,
+      albumControls: "圖冊控制",
+      previousChart: "上一張",
+      nextChart: "下一張",
+      viewChart: (title) => `查看 ${title}`,
+      blogTitle: "札記",
+      blogCopy: "整理設定札記、圖件歸檔與角色觀察。每篇貼文都有封面、分類與摘要。",
+      read: "閱讀",
+      readPost: (title) => `閱讀：${title}`,
+      regulationTitle: "使用聲明",
+      regulationCopy: "這裡只保留必要聲明：素材來源、原作者、展示範圍與使用限制。關於區不再堆疊額外敘述。",
+    },
+    charts: [
+      {
+        id: "collage",
+        title: "四格拼貼",
+        meta: "角色索引",
+        alt: "维嘉多張處理後插圖組成的四格拼貼",
+        summary: "多張素材先收進同一入口，作為角色檔案總覽。",
+        detail: "拼貼負責建立角色檔案的第一層：表情、姿態、日常片段與後續補檔線索先被收束在一起。",
+      },
+      {
+        id: "portrait",
+        title: "肖像立繪",
+        meta: "身份識別",
+        alt: "维嘉的處理後肖像圖",
+        summary: "紫髮、淺色服裝和柔和表情是最穩定的角色識別點。",
+        detail: "肖像圖承擔身份錨點，是檔案中最適合放在角色資料頁的主要圖件。",
+      },
+      {
+        id: "scene",
+        title: "場景氣質",
+        meta: "世界氣質",
+        alt: "维嘉站在淡藍紫色場景中的處理後插圖",
+        summary: "淡藍背景、低飽和紫和留白共同形成安靜、柔光的敘事空間。",
+        detail: "場景圖承接首頁的故事感，讓角色資料像章節一樣逐步展開。",
+      },
+    ],
+    parts: [
+      { id: "charts", title: "圖件整理", copy: "整理角色圖件與立繪。" },
+      { id: "blog", title: "創作札記", copy: "保存設定札記與創作紀錄。" },
+      { id: "regulation", title: "使用聲明", copy: "查看使用聲明與來源資訊。" },
+    ],
+    posts: [
+      {
+        image: "characterScene",
+        title: "维嘉的頁面為什麼需要故事入口",
+        excerpt: "首頁不再只放照片，而是把角色氣質、素材線索和閱讀動線組成一個開場敘事。",
+      },
+      {
+        image: "characterCollage",
+        title: "三張圖件如何構成维嘉的資料線",
+        excerpt: "拼貼、肖像與場景被安排成連續索引，讓角色印象從總覽延伸到細節。",
+      },
+      {
+        image: "characterPortrait",
+        title: "紫髮、冰藍與白色服裝的識別作用",
+        excerpt: "從處理後素材裡提取穩定元素，用於角色檔案、貼文封面與後續規範文字。",
+      },
+    ],
+    regulation: [
+      { term: "畫師媽咪", value: "几维不是猕猴桃" },
+      { term: "角色來源", value: "個人角色：维嘉" },
+      { term: "展示範圍", value: "本頁僅展示處理後公開素材與整理文字" },
+      { term: "使用聲明", value: "未經確認請勿轉載、訓練AI、二次分發、二改或商用" },
+    ],
+    footer: {
+      name: "VkC's Blog",
+      back: "返回首頁",
+    },
+  },
+  "zh-CN": {
+    appTitle: "VkC's Blog",
+    htmlLang: "zh-CN",
+    brandMeta: "角色博客",
+    navItems: [
+      { id: "hero", label: "首页" },
+      { id: "charts", label: "图件" },
+      { id: "blog", label: "札记" },
+      { id: "regulation", label: "声明" },
+    ],
+    hero: {
+      titleLine1: "维嘉VkC",
+      titleLine2: "Blog",
+      lead: "欢迎访问^^ Welcome to my world~",
+      artLabel: "维嘉首页立绘舞台",
+      figureAlt: "维嘉的淡紫色角色立绘",
+      partLabel: "特色页面入口",
+    },
+    actions: {
+      share: "分享此页",
+      copied: "链接已复制",
+      shareText: "维嘉原创角色博客",
+      themeToLight: "切换到亮色",
+      themeToDark: "切换到暗色",
+      languageShort: "繁",
+      languageTitle: "切换为繁体中文",
+    },
+    aria: {
+      header: "博客导航",
+      home: "回到首页",
+      nav: "主要导航",
+      actions: "页面操作",
+    },
+    sections: {
+      chartsTitle: "图件",
+      chartsCopy: "维嘉的图件被放进同一条图册轨道：拼贴、肖像与场景会依序成为主位，保留前后素材的连续感。",
+      chartsCount: (count) => `${count} 件图件`,
+      albumControls: "图册控制",
+      previousChart: "上一张",
+      nextChart: "下一张",
+      viewChart: (title) => `查看 ${title}`,
+      blogTitle: "札记",
+      blogCopy: "整理设定札记、图件归档与角色观察。每篇贴文都有封面、分类与摘要。",
+      read: "阅读",
+      readPost: (title) => `阅读：${title}`,
+      regulationTitle: "使用声明",
+      regulationCopy: "这里只保留必要声明：素材来源、原作者、展示范围与使用限制。关于区不再堆叠额外叙述。",
+    },
+    charts: [
+      {
+        id: "collage",
+        title: "四格拼贴",
+        meta: "角色索引",
+        alt: "维嘉多张处理后插图组成的四格拼贴",
+        summary: "多张素材先收进同一入口，作为角色档案总览。",
+        detail: "拼贴负责建立角色档案的第一层：表情、姿态、日常片段与后续补档线索先被收束在一起。",
+      },
+      {
+        id: "portrait",
+        title: "肖像立绘",
+        meta: "身份识别",
+        alt: "维嘉的处理后肖像图",
+        summary: "紫发、浅色服装和柔和表情是最稳定的角色识别点。",
+        detail: "肖像图承担身份锚点，是档案中最适合放在角色资料页的主要图件。",
+      },
+      {
+        id: "scene",
+        title: "场景气质",
+        meta: "世界气质",
+        alt: "维嘉站在淡蓝紫色场景中的处理后插图",
+        summary: "淡蓝背景、低饱和紫和留白共同形成安静、柔光的叙事空间。",
+        detail: "场景图承接首页的故事感，让角色资料像章节一样逐步展开。",
+      },
+    ],
+    parts: [
+      { id: "charts", title: "图件整理", copy: "整理角色图件与立绘。" },
+      { id: "blog", title: "创作札记", copy: "保存设定札记与创作记录。" },
+      { id: "regulation", title: "使用声明", copy: "查看使用声明与来源信息。" },
+    ],
+    posts: [
+      {
+        image: "characterScene",
+        title: "维嘉的页面为什么需要故事入口",
+        excerpt: "首页不再只放照片，而是把角色气质、素材线索和阅读动线组成一个开场叙事。",
+      },
+      {
+        image: "characterCollage",
+        title: "三张图件如何构成维嘉的资料线",
+        excerpt: "拼贴、肖像与场景被安排成连续索引，让角色印象从总览延伸到细节。",
+      },
+      {
+        image: "characterPortrait",
+        title: "紫发、冰蓝与白色服装的识别作用",
+        excerpt: "从处理后素材里提取稳定元素，用于角色档案、贴文封面与后续规范文字。",
+      },
+    ],
+    regulation: [
+      { term: "画师妈咪", value: "几维不是猕猴桃" },
+      { term: "角色来源", value: "个人角色：维嘉" },
+      { term: "展示范围", value: "本页仅展示处理后公开素材与整理文字" },
+      { term: "使用声明", value: "未经确认请勿转载、训练AI、二次分发、二改或商用" },
+    ],
+    footer: {
+      name: "VkC's Blog",
+      back: "返回首页",
+    },
+  },
+};
 
 export function App() {
   const styles = useStyles();
@@ -1132,9 +1425,19 @@ export function App() {
     }
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
-  const [activeSection, setActiveSection] = useState("hero");
-  const [selectedChart, setSelectedChart] = useState<(typeof charts)[number]["id"]>("collage");
-  const [shareHint, setShareHint] = useState("分享此頁");
+  const [locale, setLocale] = useState<Locale>(() => {
+    const stored = localStorage.getItem("locale");
+    return stored === "zh-CN" || stored === "zh-TW" ? stored : "zh-TW";
+  });
+  const copy = contentByLocale[locale];
+  const charts = copy.charts.map((item) => ({ ...item, image: chartImages[item.id] }));
+  const parts = copy.parts.map((part) => ({ ...part, icon: partIcons[part.id] }));
+  const posts = copy.posts.map((post) => ({ ...post, image: postImages[post.image] }));
+  const regulation = copy.regulation;
+  const navItems = copy.navItems;
+  const [activeSection, setActiveSection] = useState<SectionId>("hero");
+  const [selectedChart, setSelectedChart] = useState<ChartId>("collage");
+  const [shareHint, setShareHint] = useState(contentByLocale["zh-TW"].actions.share);
   const [themeSettling, setThemeSettling] = useState(false);
   const navigationLockUntil = useRef(0);
   const themeSettleTimer = useRef<number | null>(null);
@@ -1143,6 +1446,12 @@ export function App() {
   const theme = mode === "dark" ? darkTheme : lightTheme;
   const selectedChartIndex = charts.findIndex((item) => item.id === selectedChart);
   const selectedChartItem = charts[selectedChartIndex] ?? charts[0];
+
+  useEffect(() => {
+    document.documentElement.lang = copy.htmlLang;
+    document.title = copy.appTitle;
+    setShareHint(copy.actions.share);
+  }, [copy]);
 
   useEffect(() => {
     document.documentElement.style.colorScheme = mode;
@@ -1174,7 +1483,7 @@ export function App() {
   }, [selectedChart]);
 
   useEffect(() => {
-    const sectionIds = ["hero", "charts", "blog", "regulation"];
+    const sectionIds: SectionId[] = ["hero", "charts", "blog", "regulation"];
     let frame = 0;
 
     const updateActiveSection = () => {
@@ -1193,7 +1502,7 @@ export function App() {
       const current =
         sectionIds
           .map((id) => ({ id, top: document.getElementById(id)?.getBoundingClientRect().top }))
-          .filter((section): section is { id: string; top: number } => typeof section.top === "number")
+          .filter((section): section is { id: SectionId; top: number } => typeof section.top === "number")
           .filter((section) => section.top <= marker)
           .at(-1)?.id ?? "hero";
 
@@ -1232,7 +1541,13 @@ export function App() {
     }, 260);
   };
 
-  const navigateToSection = (section: string) => {
+  const toggleLocale = () => {
+    const nextLocale = locale === "zh-TW" ? "zh-CN" : "zh-TW";
+    setLocale(nextLocale);
+    localStorage.setItem("locale", nextLocale);
+  };
+
+  const navigateToSection = (section: SectionId) => {
     navigationLockUntil.current = Date.now() + 900;
     setActiveSection(section);
   };
@@ -1247,8 +1562,8 @@ export function App() {
 
   const sharePage = async () => {
     const sharePayload = {
-      title: "维嘉角色部落格",
-      text: "维嘉原創角色部落格",
+      title: copy.appTitle,
+      text: copy.actions.shareText,
       url: window.location.href,
     };
     const browserNavigator = navigator as Navigator & {
@@ -1262,10 +1577,10 @@ export function App() {
       }
 
       await navigator.clipboard.writeText(window.location.href);
-      setShareHint("連結已複製");
-      window.setTimeout(() => setShareHint("分享此頁"), 1600);
+      setShareHint(copy.actions.copied);
+      window.setTimeout(() => setShareHint(copy.actions.share), 1600);
     } catch {
-      setShareHint("分享此頁");
+      setShareHint(copy.actions.share);
     }
   };
 
@@ -1279,13 +1594,6 @@ export function App() {
       event.preventDefault();
     }
   };
-
-  const navItems = [
-    { id: "hero", label: "首頁" },
-    { id: "charts", label: "圖件" },
-    { id: "blog", label: "札記" },
-    { id: "regulation", label: "聲明" },
-  ] as const;
 
   return (
     <FluentProvider
@@ -1324,19 +1632,19 @@ export function App() {
         } as CSSProperties
       }
     >
-      <header className={styles.header} aria-label="部落格導覽">
-        <Link className={styles.brand} href="#hero" appearance="subtle" aria-label="回到首頁">
+      <header className={styles.header} aria-label={copy.aria.header}>
+        <Link className={styles.brand} href="#hero" appearance="subtle" aria-label={copy.aria.home}>
           <span className={styles.brandMark} aria-hidden="true">
             {/* QQ 人插圖入口：將下方文字替換為 <img className={styles.brandAvatar} src={你的圖片} alt="" />。 */}
             VK
           </span>
           <span className={styles.brandCopy}>
-            <span className={styles.brandName}>VikaKumaChR</span>
-            <span className={styles.brandMeta}>角色部落格</span>
+            <span className={styles.brandName}>{copy.appTitle}</span>
+            <span className={styles.brandMeta}>{copy.brandMeta}</span>
           </span>
         </Link>
 
-        <nav className={styles.nav} aria-label="主要導覽">
+        <nav className={styles.nav} aria-label={copy.aria.nav}>
           {navItems.map((item) => {
             const isActive = activeSection === item.id;
 
@@ -1359,7 +1667,7 @@ export function App() {
           })}
         </nav>
 
-        <div className={styles.headerActions} aria-label="頁面操作">
+        <div className={styles.headerActions} aria-label={copy.aria.actions}>
           <Button
             className={styles.actionButton}
             appearance="subtle"
@@ -1369,22 +1677,32 @@ export function App() {
             aria-label={shareHint}
           />
           <Button
+            className={mergeClasses(styles.actionButton, styles.languageButton)}
+            appearance="subtle"
+            icon={<Translate24Regular />}
+            onClick={toggleLocale}
+            title={copy.actions.languageTitle}
+            aria-label={copy.actions.languageTitle}
+          >
+            {copy.actions.languageShort}
+          </Button>
+          <Button
             className={mergeClasses(styles.actionButton, styles.themeButton)}
             appearance="subtle"
             icon={mode === "dark" ? <WeatherSunny24Regular /> : <WeatherMoon24Regular />}
             onClick={toggleTheme}
-            title={mode === "dark" ? "切換到亮色" : "切換到暗色"}
+            title={mode === "dark" ? copy.actions.themeToLight : copy.actions.themeToDark}
             aria-pressed={mode === "dark"}
-            aria-label={mode === "dark" ? "切換到亮色" : "切換到暗色"}
+            aria-label={mode === "dark" ? copy.actions.themeToLight : copy.actions.themeToDark}
           />
         </div>
       </header>
 
       <main>
         <section className={styles.hero} id="hero" aria-labelledby="hero-title">
-          <img className={mergeClasses(styles.heroGuideLeftEdge, styles.protectedImage)} src={heroGuideLeft} alt="" aria-hidden="true" draggable={false} />
+          <img className={mergeClasses(styles.heroGuideLeftEdge, styles.protectedImage)} src={heroGuideLeft} alt="" aria-hidden="true" draggable={false} data-hero-guide="true" />
           <div className={styles.heroScrapbookLayer} aria-hidden="true">
-            <img className={mergeClasses(styles.heroLaceDecor, styles.heroLaceTopRight, styles.protectedImage)} src={heroLaceTopRight} alt="" draggable={false} />
+            <img className={mergeClasses(styles.heroLaceDecor, styles.heroLaceTopRight, styles.protectedImage)} src={heroLaceTopRight} alt="" draggable={false} data-hero-lace="true" />
             <span className={mergeClasses(styles.scrapbookDots, styles.scrapbookDotsOne)} />
           </div>
           <div className={styles.heroInner}>
@@ -1394,30 +1712,31 @@ export function App() {
 
                 </Text>
                 <h1 id="hero-title" className={styles.heroTitle}>
-                  维嘉VkC
+                  {copy.hero.titleLine1}
                   <br />
-                  Blog
+                  {copy.hero.titleLine2}
                 </h1>
               </div>
               <Text as="p" className={styles.heroLead}>
-                欢迎访问^^ Welcome to my world~ 
+                {copy.hero.lead}
               </Text>
             </div>
 
-            <aside className={styles.heroArtStage} aria-label="维嘉首頁立繪舞台">
+            <aside className={styles.heroArtStage} aria-label={copy.hero.artLabel}>
               <div className={styles.heroArtBackdrop} aria-hidden="true" />
               <div className={styles.heroCollageLayer} aria-hidden="true">
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelOne, styles.protectedImage)} src={lifePanel01} alt="" draggable={false} />
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelTwo, styles.protectedImage)} src={lifePanel02} alt="" draggable={false} />
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelThree, styles.protectedImage)} src={lifePanel03} alt="" draggable={false} />
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelFour, styles.protectedImage)} src={lifePanel04} alt="" draggable={false} />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelOne, styles.protectedImage)} src={lifePanel01} alt="" draggable={false} data-hero-panel="true" />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelTwo, styles.protectedImage)} src={lifePanel02} alt="" draggable={false} data-hero-panel="true" />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelThree, styles.protectedImage)} src={lifePanel03} alt="" draggable={false} data-hero-panel="true" />
+                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelFour, styles.protectedImage)} src={lifePanel04} alt="" draggable={false} data-hero-panel="true" />
               </div>
               <div className={styles.heroFigureFrame} onContextMenu={(event) => event.preventDefault()}>
                 <img
                   className={mergeClasses(styles.heroArtImage, styles.protectedImage)}
                   src={heroFigure}
-                  alt="维嘉的淡紫色角色立繪"
+                  alt={copy.hero.figureAlt}
                   draggable={false}
+                  data-hero-figure="true"
                 />
                 <span
                   className={styles.heroFigureGuard}
@@ -1428,7 +1747,7 @@ export function App() {
               </div>
             </aside>
 
-            <div className={styles.partGrid} aria-label="特色頁面入口">
+            <div className={styles.partGrid} aria-label={copy.hero.partLabel} data-part-grid="true">
               {parts.map((part) => (
                 <a
                   className={styles.partCard}
@@ -1460,14 +1779,14 @@ export function App() {
                     <PanelRightGallery24Regular />
                   </span>
                   <Title1 as="h2" id="charts-title" className={styles.sectionTitleText}>
-                    圖件
+                    {copy.sections.chartsTitle}
                   </Title1>
                 </div>
                 <Text as="p" className={mergeClasses(styles.headingCopy, styles.chartHeadingCopy)}>
-                  维嘉的圖件被放進同一條圖冊軌道：拼貼、肖像與場景會依序成為主位，保留前後素材的連續感。
+                  {copy.sections.chartsCopy}
                 </Text>
               </div>
-              <Badge appearance="tint">{charts.length} 件圖件</Badge>
+              <Badge appearance="tint">{copy.sections.chartsCount(charts.length)}</Badge>
             </div>
 
             <div className={styles.albumShell}>
@@ -1495,10 +1814,10 @@ export function App() {
                       type="button"
                       onClick={() => setSelectedChart(item.id)}
                       aria-pressed={isActive}
-                      aria-label={`查看 ${item.title}`}
+                      aria-label={copy.sections.viewChart(item.title)}
                       data-protect-media="true"
                     >
-                      <img className={mergeClasses(styles.albumImage, styles.protectedImage)} src={item.image} alt="" draggable={false} />
+                      <img className={mergeClasses(styles.albumImage, styles.protectedImage)} src={item.image} alt={item.alt} draggable={false} />
                       <span className={styles.mediaGuard} data-media-guard="true" aria-hidden="true" />
                       <span className={styles.albumOverlay}>
                         <span className={styles.albumMeta}>{item.meta}</span>
@@ -1521,12 +1840,12 @@ export function App() {
                     {selectedChartItem.detail}
                   </Text>
                 </div>
-                <div className={styles.albumControls} aria-label="圖冊控制">
+                <div className={styles.albumControls} aria-label={copy.sections.albumControls}>
                   <Button
                     appearance="secondary"
                     icon={<ChevronLeft24Regular />}
                     onClick={selectPreviousChart}
-                    aria-label="上一張"
+                    aria-label={copy.sections.previousChart}
                   />
                   <span className={styles.albumDots} aria-hidden="true">
                     {charts.map((item) => (
@@ -1540,7 +1859,7 @@ export function App() {
                     appearance="secondary"
                     icon={<ChevronRight24Regular />}
                     onClick={selectNextChart}
-                    aria-label="下一張"
+                    aria-label={copy.sections.nextChart}
                   />
                 </div>
               </div>
@@ -1557,11 +1876,11 @@ export function App() {
                     <BookOpen24Regular />
                   </span>
                   <Title1 as="h2" id="blog-title" className={styles.sectionTitleText}>
-                    札記
+                    {copy.sections.blogTitle}
                   </Title1>
                 </div>
                 <Text as="p" className={styles.headingCopy}>
-                  整理設定札記、圖件歸檔與角色觀察。每篇貼文都有封面、分類與摘要。
+                  {copy.sections.blogCopy}
                 </Text>
               </div>
             </div>
@@ -1613,9 +1932,9 @@ export function App() {
                         className={styles.blogReadButton}
                         appearance="primary"
                         icon={<BookOpen24Regular />}
-                        aria-label={`閱讀：${post.title}`}
+                        aria-label={copy.sections.readPost(post.title)}
                       >
-                        閱讀
+                        {copy.sections.read}
                       </Button>
                     </CardFooter>
                   </div>
@@ -1633,17 +1952,17 @@ export function App() {
                   <GlobeShield24Regular />
                 </span>
                 <Title1 as="h2" id="regulation-title" className={styles.sectionTitleText}>
-                  使用聲明
+                  {copy.sections.regulationTitle}
                 </Title1>
               </div>
               <Text as="p" className={styles.regulationLead}>
-                這裡只保留必要聲明：素材來源、原作者、展示範圍與使用限制。關於區不再堆疊額外敘述。
+                {copy.sections.regulationCopy}
               </Text>
             </div>
 
             <Card className={styles.statementCard}>
               <div className={styles.statementBody}>
-                <CardHeader image={<Person24Regular />} header={<Title3 as="h3">使用聲明</Title3>} />
+                <CardHeader image={<Person24Regular />} header={<Title3 as="h3">{copy.sections.regulationTitle}</Title3>} />
                 <ul className={styles.statementList}>
                   {regulation.map((item) => (
                     <li className={styles.statementItem} key={item.term}>
@@ -1659,9 +1978,9 @@ export function App() {
       </main>
 
       <footer className={styles.footer}>
-        <Text weight="semibold">维嘉VkC's Blog</Text>
+        <Text weight="semibold">{copy.footer.name}</Text>
         <Button as="a" href="#hero" appearance="subtle" icon={<ArrowUp24Regular />}>
-          返回首頁
+          {copy.footer.back}
         </Button>
       </footer>
     </FluentProvider>
