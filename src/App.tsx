@@ -359,9 +359,9 @@ const useStyles = makeStyles({
       "parts"
     `,
     alignItems: "end",
-    rowGap: "16px",
+    rowGap: 0,
     "@media (max-width: 380px)": {
-      rowGap: "14px",
+      rowGap: 0,
     },
   },
   mobileHeroCopy: {
@@ -372,6 +372,10 @@ const useStyles = makeStyles({
     gap: "14px",
     minWidth: 0,
     paddingTop: 0,
+    marginBottom: "16px",
+    "@media (max-width: 380px)": {
+      marginBottom: "14px",
+    },
   },
   mobileHeroTitle: {
     maxWidth: "7.2ch",
@@ -401,14 +405,14 @@ const useStyles = makeStyles({
     placeItems: "end center",
     overflow: "visible",
     isolation: "isolate",
-    marginTop: "-2px",
+    marginTop: 0,
     marginBottom: 0,
     ":after": {
       content: '""',
       position: "absolute",
       zIndex: 2,
       right: "12%",
-      bottom: "10px",
+      bottom: 0,
       left: "12%",
       height: "34px",
       borderRadius: "999px",
@@ -505,7 +509,7 @@ const useStyles = makeStyles({
     zIndex: 9,
     display: "grid",
     gap: "10px",
-    marginTop: "4px",
+    marginTop: "-2px",
   },
   mobilePartButton: {
     minHeight: "68px",
