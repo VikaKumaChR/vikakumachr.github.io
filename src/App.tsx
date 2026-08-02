@@ -1686,7 +1686,7 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       read: "閱讀",
       readPost: (title) => `閱讀：${title}`,
       regulationTitle: "使用聲明",
-      regulationCopy: "這裡只保留必要聲明：素材來源、原作者、展示範圍與使用限制。關於區不再堆疊額外敘述。",
+      regulationCopy: "未經確認請勿使用、轉載、訓練AI、二次分發、二改或商用",
     },
     charts: [
       {
@@ -1723,24 +1723,24 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       {
         image: "characterScene",
         title: "维嘉的頁面為什麼需要故事入口",
-        excerpt: "首頁不再只放照片，而是把角色氣質、素材線索和閱讀動線組成一個開場敘事。",
+        excerpt: "可以隨時隨地查看與了解維嘉^^",
       },
       {
         image: "characterCollage",
         title: "三張圖件如何構成维嘉的資料線",
-        excerpt: "拼貼、肖像與場景被安排成連續索引，讓角色印象從總覽延伸到細節。",
+        excerpt: "為什麼會用這個功能呢？因為很好看><",
       },
       {
         image: "characterPortrait",
-        title: "紫髮、冰藍與白色服裝的識別作用",
-        excerpt: "從處理後素材裡提取穩定元素，用於角色檔案、貼文封面與後續規範文字。",
+        title: "维嘉是誰？",
+        excerpt: "查看維嘉的角色設定、外觀特徵與創作說明w",
       },
     ],
     regulation: [
       { term: "畫師媽咪", value: "几维不是猕猴桃" },
       { term: "角色來源", value: "個人角色：维嘉" },
       { term: "展示範圍", value: "本頁僅展示處理後公開素材與整理文字" },
-      { term: "使用聲明", value: "未經確認請勿轉載、訓練AI、二次分發、二改或商用" },
+      { term: "使用聲明", value: "未經確認請勿使用、轉載、訓練AI、二次分發、二改或商用" },
     ],
     footer: {
       name: "VkC's Blog",
@@ -1793,7 +1793,7 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       read: "阅读",
       readPost: (title) => `阅读：${title}`,
       regulationTitle: "使用声明",
-      regulationCopy: "这里只保留必要声明：素材来源、原作者、展示范围与使用限制。关于区不再堆叠额外叙述。",
+      regulationCopy: "未经确认请勿使用、转载、训练AI、二次分发、二改或商用",
     },
     charts: [
       {
@@ -1830,24 +1830,24 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       {
         image: "characterScene",
         title: "维嘉的页面为什么需要故事入口",
-        excerpt: "首页不再只放照片，而是把角色气质、素材线索和阅读动线组成一个开场叙事。",
+        excerpt: "可以随时随地查看与了解维嘉^^",
       },
       {
         image: "characterCollage",
         title: "三张图件如何构成维嘉的资料线",
-        excerpt: "拼贴、肖像与场景被安排成连续索引，让角色印象从总览延伸到细节。",
+        excerpt: "为什么会用这个功能呢？因为豪堪><",
       },
       {
         image: "characterPortrait",
-        title: "紫发、冰蓝与白色服装的识别作用",
-        excerpt: "从处理后素材里提取稳定元素，用于角色档案、贴文封面与后续规范文字。",
+        title: "维嘉是谁？",
+        excerpt: "查看维嘉的角色设定、外观特征与创作说明w",
       },
     ],
     regulation: [
       { term: "画师妈咪", value: "几维不是猕猴桃" },
       { term: "角色来源", value: "个人角色：维嘉" },
       { term: "展示范围", value: "本页仅展示处理后公开素材与整理文字" },
-      { term: "使用声明", value: "未经确认请勿转载、训练AI、二次分发、二改或商用" },
+      { term: "使用声明", value: "未经确认请勿使用、转载、训练AI、二次分发、二改或商用" },
     ],
     footer: {
       name: "VkC's Blog",
