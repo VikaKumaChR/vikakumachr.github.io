@@ -54,6 +54,19 @@ import brandAvatar from "../Image/BrandAvatar.png";
 // 首頁半身立繪替換入口：把上方 import 指向你的透明 PNG，再讓 heroFigure 使用它。
 const heroFigure = heroFigurePlaceholder;
 
+const getIsMobileDevice = () => {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const userAgent = navigator.userAgent.toLowerCase();
+  const mobileUserAgent = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/.test(userAgent);
+  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+  const narrowViewport = window.matchMedia("(max-width: 760px)").matches;
+
+  return mobileUserAgent || narrowViewport || (coarsePointer && window.innerWidth <= 900);
+};
+
 const brandRamp: BrandVariants = {
   10: "#07050c",
   20: "#171221",
@@ -313,6 +326,203 @@ const useStyles = makeStyles({
       paddingBottom: "24px",
       paddingLeft: "clamp(16px, 5vw, 22px)",
     },
+  },
+  mobileHero: {
+    minHeight: "auto",
+    alignItems: "start",
+    padding: "24px clamp(18px, 5vw, 24px) max(24px, env(safe-area-inset-bottom))",
+    backgroundSize: "88px 88px, 88px 88px, auto, auto, auto",
+    ":before": {
+      display: "none",
+    },
+    ":after": {
+      zIndex: 1,
+      height: "132px",
+      background:
+        "linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--heroBase) 72%, transparent) 54%, var(--colorNeutralBackground1) 100%)",
+    },
+  },
+  mobileHeroInner: {
+    position: "relative",
+    zIndex: 2,
+    width: "100%",
+    maxWidth: "520px",
+    marginRight: "auto",
+    marginLeft: "auto",
+    display: "grid",
+    gap: "18px",
+  },
+  mobileHeroCopy: {
+    position: "relative",
+    zIndex: 6,
+    display: "grid",
+    gap: "16px",
+    paddingTop: "2px",
+  },
+  mobileHeroTitle: {
+    maxWidth: "7.6ch",
+    marginTop: 0,
+    marginBottom: 0,
+    fontSize: "clamp(2.75rem, 13.4vw, 3.85rem)",
+    lineHeight: "0.94",
+    overflowWrap: "anywhere",
+  },
+  mobileHeroLead: {
+    maxWidth: "28ch",
+    marginTop: 0,
+    marginBottom: 0,
+    color: tokens.colorNeutralForeground2,
+    fontSize: tokens.fontSizeBase400,
+    lineHeight: tokens.lineHeightBase400,
+  },
+  mobileHeroScene: {
+    position: "relative",
+    minHeight: "clamp(324px, 82vw, 424px)",
+    display: "grid",
+    placeItems: "end center",
+    overflow: "visible",
+    isolation: "isolate",
+    marginTop: "2px",
+  },
+  mobileGuideSheet: {
+    position: "absolute",
+    zIndex: 1,
+    left: "clamp(-40px, -8vw, -18px)",
+    bottom: "clamp(-14px, -2vw, 2px)",
+    width: "clamp(230px, 66vw, 310px)",
+    height: "auto",
+    display: "block",
+    objectFit: "contain",
+    opacity: 0.8,
+    filter: "var(--heroGuideFilter)",
+    transform: "rotate(-7deg)",
+    transformOrigin: "left bottom",
+    pointerEvents: "none",
+    userSelect: "none",
+  },
+  mobileLaceHint: {
+    position: "absolute",
+    zIndex: 1,
+    top: "-18px",
+    right: "-66px",
+    width: "188px",
+    height: "auto",
+    display: "none",
+    opacity: "var(--heroLaceMobileOpacity)",
+    filter: "var(--heroLaceFilter)",
+    pointerEvents: "none",
+    userSelect: "none",
+  },
+  mobileLifePanel: {
+    position: "absolute",
+    zIndex: 3,
+    display: "block",
+    width: "clamp(60px, 18vw, 92px)",
+    height: "auto",
+    objectFit: "contain",
+    opacity: 0.64,
+    filter: "saturate(0.9) drop-shadow(0 8px 14px rgba(82, 68, 111, 0.12))",
+    pointerEvents: "none",
+    userSelect: "none",
+  },
+  mobileLifePanelOne: {
+    top: "10%",
+    left: "9%",
+    transform: "rotate(-7deg)",
+  },
+  mobileLifePanelTwo: {
+    top: "12%",
+    right: "12%",
+    transform: "rotate(6deg)",
+  },
+  mobileLifePanelThree: {
+    top: "44%",
+    left: "16%",
+    transform: "rotate(4deg)",
+  },
+  mobileLifePanelFour: {
+    right: "12%",
+    bottom: "22%",
+    transform: "rotate(-5deg)",
+  },
+  mobileFigureFrame: {
+    position: "relative",
+    zIndex: 4,
+    width: "min(43vw, 190px)",
+    maxHeight: "286px",
+    display: "grid",
+    placeItems: "end center",
+    lineHeight: 0,
+    userSelect: "none",
+  },
+  mobileHeroArtImage: {
+    maxHeight: "inherit",
+    filter: "saturate(0.92) contrast(0.96) drop-shadow(0 20px 32px rgba(66, 52, 95, 0.2))",
+  },
+  mobilePartGrid: {
+    position: "relative",
+    zIndex: 5,
+    display: "grid",
+    gap: "10px",
+    marginTop: "2px",
+  },
+  mobilePartButton: {
+    minHeight: "68px",
+    display: "grid",
+    gridTemplateColumns: "44px minmax(0, 1fr)",
+    alignItems: "center",
+    gap: "14px",
+    padding: "12px 14px",
+    borderRadius: tokens.borderRadiusMedium,
+    color: tokens.colorNeutralForeground1,
+    backgroundColor: tokens.colorNeutralBackground1,
+    textDecorationLine: "none",
+    boxShadow: tokens.shadow2,
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+    transitionDuration: tokens.durationNormal,
+    transitionProperty: "background-color, border-color, box-shadow, transform",
+    transitionTimingFunction: tokens.curveEasyEase,
+    ":hover": {
+      backgroundColor: tokens.colorNeutralBackground1Hover,
+      boxShadow: tokens.shadow4,
+      ...shorthands.borderColor(tokens.colorNeutralStroke1),
+    },
+    ":active": {
+      transform: "scale(0.995)",
+      boxShadow: tokens.shadow2,
+    },
+    ":focus-visible": {
+      outlineStyle: "solid",
+      outlineWidth: "2px",
+      outlineColor: tokens.colorBrandStroke1,
+      outlineOffset: "2px",
+    },
+  },
+  mobilePartButtonIcon: {
+    width: "44px",
+    height: "44px",
+    display: "inline-grid",
+    placeItems: "center",
+    borderRadius: tokens.borderRadiusMedium,
+    backgroundColor: tokens.colorNeutralBackground3,
+    color: tokens.colorBrandForeground1,
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+  },
+  mobilePartButtonText: {
+    minWidth: 0,
+    display: "grid",
+    gap: "2px",
+  },
+  mobilePartButtonTitle: {
+    color: tokens.colorNeutralForeground1,
+    fontSize: tokens.fontSizeBase400,
+    fontWeight: tokens.fontWeightSemibold,
+    lineHeight: tokens.lineHeightBase400,
+  },
+  mobilePartButtonCopy: {
+    color: tokens.colorNeutralForeground2,
+    fontSize: tokens.fontSizeBase200,
+    lineHeight: tokens.lineHeightBase200,
   },
   heroInner: {
     position: "relative",
@@ -682,16 +892,16 @@ const useStyles = makeStyles({
     display: "grid",
     gridTemplateColumns: "56px minmax(0, 1fr)",
     alignItems: "center",
-    gap: "20px",
+    gap: "16px",
     overflow: "hidden",
     padding: "24px",
-    borderRadius: tokens.borderRadiusXLarge,
+    borderRadius: tokens.borderRadiusMedium,
     color: tokens.colorNeutralForeground1,
-    backgroundColor: "var(--partMaterialBase)",
-    backgroundImage: "linear-gradient(180deg, var(--partMaterialTint), transparent 100%)",
+    backgroundColor: tokens.colorNeutralBackground1,
+    backgroundImage: "none",
     textDecorationLine: "none",
-    boxShadow: tokens.shadow8,
-    ...shorthands.border("1px", "solid", "var(--partStroke)"),
+    boxShadow: tokens.shadow2,
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
     transitionDuration: tokens.durationNormal,
     transitionProperty: "background-color, border-color, box-shadow, transform",
     transitionTimingFunction: tokens.curveEasyEase,
@@ -702,7 +912,8 @@ const useStyles = makeStyles({
       right: 0,
       left: 0,
       height: "1px",
-      backgroundColor: "var(--partTopStroke)",
+      backgroundColor: tokens.colorNeutralStrokeOnBrand2,
+      opacity: 0.08,
       pointerEvents: "none",
     },
     ":after": {
@@ -710,7 +921,7 @@ const useStyles = makeStyles({
       position: "absolute",
       inset: 0,
       pointerEvents: "none",
-      backgroundColor: "var(--partPressedOverlay)",
+      backgroundColor: tokens.colorNeutralForeground1,
       opacity: 0,
       transitionDuration: tokens.durationNormal,
       transitionProperty: "opacity",
@@ -718,23 +929,38 @@ const useStyles = makeStyles({
     },
     ":hover": {
       transform: "translateY(-2px)",
-      backgroundColor: "var(--partMaterialHover)",
-      boxShadow: tokens.shadow16,
-      ...shorthands.borderColor("var(--partStrokeHover)"),
+      backgroundColor: tokens.colorNeutralBackground1Hover,
+      boxShadow: tokens.shadow4,
+      ...shorthands.borderColor(tokens.colorNeutralStroke1),
     },
     ":active": {
       transform: "translateY(0)",
-      boxShadow: tokens.shadow4,
+      boxShadow: tokens.shadow2,
       ":after": {
         opacity: 1,
       },
     },
+    ":focus-visible": {
+      outlineStyle: "solid",
+      outlineWidth: "2px",
+      outlineColor: tokens.colorBrandStroke1,
+      outlineOffset: "2px",
+    },
     "@media (max-width: 520px)": {
       minHeight: "104px",
       gridTemplateColumns: "48px minmax(0, 1fr)",
-      gap: "16px",
-      padding: "18px",
-      borderRadius: tokens.borderRadiusLarge,
+      gap: "14px",
+      padding: "18px 20px",
+      borderRadius: tokens.borderRadiusMedium,
+    },
+  },
+  mobilePartCard: {
+    minHeight: "96px",
+    padding: "18px 20px",
+    boxShadow: tokens.shadow2,
+    transform: "none",
+    ":hover": {
+      transform: "none",
     },
   },
   partIcon: {
@@ -744,10 +970,10 @@ const useStyles = makeStyles({
     height: "56px",
     display: "grid",
     placeItems: "center",
-    borderRadius: tokens.borderRadiusXLarge,
-    backgroundColor: "var(--partIconSurface)",
+    borderRadius: tokens.borderRadiusMedium,
+    backgroundColor: tokens.colorNeutralBackground3,
     color: tokens.colorBrandForeground1,
-    ...shorthands.border("1px", "solid", "var(--partIconStroke)"),
+    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
     "@media (max-width: 520px)": {
       width: "48px",
       height: "48px",
@@ -760,6 +986,12 @@ const useStyles = makeStyles({
     minWidth: 0,
     display: "grid",
     gap: "4px",
+  },
+  partTitle: {
+    color: tokens.colorNeutralForeground1,
+    fontSize: tokens.fontSizeBase500,
+    fontWeight: tokens.fontWeightSemibold,
+    lineHeight: tokens.lineHeightBase500,
   },
   partCopy: {
     color: tokens.colorNeutralForeground2,
@@ -980,14 +1212,14 @@ const useStyles = makeStyles({
     flexDirection: "column",
     overflow: "hidden",
     borderRadius: "8px",
-    boxShadow: tokens.shadow4,
+    boxShadow: tokens.shadow2,
     backgroundColor: tokens.colorNeutralBackground1,
     ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
     transitionDuration: tokens.durationNormal,
     transitionProperty: "box-shadow, border-color, transform",
     transitionTimingFunction: tokens.curveEasyEase,
     ":hover": {
-      boxShadow: tokens.shadow8,
+      boxShadow: tokens.shadow4,
       borderTopColor: tokens.colorNeutralStroke1,
       borderRightColor: tokens.colorNeutralStroke1,
       borderBottomColor: tokens.colorNeutralStroke1,
@@ -1015,7 +1247,7 @@ const useStyles = makeStyles({
   blogBody: {
     display: "flex",
     flexDirection: "column",
-    gap: "16px",
+    gap: "14px",
     padding: "24px 32px",
     "@media (max-width: 640px)": {
       padding: "24px",
@@ -1024,7 +1256,7 @@ const useStyles = makeStyles({
   blogContent: {
     display: "flex",
     flexDirection: "column",
-    gap: "16px",
+    gap: "12px",
   },
   blogHeader: {
     alignItems: "center",
@@ -1064,7 +1296,7 @@ const useStyles = makeStyles({
     lineHeight: tokens.lineHeightBase400,
   },
   blogFooter: {
-    paddingTop: "0",
+    paddingTop: "2px",
     justifyContent: "flex-start",
   },
   blogReadButton: {
@@ -1140,22 +1372,70 @@ const useStyles = makeStyles({
       flexDirection: "column",
     },
   },
+  "@keyframes wipPopoverIn": {
+    "0%": {
+      opacity: 0,
+      transform: "translate(-50%, 14px) scale(0.96)",
+    },
+    "60%": {
+      opacity: 1,
+      transform: "translate(-50%, -2px) scale(1)",
+    },
+    "100%": {
+      opacity: 1,
+      transform: "translate(-50%, 0) scale(1)",
+    },
+  },
+  "@keyframes wipPopoverOut": {
+    "0%": {
+      opacity: 1,
+      transform: "translate(-50%, 0) scale(1)",
+    },
+    "100%": {
+      opacity: 0,
+      transform: "translate(-50%, 10px) scale(0.97)",
+    },
+  },
   workPopoverSurface: {
     position: "fixed",
     zIndex: 1000,
     left: "50%",
     bottom: "max(24px, calc(env(safe-area-inset-bottom) + 18px))",
     transform: "translateX(-50%)",
-    maxWidth: "min(320px, calc(100vw - 32px))",
+    maxWidth: "min(360px, calc(100vw - 32px))",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
+    gap: "10px",
     pointerEvents: "none",
-    padding: "12px 16px",
+    padding: "12px 18px",
     borderRadius: tokens.borderRadiusMedium,
     color: tokens.colorNeutralForeground1,
-    backgroundColor: tokens.colorNeutralBackground1,
-    boxShadow: tokens.shadow16,
+    backgroundColor: "var(--wipSurface)",
+    boxShadow: tokens.shadow4,
+    ...shorthands.border("1px", "solid", "var(--wipStroke)"),
+    animationName: "wipPopoverIn",
+    animationDuration: "260ms",
+    animationTimingFunction: tokens.curveDecelerateMid,
+    animationFillMode: "both",
+    "@media (prefers-reduced-motion: reduce)": {
+      animationDuration: "1ms",
+    },
+  },
+  workPopoverSurfaceClosing: {
+    animationName: "wipPopoverOut",
+    animationDuration: "180ms",
+    animationTimingFunction: tokens.curveAccelerateMid,
+  },
+  workPopoverIcon: {
+    width: "28px",
+    height: "28px",
+    flexShrink: 0,
+    display: "inline-grid",
+    placeItems: "center",
+    borderRadius: tokens.borderRadiusMedium,
+    color: tokens.colorBrandForeground1,
+    backgroundColor: tokens.colorNeutralBackground3,
     ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
   },
 });
@@ -1504,9 +1784,12 @@ export function App() {
   const [shareHint, setShareHint] = useState(contentByLocale["zh-TW"].actions.share);
   const [themeSettling, setThemeSettling] = useState(false);
   const [workPopoverOpen, setWorkPopoverOpen] = useState(false);
+  const [workPopoverClosing, setWorkPopoverClosing] = useState(false);
+  const [isMobileMode, setIsMobileMode] = useState(getIsMobileDevice);
   const navigationLockUntil = useRef(0);
   const themeSettleTimer = useRef<number | null>(null);
   const workPopoverTimer = useRef<number | null>(null);
+  const workPopoverExitTimer = useRef<number | null>(null);
   const albumViewportRef = useRef<HTMLDivElement | null>(null);
 
   const theme = mode === "dark" ? darkTheme : lightTheme;
@@ -1533,6 +1816,44 @@ export function App() {
       if (workPopoverTimer.current !== null) {
         window.clearTimeout(workPopoverTimer.current);
       }
+      if (workPopoverExitTimer.current !== null) {
+        window.clearTimeout(workPopoverExitTimer.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const syncMobileMode = () => {
+      setIsMobileMode(getIsMobileDevice());
+    };
+    const narrowQuery = window.matchMedia("(max-width: 760px)");
+    const pointerQuery = window.matchMedia("(pointer: coarse)");
+    const addListener = (query: MediaQueryList) => {
+      if (typeof query.addEventListener === "function") {
+        query.addEventListener("change", syncMobileMode);
+      } else {
+        query.addListener(syncMobileMode);
+      }
+    };
+    const removeListener = (query: MediaQueryList) => {
+      if (typeof query.removeEventListener === "function") {
+        query.removeEventListener("change", syncMobileMode);
+      } else {
+        query.removeListener(syncMobileMode);
+      }
+    };
+
+    syncMobileMode();
+    addListener(narrowQuery);
+    addListener(pointerQuery);
+    window.addEventListener("orientationchange", syncMobileMode);
+    window.addEventListener("resize", syncMobileMode);
+
+    return () => {
+      removeListener(narrowQuery);
+      removeListener(pointerQuery);
+      window.removeEventListener("orientationchange", syncMobileMode);
+      window.removeEventListener("resize", syncMobileMode);
     };
   }, []);
 
@@ -1657,11 +1978,20 @@ export function App() {
     if (workPopoverTimer.current !== null) {
       window.clearTimeout(workPopoverTimer.current);
     }
+    if (workPopoverExitTimer.current !== null) {
+      window.clearTimeout(workPopoverExitTimer.current);
+    }
 
     setWorkPopoverOpen(true);
+    setWorkPopoverClosing(false);
     workPopoverTimer.current = window.setTimeout(() => {
-      setWorkPopoverOpen(false);
+      setWorkPopoverClosing(true);
       workPopoverTimer.current = null;
+      workPopoverExitTimer.current = window.setTimeout(() => {
+        setWorkPopoverOpen(false);
+        setWorkPopoverClosing(false);
+        workPopoverExitTimer.current = null;
+      }, 170);
     }, 1800);
   };
 
@@ -1707,6 +2037,8 @@ export function App() {
           "--partIconStroke": mode === "dark" ? "rgba(255,255,255,0.075)" : "rgba(58,48,75,0.06)",
           "--partStroke": mode === "dark" ? "rgba(255,255,255,0.095)" : "rgba(36,36,36,0.12)",
           "--partStrokeHover": mode === "dark" ? "rgba(198,186,224,0.22)" : "rgba(93,81,120,0.22)",
+          "--wipSurface": "color-mix(in srgb, #c6bae0 22%, var(--colorNeutralBackground1))",
+          "--wipStroke": "color-mix(in srgb, #c6bae0 48%, transparent)",
           "--albumGlow": mode === "dark" ? "rgba(198, 186, 224, 0.14)" : "rgba(198, 186, 224, 0.26)",
           "--imageSurface": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(232, 222, 245, 0.58)",
           "--colorNeutralBackground1": theme.colorNeutralBackground1,
@@ -1780,75 +2112,143 @@ export function App() {
       </header>
 
       <main>
-        <section className={styles.hero} id="hero" aria-labelledby="hero-title">
-          <img className={mergeClasses(styles.heroGuideLeftEdge, styles.protectedImage)} src={heroGuideLeft} alt="" aria-hidden="true" draggable={false} data-hero-guide="true" />
-          <div className={styles.heroScrapbookLayer} aria-hidden="true">
-            <img className={mergeClasses(styles.heroLaceDecor, styles.heroLaceTopRight, styles.protectedImage)} src={heroLaceTopRight} alt="" draggable={false} data-hero-lace="true" />
-            <span className={mergeClasses(styles.scrapbookDots, styles.scrapbookDotsOne)} />
-          </div>
-          <div className={styles.heroInner}>
-            <div className={styles.heroCopy}>
-              <div>
-                <Text as="p" className={styles.eyebrow}>
-
-                </Text>
-                <h1 id="hero-title" className={styles.heroTitle}>
+        <section
+          className={mergeClasses(styles.hero, isMobileMode ? styles.mobileHero : undefined)}
+          id="hero"
+          aria-labelledby="hero-title"
+          data-mobile-hero={isMobileMode ? "true" : undefined}
+        >
+          {isMobileMode ? (
+            <div className={styles.mobileHeroInner}>
+              <div className={styles.mobileHeroCopy}>
+                <h1 id="hero-title" className={styles.mobileHeroTitle}>
                   {copy.hero.titleLine1}
                   <br />
                   {copy.hero.titleLine2}
                 </h1>
+                <Text as="p" className={styles.mobileHeroLead}>
+                  {copy.hero.lead}
+                </Text>
               </div>
-              <Text as="p" className={styles.heroLead}>
-                {copy.hero.lead}
-              </Text>
+
+              <div className={styles.mobilePartGrid} aria-label={copy.hero.partLabel} data-part-grid="true">
+                {parts.map((part) => (
+                  <a
+                    className={styles.mobilePartButton}
+                    href={`#${part.id}`}
+                    key={part.id}
+                    onClick={() => navigateToSection(part.id)}
+                    aria-label={`${part.title} - ${part.copy}`}
+                  >
+                    <span className={styles.mobilePartButtonIcon} aria-hidden="true">
+                      {part.icon}
+                    </span>
+                    <span className={styles.mobilePartButtonText}>
+                      <span className={styles.mobilePartButtonTitle}>{part.title}</span>
+                      <Text as="span" className={styles.mobilePartButtonCopy}>
+                        {part.copy}
+                      </Text>
+                    </span>
+                  </a>
+                ))}
+              </div>
+
+              <aside className={styles.mobileHeroScene} aria-label={copy.hero.artLabel}>
+                <img className={mergeClasses(styles.mobileLaceHint, styles.protectedImage)} src={heroLaceTopRight} alt="" aria-hidden="true" draggable={false} />
+                <img className={mergeClasses(styles.mobileGuideSheet, styles.protectedImage)} src={heroGuideLeft} alt="" aria-hidden="true" draggable={false} />
+                <img className={mergeClasses(styles.mobileLifePanel, styles.mobileLifePanelOne, styles.protectedImage)} src={lifePanel01} alt="" aria-hidden="true" draggable={false} />
+                <img className={mergeClasses(styles.mobileLifePanel, styles.mobileLifePanelTwo, styles.protectedImage)} src={lifePanel02} alt="" aria-hidden="true" draggable={false} />
+                <img className={mergeClasses(styles.mobileLifePanel, styles.mobileLifePanelThree, styles.protectedImage)} src={lifePanel03} alt="" aria-hidden="true" draggable={false} />
+                <img className={mergeClasses(styles.mobileLifePanel, styles.mobileLifePanelFour, styles.protectedImage)} src={lifePanel04} alt="" aria-hidden="true" draggable={false} />
+                <div className={styles.mobileFigureFrame} onContextMenu={(event) => event.preventDefault()}>
+                  <img
+                    className={mergeClasses(styles.heroArtImage, styles.mobileHeroArtImage, styles.protectedImage)}
+                    src={heroFigure}
+                    alt={copy.hero.figureAlt}
+                    draggable={false}
+                    data-hero-figure="true"
+                  />
+                  <span
+                    className={styles.heroFigureGuard}
+                    data-figure-guard="true"
+                    aria-hidden="true"
+                    onContextMenu={(event) => event.preventDefault()}
+                  />
+                </div>
+              </aside>
             </div>
-
-            <aside className={styles.heroArtStage} aria-label={copy.hero.artLabel}>
-              <div className={styles.heroArtBackdrop} aria-hidden="true" />
-              <div className={styles.heroCollageLayer} aria-hidden="true">
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelOne, styles.protectedImage)} src={lifePanel01} alt="" draggable={false} data-hero-panel="true" />
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelTwo, styles.protectedImage)} src={lifePanel02} alt="" draggable={false} data-hero-panel="true" />
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelThree, styles.protectedImage)} src={lifePanel03} alt="" draggable={false} data-hero-panel="true" />
-                <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelFour, styles.protectedImage)} src={lifePanel04} alt="" draggable={false} data-hero-panel="true" />
+          ) : (
+            <>
+              <img className={mergeClasses(styles.heroGuideLeftEdge, styles.protectedImage)} src={heroGuideLeft} alt="" aria-hidden="true" draggable={false} data-hero-guide="true" />
+              <div className={styles.heroScrapbookLayer} aria-hidden="true">
+                <img className={mergeClasses(styles.heroLaceDecor, styles.heroLaceTopRight, styles.protectedImage)} src={heroLaceTopRight} alt="" draggable={false} data-hero-lace="true" />
+                <span className={mergeClasses(styles.scrapbookDots, styles.scrapbookDotsOne)} />
               </div>
-              <div className={styles.heroFigureFrame} onContextMenu={(event) => event.preventDefault()}>
-                <img
-                  className={mergeClasses(styles.heroArtImage, styles.protectedImage)}
-                  src={heroFigure}
-                  alt={copy.hero.figureAlt}
-                  draggable={false}
-                  data-hero-figure="true"
-                />
-                <span
-                  className={styles.heroFigureGuard}
-                  data-figure-guard="true"
-                  aria-hidden="true"
-                  onContextMenu={(event) => event.preventDefault()}
-                />
-              </div>
-            </aside>
+              <div className={styles.heroInner}>
+                <div className={styles.heroCopy}>
+                  <div>
+                    <Text as="p" className={styles.eyebrow}>
 
-            <div className={styles.partGrid} aria-label={copy.hero.partLabel} data-part-grid="true">
-              {parts.map((part) => (
-                <a
-                  className={styles.partCard}
-                  href={`#${part.id}`}
-                  key={part.id}
-                  onClick={() => navigateToSection(part.id)}
-                >
-                  <span className={styles.partIcon} aria-hidden="true">
-                    {part.icon}
-                  </span>
-                  <span className={styles.partText}>
-                    <Title3 as="span">{part.title}</Title3>
-                    <Text as="span" className={styles.partCopy}>
-                      {part.copy}
                     </Text>
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
+                    <h1 id="hero-title" className={styles.heroTitle}>
+                      {copy.hero.titleLine1}
+                      <br />
+                      {copy.hero.titleLine2}
+                    </h1>
+                  </div>
+                  <Text as="p" className={styles.heroLead}>
+                    {copy.hero.lead}
+                  </Text>
+                </div>
+
+                <aside className={styles.heroArtStage} aria-label={copy.hero.artLabel}>
+                  <div className={styles.heroArtBackdrop} aria-hidden="true" />
+                  <div className={styles.heroCollageLayer} aria-hidden="true">
+                    <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelOne, styles.protectedImage)} src={lifePanel01} alt="" draggable={false} data-hero-panel="true" />
+                    <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelTwo, styles.protectedImage)} src={lifePanel02} alt="" draggable={false} data-hero-panel="true" />
+                    <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelThree, styles.protectedImage)} src={lifePanel03} alt="" draggable={false} data-hero-panel="true" />
+                    <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelFour, styles.protectedImage)} src={lifePanel04} alt="" draggable={false} data-hero-panel="true" />
+                  </div>
+                  <div className={styles.heroFigureFrame} onContextMenu={(event) => event.preventDefault()}>
+                    <img
+                      className={mergeClasses(styles.heroArtImage, styles.protectedImage)}
+                      src={heroFigure}
+                      alt={copy.hero.figureAlt}
+                      draggable={false}
+                      data-hero-figure="true"
+                    />
+                    <span
+                      className={styles.heroFigureGuard}
+                      data-figure-guard="true"
+                      aria-hidden="true"
+                      onContextMenu={(event) => event.preventDefault()}
+                    />
+                  </div>
+                </aside>
+
+                <div className={styles.partGrid} aria-label={copy.hero.partLabel} data-part-grid="true">
+                  {parts.map((part) => (
+                    <a
+                      className={styles.partCard}
+                      href={`#${part.id}`}
+                      key={part.id}
+                      onClick={() => navigateToSection(part.id)}
+                    >
+                      <span className={styles.partIcon} aria-hidden="true">
+                        {part.icon}
+                      </span>
+                      <span className={styles.partText}>
+                        <span className={styles.partTitle}>{part.title}</span>
+                        <Text as="span" className={styles.partCopy}>
+                          {part.copy}
+                        </Text>
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </section>
 
         <section className={styles.section} id="charts" aria-labelledby="charts-title">
@@ -2013,6 +2413,7 @@ export function App() {
                         className={styles.blogReadButton}
                         appearance="primary"
                         icon={<BookOpen24Regular />}
+                        type="button"
                         onClick={showWorkInProgress}
                         aria-label={copy.sections.readPost(post.title)}
                       >
@@ -2060,7 +2461,36 @@ export function App() {
       </main>
 
       {workPopoverOpen ? (
-        <PopoverSurface className={styles.workPopoverSurface} role="status" aria-live="polite" aria-atomic="true">
+        <PopoverSurface
+          className={mergeClasses(styles.workPopoverSurface, workPopoverClosing ? styles.workPopoverSurfaceClosing : undefined)}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          style={
+            {
+              backgroundColor: mode === "dark" ? "#2a2436" : "#f4f0fb",
+              borderColor: mode === "dark" ? "#716590" : "#c6bae0",
+              color: mode === "dark" ? "#f4f1fb" : "#242424",
+              boxShadow:
+                mode === "dark"
+                  ? "0 8px 16px rgba(0, 0, 0, 0.28), 0 0 2px rgba(0, 0, 0, 0.2)"
+                  : "0 8px 16px rgba(0, 0, 0, 0.12), 0 0 2px rgba(0, 0, 0, 0.1)",
+            } as CSSProperties
+          }
+        >
+          <span
+            className={styles.workPopoverIcon}
+            aria-hidden="true"
+            style={
+              {
+                backgroundColor: mode === "dark" ? "#342d42" : "#ffffff",
+                borderColor: mode === "dark" ? "#5d5178" : "#ded5ef",
+                color: mode === "dark" ? "#ded5ef" : "#5d5178",
+              } as CSSProperties
+            }
+          >
+            <DocumentBulletList24Regular />
+          </span>
           <Text weight="semibold">{workInProgressText}</Text>
         </PopoverSurface>
       ) : null}
