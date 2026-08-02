@@ -469,9 +469,9 @@ const useStyles = makeStyles({
   mobilePartButton: {
     minHeight: "68px",
     display: "grid",
-    gridTemplateColumns: "44px minmax(0, 1fr)",
+    gridTemplateColumns: "28px minmax(0, 1fr)",
     alignItems: "center",
-    gap: "14px",
+    gap: "12px",
     padding: "12px 14px",
     borderRadius: tokens.borderRadiusMedium,
     color: tokens.colorNeutralForeground1,
@@ -499,14 +499,13 @@ const useStyles = makeStyles({
     },
   },
   mobilePartButtonIcon: {
-    width: "44px",
-    height: "44px",
-    display: "inline-grid",
-    placeItems: "center",
-    borderRadius: tokens.borderRadiusMedium,
-    backgroundColor: tokens.colorNeutralBackground3,
+    width: "28px",
+    height: "28px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     color: tokens.colorBrandForeground1,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+    lineHeight: 0,
   },
   mobilePartButtonText: {
     minWidth: 0,
@@ -890,7 +889,7 @@ const useStyles = makeStyles({
     position: "relative",
     minHeight: "clamp(112px, 8vw, 132px)",
     display: "grid",
-    gridTemplateColumns: "56px minmax(0, 1fr)",
+    gridTemplateColumns: "32px minmax(0, 1fr)",
     alignItems: "center",
     gap: "16px",
     overflow: "hidden",
@@ -948,8 +947,8 @@ const useStyles = makeStyles({
     },
     "@media (max-width: 520px)": {
       minHeight: "104px",
-      gridTemplateColumns: "48px minmax(0, 1fr)",
-      gap: "14px",
+      gridTemplateColumns: "28px minmax(0, 1fr)",
+      gap: "12px",
       padding: "18px 20px",
       borderRadius: tokens.borderRadiusMedium,
     },
@@ -966,18 +965,16 @@ const useStyles = makeStyles({
   partIcon: {
     position: "relative",
     zIndex: 1,
-    width: "56px",
-    height: "56px",
-    display: "grid",
-    placeItems: "center",
-    borderRadius: tokens.borderRadiusMedium,
-    backgroundColor: tokens.colorNeutralBackground3,
+    width: "32px",
+    height: "32px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     color: tokens.colorBrandForeground1,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+    lineHeight: 0,
     "@media (max-width: 520px)": {
-      width: "48px",
-      height: "48px",
-      borderRadius: tokens.borderRadiusLarge,
+      width: "28px",
+      height: "28px",
     },
   },
   partText: {
@@ -1021,8 +1018,8 @@ const useStyles = makeStyles({
   },
   sectionTitleCluster: {
     display: "grid",
-    gridTemplateColumns: "36px minmax(0, 1fr)",
-    columnGap: "14px",
+    gridTemplateColumns: "28px minmax(0, 1fr)",
+    columnGap: "12px",
     rowGap: "18px",
     alignItems: "center",
     maxWidth: "720px",
@@ -1039,14 +1036,14 @@ const useStyles = makeStyles({
   sectionTitleIcon: {
     gridColumn: 1,
     gridRow: 1,
-    width: "36px",
-    height: "36px",
+    width: "28px",
+    height: "28px",
     flexShrink: 0,
-    display: "inline-grid",
-    placeItems: "center",
-    borderRadius: "8px",
-    backgroundColor: tokens.colorBrandBackground2,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     color: tokens.colorBrandForeground1,
+    lineHeight: 0,
   },
   headingCopy: {
     gridColumn: 2,
@@ -1262,15 +1259,14 @@ const useStyles = makeStyles({
     alignItems: "center",
   },
   blogHeaderIcon: {
-    width: "40px",
-    height: "40px",
-    display: "inline-grid",
-    placeItems: "center",
+    width: "28px",
+    height: "28px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     flexShrink: 0,
-    borderRadius: "8px",
-    backgroundColor: "color-mix(in srgb, #c6bae0 22%, var(--colorNeutralBackground1))",
     color: tokens.colorBrandForeground1,
-    ...shorthands.border("1px", "solid", "color-mix(in srgb, #c6bae0 42%, transparent)"),
+    lineHeight: 0,
   },
   blogTitle: {
     marginTop: 0,
@@ -1428,15 +1424,14 @@ const useStyles = makeStyles({
     animationTimingFunction: tokens.curveAccelerateMid,
   },
   workPopoverIcon: {
-    width: "28px",
-    height: "28px",
+    width: "24px",
+    height: "24px",
     flexShrink: 0,
-    display: "inline-grid",
-    placeItems: "center",
-    borderRadius: tokens.borderRadiusMedium,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     color: tokens.colorBrandForeground1,
-    backgroundColor: tokens.colorNeutralBackground3,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
+    lineHeight: 0,
   },
 });
 
@@ -2033,8 +2028,6 @@ export function App() {
           "--partMaterialTint": mode === "dark" ? "rgba(255,255,255,0.025)" : "rgba(248,246,252,0.72)",
           "--partTopStroke": mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.86)",
           "--partPressedOverlay": mode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(36,36,36,0.035)",
-          "--partIconSurface": mode === "dark" ? "rgba(255,255,255,0.045)" : "rgba(246,244,250,0.88)",
-          "--partIconStroke": mode === "dark" ? "rgba(255,255,255,0.075)" : "rgba(58,48,75,0.06)",
           "--partStroke": mode === "dark" ? "rgba(255,255,255,0.095)" : "rgba(36,36,36,0.12)",
           "--partStrokeHover": mode === "dark" ? "rgba(198,186,224,0.22)" : "rgba(93,81,120,0.22)",
           "--wipSurface": "color-mix(in srgb, #c6bae0 22%, var(--colorNeutralBackground1))",
@@ -2478,17 +2471,7 @@ export function App() {
             } as CSSProperties
           }
         >
-          <span
-            className={styles.workPopoverIcon}
-            aria-hidden="true"
-            style={
-              {
-                backgroundColor: mode === "dark" ? "#342d42" : "#ffffff",
-                borderColor: mode === "dark" ? "#5d5178" : "#ded5ef",
-                color: mode === "dark" ? "#ded5ef" : "#5d5178",
-              } as CSSProperties
-            }
-          >
+          <span className={styles.workPopoverIcon} aria-hidden="true">
             <DocumentBulletList24Regular />
           </span>
           <Text weight="semibold">{workInProgressText}</Text>
