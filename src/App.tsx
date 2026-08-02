@@ -46,7 +46,7 @@ import lifePanel03 from "../Image/LifePanel_03.png";
 import lifePanel04 from "../Image/LifePanel_04.png";
 import characterPortrait from "../Image/VikaKumaChR_Stand.png";
 import characterScene from "../Image/VikaKumaChR_Scene.png";
-import heroFigurePlaceholder from "../Image/VikaKumaChR_Stand.png";
+import heroFigurePlaceholder from "../Image/hero_figure_placeholder.png";
 import heroGuideLeft from "../Image/MainPageComponent/4_guide.png";
 import heroLaceTopRight from "../Image/MainPageComponent/MainPageCorner_TopRight.webp";
 import brandAvatar from "../Image/BrandAvatar.png";
