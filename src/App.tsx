@@ -30,6 +30,7 @@ import {
   ChevronRight24Regular,
   DocumentBulletList24Regular,
   GlobeShield24Regular,
+  Info24Regular,
   PanelRightGallery24Regular,
   Person24Regular,
   Share24Regular,
@@ -328,9 +329,10 @@ const useStyles = makeStyles({
     },
   },
   mobileHero: {
-    minHeight: "auto",
+    minHeight: "calc(100svh - 118px)",
     alignItems: "start",
-    padding: "24px clamp(18px, 5vw, 24px) max(24px, env(safe-area-inset-bottom))",
+    overflow: "hidden",
+    padding: "26px clamp(18px, 5vw, 24px) max(28px, env(safe-area-inset-bottom))",
     backgroundSize: "88px 88px, 88px 88px, auto, auto, auto",
     ":before": {
       display: "none",
@@ -350,25 +352,36 @@ const useStyles = makeStyles({
     marginRight: "auto",
     marginLeft: "auto",
     display: "grid",
-    gap: "18px",
+    gridTemplateColumns: "1fr",
+    gridTemplateAreas: `
+      "copy"
+      "parts"
+    `,
+    alignItems: "end",
+    rowGap: "16px",
+    "@media (max-width: 380px)": {
+      rowGap: "14px",
+    },
   },
   mobileHeroCopy: {
     position: "relative",
-    zIndex: 6,
+    gridArea: "copy",
+    zIndex: 8,
     display: "grid",
-    gap: "16px",
-    paddingTop: "2px",
+    gap: "14px",
+    minWidth: 0,
+    paddingTop: 0,
   },
   mobileHeroTitle: {
-    maxWidth: "7.6ch",
+    maxWidth: "7.2ch",
     marginTop: 0,
     marginBottom: 0,
-    fontSize: "clamp(2.75rem, 13.4vw, 3.85rem)",
-    lineHeight: "0.94",
+    fontSize: "clamp(2.45rem, 11.4vw, 3.4rem)",
+    lineHeight: "0.96",
     overflowWrap: "anywhere",
   },
   mobileHeroLead: {
-    maxWidth: "28ch",
+    maxWidth: "23ch",
     marginTop: 0,
     marginBottom: 0,
     color: tokens.colorNeutralForeground2,
@@ -376,24 +389,36 @@ const useStyles = makeStyles({
     lineHeight: tokens.lineHeightBase400,
   },
   mobileHeroScene: {
-    position: "relative",
-    minHeight: "clamp(324px, 82vw, 424px)",
+    position: "absolute",
+    zIndex: 1,
+    top: "clamp(158px, 29svh, 230px)",
+    right: "clamp(-34px, -5vw, -18px)",
+    width: "min(56vw, 244px)",
+    height: "clamp(244px, 49svh, 372px)",
+    minHeight: 0,
     display: "grid",
     placeItems: "end center",
     overflow: "visible",
     isolation: "isolate",
-    marginTop: "2px",
+    marginTop: 0,
+    marginBottom: 0,
+    "@media (max-width: 380px)": {
+      top: "clamp(210px, 34svh, 260px)",
+      right: "clamp(-42px, -8vw, -24px)",
+      width: "min(64vw, 230px)",
+      height: "clamp(260px, 54svh, 360px)",
+    },
   },
   mobileGuideSheet: {
     position: "absolute",
     zIndex: 1,
-    left: "clamp(-40px, -8vw, -18px)",
-    bottom: "clamp(-14px, -2vw, 2px)",
-    width: "clamp(230px, 66vw, 310px)",
+    left: "clamp(-210px, -52vw, -128px)",
+    bottom: "clamp(-28px, -5vw, -12px)",
+    width: "clamp(240px, 66vw, 330px)",
     height: "auto",
     display: "block",
     objectFit: "contain",
-    opacity: 0.8,
+    opacity: 0.44,
     filter: "var(--heroGuideFilter)",
     transform: "rotate(-7deg)",
     transformOrigin: "left bottom",
@@ -417,62 +442,67 @@ const useStyles = makeStyles({
     position: "absolute",
     zIndex: 3,
     display: "block",
-    width: "clamp(60px, 18vw, 92px)",
+    width: "clamp(42px, 10vw, 58px)",
     height: "auto",
     objectFit: "contain",
-    opacity: 0.64,
+    opacity: 0.58,
     filter: "saturate(0.9) drop-shadow(0 8px 14px rgba(82, 68, 111, 0.12))",
     pointerEvents: "none",
     userSelect: "none",
   },
   mobileLifePanelOne: {
-    top: "10%",
-    left: "9%",
+    top: "9%",
+    left: "-6%",
     transform: "rotate(-7deg)",
   },
   mobileLifePanelTwo: {
     top: "12%",
-    right: "12%",
+    right: "-5%",
     transform: "rotate(6deg)",
   },
   mobileLifePanelThree: {
-    top: "44%",
-    left: "16%",
+    top: "48%",
+    left: "-12%",
     transform: "rotate(4deg)",
   },
   mobileLifePanelFour: {
-    right: "12%",
-    bottom: "22%",
+    right: "-8%",
+    bottom: "18%",
     transform: "rotate(-5deg)",
   },
   mobileFigureFrame: {
     position: "relative",
     zIndex: 4,
-    width: "min(43vw, 190px)",
-    maxHeight: "286px",
+    width: "clamp(158px, 45vw, 218px)",
+    maxHeight: "100%",
     display: "grid",
     placeItems: "end center",
     lineHeight: 0,
     userSelect: "none",
   },
   mobileHeroArtImage: {
-    maxHeight: "inherit",
+    width: "100%",
+    maxHeight: "clamp(244px, 64vw, 350px)",
+    objectFit: "contain",
     filter: "saturate(0.92) contrast(0.96) drop-shadow(0 20px 32px rgba(66, 52, 95, 0.2))",
   },
   mobilePartGrid: {
     position: "relative",
-    zIndex: 5,
+    gridArea: "parts",
+    zIndex: 9,
     display: "grid",
     gap: "10px",
-    marginTop: "2px",
+    marginTop: "10px",
   },
   mobilePartButton: {
     minHeight: "68px",
+    position: "relative",
     display: "grid",
-    gridTemplateColumns: "28px minmax(0, 1fr)",
+    gridTemplateColumns: "34px minmax(0, 1fr)",
     alignItems: "center",
-    gap: "12px",
-    padding: "12px 14px",
+    gap: "14px",
+    overflow: "hidden",
+    padding: "14px 16px",
     borderRadius: tokens.borderRadiusMedium,
     color: tokens.colorNeutralForeground1,
     backgroundColor: tokens.colorNeutralBackground1,
@@ -482,10 +512,29 @@ const useStyles = makeStyles({
     transitionDuration: tokens.durationNormal,
     transitionProperty: "background-color, border-color, box-shadow, transform",
     transitionTimingFunction: tokens.curveEasyEase,
+    ":before": {
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      padding: "1px",
+      borderRadius: "inherit",
+      backgroundImage: "var(--partGradientBorder)",
+      opacity: 0,
+      pointerEvents: "none",
+      transitionDuration: tokens.durationNormal,
+      transitionProperty: "opacity",
+      transitionTimingFunction: tokens.curveEasyEase,
+      WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+      WebkitMaskComposite: "xor",
+      maskComposite: "exclude",
+    },
     ":hover": {
       backgroundColor: tokens.colorNeutralBackground1Hover,
       boxShadow: tokens.shadow4,
       ...shorthands.borderColor(tokens.colorNeutralStroke1),
+      ":before": {
+        opacity: 1,
+      },
     },
     ":active": {
       transform: "scale(0.995)",
@@ -496,21 +545,33 @@ const useStyles = makeStyles({
       outlineWidth: "2px",
       outlineColor: tokens.colorBrandStroke1,
       outlineOffset: "2px",
+      ":before": {
+        opacity: 1,
+      },
     },
   },
   mobilePartButtonIcon: {
-    width: "28px",
-    height: "28px",
+    position: "relative",
+    zIndex: 1,
+    width: "34px",
+    height: "34px",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     color: tokens.colorBrandForeground1,
+    fontSize: "32px",
     lineHeight: 0,
+    "& svg": {
+      width: "32px",
+      height: "32px",
+    },
   },
   mobilePartButtonText: {
+    position: "relative",
+    zIndex: 1,
     minWidth: 0,
     display: "grid",
-    gap: "2px",
+    gap: "4px",
   },
   mobilePartButtonTitle: {
     color: tokens.colorNeutralForeground1,
@@ -889,11 +950,11 @@ const useStyles = makeStyles({
     position: "relative",
     minHeight: "clamp(112px, 8vw, 132px)",
     display: "grid",
-    gridTemplateColumns: "32px minmax(0, 1fr)",
+    gridTemplateColumns: "44px minmax(0, 1fr)",
     alignItems: "center",
-    gap: "16px",
+    gap: "20px",
     overflow: "hidden",
-    padding: "24px",
+    padding: "24px 28px",
     borderRadius: tokens.borderRadiusMedium,
     color: tokens.colorNeutralForeground1,
     backgroundColor: tokens.colorNeutralBackground1,
@@ -907,13 +968,18 @@ const useStyles = makeStyles({
     ":before": {
       content: '""',
       position: "absolute",
-      top: 0,
-      right: 0,
-      left: 0,
-      height: "1px",
-      backgroundColor: tokens.colorNeutralStrokeOnBrand2,
-      opacity: 0.08,
+      inset: 0,
+      padding: "1px",
+      borderRadius: "inherit",
+      backgroundImage: "var(--partGradientBorder)",
+      opacity: 0,
       pointerEvents: "none",
+      transitionDuration: tokens.durationNormal,
+      transitionProperty: "opacity",
+      transitionTimingFunction: tokens.curveEasyEase,
+      WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+      WebkitMaskComposite: "xor",
+      maskComposite: "exclude",
     },
     ":after": {
       content: '""',
@@ -931,6 +997,9 @@ const useStyles = makeStyles({
       backgroundColor: tokens.colorNeutralBackground1Hover,
       boxShadow: tokens.shadow4,
       ...shorthands.borderColor(tokens.colorNeutralStroke1),
+      ":before": {
+        opacity: 1,
+      },
     },
     ":active": {
       transform: "translateY(0)",
@@ -944,11 +1013,14 @@ const useStyles = makeStyles({
       outlineWidth: "2px",
       outlineColor: tokens.colorBrandStroke1,
       outlineOffset: "2px",
+      ":before": {
+        opacity: 1,
+      },
     },
     "@media (max-width: 520px)": {
       minHeight: "104px",
-      gridTemplateColumns: "28px minmax(0, 1fr)",
-      gap: "12px",
+      gridTemplateColumns: "34px minmax(0, 1fr)",
+      gap: "14px",
       padding: "18px 20px",
       borderRadius: tokens.borderRadiusMedium,
     },
@@ -965,16 +1037,26 @@ const useStyles = makeStyles({
   partIcon: {
     position: "relative",
     zIndex: 1,
-    width: "32px",
-    height: "32px",
+    width: "44px",
+    height: "44px",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     color: tokens.colorBrandForeground1,
+    fontSize: "36px",
     lineHeight: 0,
+    "& svg": {
+      width: "36px",
+      height: "36px",
+    },
     "@media (max-width: 520px)": {
-      width: "28px",
-      height: "28px",
+      width: "34px",
+      height: "34px",
+      fontSize: "32px",
+      "& svg": {
+        width: "32px",
+        height: "32px",
+      },
     },
   },
   partText: {
@@ -982,16 +1064,18 @@ const useStyles = makeStyles({
     zIndex: 1,
     minWidth: 0,
     display: "grid",
-    gap: "4px",
+    gap: "6px",
   },
   partTitle: {
     color: tokens.colorNeutralForeground1,
     fontSize: tokens.fontSizeBase500,
     fontWeight: tokens.fontWeightSemibold,
-    lineHeight: tokens.lineHeightBase500,
+    lineHeight: "1.2",
   },
   partCopy: {
     color: tokens.colorNeutralForeground2,
+    fontSize: tokens.fontSizeBase300,
+    lineHeight: tokens.lineHeightBase300,
   },
   section: {
     scrollMarginTop: "0px",
@@ -2030,6 +2114,10 @@ export function App() {
           "--partPressedOverlay": mode === "dark" ? "rgba(255,255,255,0.04)" : "rgba(36,36,36,0.035)",
           "--partStroke": mode === "dark" ? "rgba(255,255,255,0.095)" : "rgba(36,36,36,0.12)",
           "--partStrokeHover": mode === "dark" ? "rgba(198,186,224,0.22)" : "rgba(93,81,120,0.22)",
+          "--partGradientBorder":
+            mode === "dark"
+              ? "linear-gradient(120deg, rgba(198,186,224,0.94) 0%, rgba(154,190,216,0.74) 48%, rgba(232,215,255,0.72) 100%)"
+              : "linear-gradient(120deg, rgba(198,186,224,0.94) 0%, rgba(177,218,232,0.78) 48%, rgba(231,212,255,0.76) 100%)",
           "--wipSurface": "color-mix(in srgb, #c6bae0 22%, var(--colorNeutralBackground1))",
           "--wipStroke": "color-mix(in srgb, #c6bae0 48%, transparent)",
           "--albumGlow": mode === "dark" ? "rgba(198, 186, 224, 0.14)" : "rgba(198, 186, 224, 0.26)",
@@ -2124,28 +2212,6 @@ export function App() {
                 </Text>
               </div>
 
-              <div className={styles.mobilePartGrid} aria-label={copy.hero.partLabel} data-part-grid="true">
-                {parts.map((part) => (
-                  <a
-                    className={styles.mobilePartButton}
-                    href={`#${part.id}`}
-                    key={part.id}
-                    onClick={() => navigateToSection(part.id)}
-                    aria-label={`${part.title} - ${part.copy}`}
-                  >
-                    <span className={styles.mobilePartButtonIcon} aria-hidden="true">
-                      {part.icon}
-                    </span>
-                    <span className={styles.mobilePartButtonText}>
-                      <span className={styles.mobilePartButtonTitle}>{part.title}</span>
-                      <Text as="span" className={styles.mobilePartButtonCopy}>
-                        {part.copy}
-                      </Text>
-                    </span>
-                  </a>
-                ))}
-              </div>
-
               <aside className={styles.mobileHeroScene} aria-label={copy.hero.artLabel}>
                 <img className={mergeClasses(styles.mobileLaceHint, styles.protectedImage)} src={heroLaceTopRight} alt="" aria-hidden="true" draggable={false} />
                 <img className={mergeClasses(styles.mobileGuideSheet, styles.protectedImage)} src={heroGuideLeft} alt="" aria-hidden="true" draggable={false} />
@@ -2169,6 +2235,28 @@ export function App() {
                   />
                 </div>
               </aside>
+
+              <div className={styles.mobilePartGrid} aria-label={copy.hero.partLabel} data-part-grid="true">
+                {parts.map((part) => (
+                  <a
+                    className={styles.mobilePartButton}
+                    href={`#${part.id}`}
+                    key={part.id}
+                    onClick={() => navigateToSection(part.id)}
+                    aria-label={`${part.title} - ${part.copy}`}
+                  >
+                    <span className={styles.mobilePartButtonIcon} aria-hidden="true">
+                      {part.icon}
+                    </span>
+                    <span className={styles.mobilePartButtonText}>
+                      <span className={styles.mobilePartButtonTitle}>{part.title}</span>
+                      <Text as="span" className={styles.mobilePartButtonCopy}>
+                        {part.copy}
+                      </Text>
+                    </span>
+                  </a>
+                ))}
+              </div>
             </div>
           ) : (
             <>
@@ -2472,7 +2560,7 @@ export function App() {
           }
         >
           <span className={styles.workPopoverIcon} aria-hidden="true">
-            <DocumentBulletList24Regular />
+            <Info24Regular />
           </span>
           <Text weight="semibold">{workInProgressText}</Text>
         </PopoverSurface>
