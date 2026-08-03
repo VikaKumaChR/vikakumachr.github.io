@@ -1739,7 +1739,7 @@ const contentByLocale: Record<Locale, LocaleContent> = {
     regulation: [
       { term: "畫師媽咪", value: "几维不是猕猴桃" },
       { term: "角色來源", value: "個人角色：维嘉" },
-      { term: "展示範圍", value: "本頁僅展示處理後公開素材與整理文字" },
+      { term: "展示範圍", value: "本頁僅展示個人角色和整理日志" },
       { term: "使用聲明", value: "未經確認請勿使用、轉載、訓練AI、二次分發、二改或商用" },
     ],
     footer: {
@@ -1846,7 +1846,7 @@ const contentByLocale: Record<Locale, LocaleContent> = {
     regulation: [
       { term: "画师妈咪", value: "几维不是猕猴桃" },
       { term: "角色来源", value: "个人角色：维嘉" },
-      { term: "展示范围", value: "本页仅展示处理后公开素材与整理文字" },
+      { term: "展示范围", value: "本页仅展示个人角色和整理日志" },
       { term: "使用声明", value: "未经确认请勿使用、转载、训练AI、二次分发、二改或商用" },
     ],
     footer: {
