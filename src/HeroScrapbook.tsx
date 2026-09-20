@@ -1,7 +1,7 @@
 import frameCutout from "../Image/Frame01.png";
 import baseTexture from "../Image/Texture_Sample00.jpg";
-import lifePanel02 from "../Image/LifePanel_02.png";
-import lifePanel03 from "../Image/LifePanel_03.png";
+import lifePanel02 from "../Image/LifePanel_03.png";
+import lifePanel03 from "../Image/LifePanel_04.png";
 import "./HeroScrapbook.css";
 
 const photos = [lifePanel02, lifePanel03];
