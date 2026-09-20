@@ -1,0 +1,54 @@
+.theme-switch.fui-Switch {
+  width: var(--toolbar-target-size, 48px);
+  height: var(--toolbar-target-size, 48px);
+  align-items: center;
+  justify-content: center;
+}
+.theme-switch .fui-Switch__input { width: 100%; z-index: 1; }
+.theme-switch .fui-Switch__indicator {
+  width: 30px;
+  height: 18px;
+  position: relative;
+  margin: 0;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border-width: 2px;
+  box-sizing: border-box;
+}
+.theme-switch.fui-Switch .fui-Switch__input:enabled:is(:checked, :not(:checked)) ~ .fui-Switch__indicator {
+  background: transparent;
+  border-color: currentColor;
+  color: var(--colorNeutralForeground1);
+}
+.theme-switch.fui-Switch .fui-Switch__input:enabled:is(:checked, :not(:checked)):hover ~ .fui-Switch__indicator {
+  background: transparent;
+  border-color: currentColor;
+  color: var(--colorBrandForeground1);
+}
+.theme-switch .theme-switch-thumb {
+  position: absolute;
+  left: 2.5px;
+  top: 2.5px;
+  display: block;
+  width: 9px;
+  height: 9px;
+  transform: translateX(0);
+  transition: transform var(--theme-duration) var(--ease-in-out);
+}
+.theme-switch .fui-Switch__input:checked ~ .fui-Switch__indicator > .theme-switch-thumb {
+  transform: translateX(12px);
+}
+.theme-switch-thumb svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.theme-moon-cutout {
+  transform: translate(12px, -12px);
+  transition: transform var(--theme-duration) var(--ease-in-out);
+}
+.theme-switch input:checked ~ .fui-Switch__indicator .theme-moon-cutout {
+  transform: translate(3px, -3px);
+}
+.theme-switch.fui-Switch[data-fui-focus-within]:focus-within::after { border-radius: 999px; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-switch .theme-switch-thumb, .theme-moon-cutout { transition: none; }
+}

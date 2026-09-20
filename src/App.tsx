@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactElement } from "react";
+import { useEffect, useLayoutEffect, useState, type CSSProperties, type MouseEvent, type ReactElement } from "react";
 import {
   Badge,
   Button,
@@ -8,9 +8,15 @@ import {
   CardPreview,
   FluentProvider,
   Link,
-  PopoverSurface,
   Subtitle1,
+  Tab,
+  TabList,
   Text,
+  Toast,
+  Toaster,
+  ToastTitle,
+  Tooltip,
+  useToastController,
   Title1,
   Title2,
   Title3,
@@ -25,31 +31,25 @@ import {
 } from "@fluentui/react-components";
 import {
   ArrowUp24Regular,
-  BookOpen24Regular,
-  ChevronLeft24Regular,
-  ChevronRight24Regular,
-  DocumentBulletList24Regular,
+  ArrowUpRight24Regular,
   GlobeShield24Regular,
-  Info24Regular,
-  PanelRightGallery24Regular,
-  Person24Regular,
   Share24Regular,
-  Translate24Regular,
-  WeatherMoon24Regular,
-  WeatherSunny24Regular,
 } from "@fluentui/react-icons";
+import { FluentNamedIcon } from "./FluentNamedIcon";
+import { BrandIcon } from "./BrandIcon";
+import { ThemeSwitch } from "./ThemeSwitch";
+import { useAlbumNavigation } from "./useAlbumNavigation";
+import { AlbumNavigation } from "./AlbumNavigation";
+import { animateEntryIcon, previewEntryIcon } from "./animateEntryIcon";
+import { useThemeTransition } from "./useThemeTransition";
+import { useSectionNavigation } from "./useSectionNavigation";
+import { NavigationIndicator } from "./NavigationIndicator";
+import { HeroPhotoNotes, HeroHomeFrame, HeroFigureBackdrop } from "./HeroScrapbook";
 import characterCollage from "../Image/LifeFourCuts.png";
 
-// 首頁四個手帳拼貼塊替換入口：用你的四張透明 PNG 覆蓋 Image/LifePanel_01.png 到 LifePanel_04.png。
-import lifePanel01 from "../Image/LifePanel_01.png";
-import lifePanel02 from "../Image/LifePanel_02.png";
-import lifePanel03 from "../Image/LifePanel_03.png";
-import lifePanel04 from "../Image/LifePanel_04.png";
 import characterPortrait from "../Image/VikaKumaChR_Stand.png";
 import characterScene from "../Image/VikaKumaChR_Scene.png";
 import heroFigurePlaceholder from "../Image/hero_figure_placeholder.png";
-import heroGuideLeft from "../Image/MainPageComponent/4_guide.png";
-import heroLaceTopRight from "../Image/MainPageComponent/MainPageCorner_TopRight.webp";
 import brandAvatar from "../Image/BrandAvatar.png";
 
 // 首頁半身立繪替換入口：把上方 import 指向你的透明 PNG，再讓 heroFigure 使用它。
@@ -63,7 +63,7 @@ const getIsMobileDevice = () => {
   const userAgent = navigator.userAgent.toLowerCase();
   const mobileUserAgent = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/.test(userAgent);
   const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-  const narrowViewport = window.matchMedia("(max-width: 760px)").matches;
+  const narrowViewport = window.matchMedia("(max-width: 1023px)").matches;
 
   return mobileUserAgent || narrowViewport || (coarsePointer && window.innerWidth <= 900);
 };
@@ -89,8 +89,12 @@ const brandRamp: BrandVariants = {
 
 const lightTheme: Theme = {
   ...createLightTheme(brandRamp),
+  fontFamilyBase: "var(--font-serif)",
+  fontFamilyNumeric: "var(--font-serif)",
   colorBrandBackground: "#c6bae0",
   colorBrandBackgroundHover: "#b4aad4",
+  colorBrandBackgroundPressed: "#9d91bf",
+  colorNeutralForegroundOnBrand: "#24202e",
   colorBrandForeground1: "#5d5178",
   colorBrandForeground2: "#716590",
   colorBrandStroke1: "#9d91bf",
@@ -100,8 +104,12 @@ const lightTheme: Theme = {
 
 const darkTheme: Theme = {
   ...createDarkTheme(brandRamp),
+  fontFamilyBase: "var(--font-serif)",
+  fontFamilyNumeric: "var(--font-serif)",
   colorBrandBackground: "#c6bae0",
   colorBrandBackgroundHover: "#d2c7e7",
+  colorBrandBackgroundPressed: "#b4aad4",
+  colorNeutralForegroundOnBrand: "#24202e",
   colorBrandForeground1: "#ded5ef",
   colorBrandForeground2: "#d2c7e7",
   colorBrandStroke1: "#c6bae0",
@@ -112,7 +120,8 @@ const darkTheme: Theme = {
 const useStyles = makeStyles({
   shell: {
     minHeight: "100vh",
-    overflowX: "hidden",
+    // Clip decorations without creating a scroll container that breaks the mobile sticky header.
+    overflowX: "clip",
     backgroundColor: tokens.colorNeutralBackground1,
     color: tokens.colorNeutralForeground1,
   },
@@ -126,12 +135,12 @@ const useStyles = makeStyles({
     display: "grid",
     gridTemplateColumns: "minmax(220px, 1fr) auto minmax(160px, 1fr)",
     alignItems: "center",
-    columnGap: "18px",
-    padding: "12px clamp(18px, 4vw, 54px)",
+    columnGap: "24px",
+    padding: "12px var(--page-gutter)",
     backgroundColor: "color-mix(in srgb, var(--colorNeutralBackground1) 88%, transparent)",
     ...shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
     backdropFilter: "blur(22px) saturate(1.18)",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       position: "sticky",
       gridTemplateColumns: "1fr auto",
       rowGap: "10px",
@@ -145,6 +154,9 @@ const useStyles = makeStyles({
     minWidth: 0,
     color: tokens.colorNeutralForeground1,
     textDecorationLine: "none",
+    ":hover": { textDecorationLine: "none" },
+    ":active": { textDecorationLine: "none" },
+    ":focus-visible": { textDecorationLine: "none" },
   },
   brandMark: {
     width: "48px",
@@ -167,7 +179,7 @@ const useStyles = makeStyles({
   brandCopy: {
     display: "grid",
     minWidth: 0,
-    gap: "1px",
+    gap: tokens.spacingVerticalXXS,
     "@media (max-width: 540px)": {
       display: "none",
     },
@@ -187,16 +199,24 @@ const useStyles = makeStyles({
   },
   nav: {
     justifySelf: "center",
+    "@media (max-width: 1023px)": {
+      order: 3,
+      gridColumn: "1 / -1",
+      width: "100%",
+    },
+  },
+  navTabs: {
+    position: "relative",
     display: "flex",
     alignItems: "center",
-    columnGap: "clamp(10px, 2.4vw, 22px)",
+    columnGap: tokens.spacingHorizontalXXL,
     color: tokens.colorNeutralForeground2,
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       order: 3,
       gridColumn: "1 / -1",
       width: "100%",
       justifyContent: "center",
-      columnGap: "18px",
+      columnGap: tokens.spacingHorizontalL,
     },
     "@media (max-width: 430px)": {
       justifyContent: "space-between",
@@ -204,94 +224,92 @@ const useStyles = makeStyles({
     },
   },
   navLink: {
-    minHeight: "40px",
-    display: "inline-grid",
-    gridTemplateRows: "1fr 3px",
-    alignItems: "center",
-    justifyItems: "center",
-    gap: "2px",
-    color: tokens.colorNeutralForeground2,
-    fontSize: tokens.fontSizeBase300,
-    fontWeight: tokens.fontWeightSemibold,
+    minWidth: "44px",
+    minHeight: "44px",
+    fontSize: tokens.fontSizeBase400,
+    lineHeight: tokens.lineHeightBase400,
     textDecorationLine: "none",
     whiteSpace: "nowrap",
-    ...shorthands.padding("0", "2px"),
-    transitionDuration: tokens.durationNormal,
-    transitionProperty: "color",
-    transitionTimingFunction: tokens.curveEasyEase,
-    ":hover": {
-      color: tokens.colorNeutralForeground1,
+    ...shorthands.padding(tokens.spacingVerticalS, tokens.spacingHorizontalSNudge),
+    // NavigationIndicator owns the single WinUI-style stretch/contract underline.
+    // Keep TabList's selection and keyboard behavior, not its per-tab sliding lines.
+    "::after": { display: "none" },
+    "&::before, &:hover::before, &:active::before": { display: "none" },
+    "&:hover, &:active": { backgroundColor: "transparent" },
+    "& .fui-Tab__content": { fontFamily: "inherit", fontSize: "inherit", lineHeight: "inherit" },
+    "&[data-fui-focus-visible]": {
+      boxShadow: "none", outline: `2px solid ${tokens.colorBrandStroke1}`, outlineOffset: "2px",
     },
-    "@media (max-width: 430px)": {
-      fontSize: tokens.fontSizeBase200,
-    },
-  },
-  navLinkActive: {
-    color: tokens.colorNeutralForeground1,
-  },
-  navUnderline: {
-    width: "100%",
-    height: "3px",
-    borderRadius: "999px",
-    backgroundColor: "#c6bae0",
-    opacity: 0,
-    transform: "scaleX(0.72)",
-    transitionDuration: tokens.durationNormal,
-    transitionProperty: "opacity, transform",
-    transitionTimingFunction: tokens.curveEasyEase,
-  },
-  navUnderlineActive: {
-    opacity: 1,
-    transform: "scaleX(1)",
   },
   headerActions: {
     justifySelf: "end",
-    display: "inline-flex",
+    display: "inline-grid",
+    gridAutoFlow: "column",
+    gridAutoColumns: "var(--toolbar-target-size)",
     alignItems: "center",
-    gap: "6px",
+    gap: tokens.spacingHorizontalM,
     "@media (max-width: 430px)": {
-      gap: "4px",
+      gap: tokens.spacingHorizontalS,
     },
   },
   actionButton: {
-    minWidth: "40px",
-    width: "40px",
-    height: "40px",
-    borderRadius: "8px",
-  },
-  languageButton: {
-    width: "auto",
-    minWidth: "58px",
-    paddingRight: "10px",
-    paddingLeft: "10px",
-    fontWeight: tokens.fontWeightSemibold,
-    "@media (max-width: 430px)": {
-      minWidth: "52px",
-      paddingRight: "8px",
-      paddingLeft: "8px",
+    minWidth: "var(--toolbar-target-size)",
+    width: "var(--toolbar-target-size)",
+    height: "var(--toolbar-target-size)",
+    borderRadius: "50%",
+    backgroundColor: "transparent",
+    boxShadow: "none",
+    color: tokens.colorNeutralForeground2,
+    "& .fui-Button__icon": {
+      width: "24px",
+      height: "24px",
+      fontSize: "24px",
+      color: "inherit",
     },
-  },
-  themeButton: {
-    color: tokens.colorBrandForeground1,
+    ":hover": {
+      backgroundColor: "transparent",
+      boxShadow: "none",
+      color: tokens.colorBrandForeground1,
+    },
+    ":hover:active": {
+      backgroundColor: "transparent",
+      boxShadow: "none",
+      color: tokens.colorBrandForeground2,
+    },
+    ":active:focus-visible": {
+      backgroundColor: "transparent",
+      boxShadow: "none",
+      color: tokens.colorBrandForeground2,
+    },
+    "&[data-fui-focus-visible]": {
+      boxShadow: "none",
+      ...shorthands.borderColor("transparent"),
+      outline: `2px solid ${tokens.colorBrandStroke1}`,
+      outlineOffset: "2px",
+    },
+    "&[data-fui-focus-visible]:hover": {
+      boxShadow: "none",
+      ...shorthands.borderColor("transparent"),
+    },
   },
   hero: {
     position: "relative",
-    minHeight: "clamp(760px, 100vh, 920px)",
+    minHeight: "clamp(720px, 92vh, 880px)",
     display: "grid",
     alignItems: "center",
     overflow: "hidden",
     isolation: "isolate",
-    scrollMarginTop: "72px",
-    padding: "calc(72px + clamp(38px, 6vh, 66px)) clamp(20px, 6vw, 92px) clamp(34px, 5vh, 54px)",
+    scrollMarginTop: "0px",
+    padding: "120px 48px 48px",
     backgroundColor: "var(--heroBase)",
     backgroundImage:
-      "linear-gradient(135deg, transparent 0 47.5%, var(--heroGridLine) 48.5% 51.5%, transparent 52.5% 100%), linear-gradient(45deg, transparent 0 47.5%, var(--heroGridLine) 48.5% 51.5%, transparent 52.5% 100%), radial-gradient(ellipse at 72% 18%, var(--heroCoolGlow) 0, transparent 44%), radial-gradient(ellipse at 24% 88%, var(--heroWarmGlow) 0, transparent 36%), linear-gradient(180deg, var(--heroBase) 0%, var(--heroPaper) 58%, var(--heroBase) 100%)",
-    backgroundSize: "112px 112px, 112px 112px, auto, auto, auto",
-    backgroundPosition: "center, center, center, center, center",
+      "radial-gradient(ellipse at 72% 38%, var(--heroWarmGlow), transparent 64%), radial-gradient(ellipse at 12% 72%, var(--heroCoolGlow), transparent 60%), linear-gradient(180deg, var(--heroBase), var(--heroPaper))",
+    backgroundPosition: "center",
     ":before": {
       content: '""',
       position: "absolute",
       zIndex: 0,
+      display: "none",
       top: "72px",
       right: 0,
       left: 0,
@@ -312,7 +330,7 @@ const useStyles = makeStyles({
         "linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--heroBase) 58%, transparent) 58%, var(--colorNeutralBackground1) 100%)",
       pointerEvents: "none",
     },
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       minHeight: "calc(100svh - 118px)",
       alignItems: "start",
       paddingTop: "clamp(28px, 5vw, 42px)",
@@ -328,12 +346,31 @@ const useStyles = makeStyles({
       paddingLeft: "clamp(16px, 5vw, 22px)",
     },
   },
+  heroTexture: {
+    position: "absolute",
+    zIndex: 0,
+    left: "var(--heroTextureLeft, 0px)",
+    top: "var(--heroTextureTop, 0px)",
+    width: "var(--heroTextureWidth, 100%)",
+    maxWidth: "none",
+    height: "auto",
+    pointerEvents: "none",
+    userSelect: "none",
+    filter: "var(--heroTextureFilter)",
+    opacity: "var(--heroTextureOpacity)",
+    maskImage: "radial-gradient(ellipse 34% 46% at 50% 48.5%, #000 60%, transparent 100%)",
+  },
+  mobileHeroTexture: {
+    // Feather in both axes; a vertical-only fade leaves a visible lace band and side seam.
+    maskImage: "radial-gradient(ellipse 38% 46% at 50% 48.5%, #000 60%, transparent 100%)",
+  },
   mobileHero: {
-    minHeight: "calc(100svh - 118px)",
+    minHeight: "auto",
+    "@media (max-width: 1023px)": { minHeight: "auto" },
+    "@media (max-width: 520px)": { minHeight: "auto" },
     alignItems: "start",
     overflow: "hidden",
     padding: "26px clamp(18px, 5vw, 24px) max(28px, env(safe-area-inset-bottom))",
-    backgroundSize: "88px 88px, 88px 88px, auto, auto, auto",
     ":before": {
       display: "none",
     },
@@ -378,18 +415,24 @@ const useStyles = makeStyles({
     },
   },
   mobileHeroTitle: {
-    maxWidth: "7.2ch",
+    maxWidth: "100%",
     marginTop: 0,
     marginBottom: 0,
-    fontSize: "clamp(2.45rem, 11.4vw, 3.4rem)",
-    lineHeight: "0.96",
+    color: "var(--hero-title-color)",
+    fontSize: "clamp(2.125rem, 8.5vw, 2.75rem)",
+    lineHeight: "1.16",
+    fontWeight: tokens.fontWeightSemibold,
+    letterSpacing: "-0.015em",
+    wordSpacing: "-0.08em",
+    fontKerning: "normal",
     overflowWrap: "anywhere",
   },
   mobileHeroLead: {
-    maxWidth: "23ch",
+    maxWidth: "100%",
     marginTop: 0,
     marginBottom: 0,
-    color: tokens.colorNeutralForeground2,
+    color: "var(--hero-copy-color)",
+    fontWeight: tokens.fontWeightRegular,
     fontSize: tokens.fontSizeBase400,
     lineHeight: tokens.lineHeightBase400,
   },
@@ -501,86 +544,36 @@ const useStyles = makeStyles({
     width: "100%",
     maxHeight: "clamp(246px, 64vw, 298px)",
     objectFit: "contain",
-    filter: "saturate(0.92) contrast(0.96) drop-shadow(0 20px 32px rgba(66, 52, 95, 0.2))",
+    filter: "saturate(0.92) contrast(0.96) drop-shadow(0 4px 8px rgba(66, 52, 95, 0.12))",
   },
   mobilePartGrid: {
-    position: "relative",
-    gridArea: "parts",
-    zIndex: 9,
-    display: "grid",
-    gap: "10px",
-    marginTop: "-2px",
+    position: "relative", gridArea: "parts", zIndex: 9, display: "grid",
+    gap: "16px", marginTop: "-16px",
   },
   mobilePartButton: {
-    minHeight: "68px",
-    position: "relative",
-    display: "grid",
-    gridTemplateColumns: "34px minmax(0, 1fr)",
-    alignItems: "center",
-    gap: "14px",
-    overflow: "hidden",
-    padding: "14px 16px",
-    borderRadius: tokens.borderRadiusMedium,
-    color: tokens.colorNeutralForeground1,
-    backgroundColor: tokens.colorNeutralBackground1,
-    textDecorationLine: "none",
-    boxShadow: tokens.shadow2,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-    transitionDuration: tokens.durationNormal,
-    transitionProperty: "background-color, border-color, box-shadow, transform",
-    transitionTimingFunction: tokens.curveEasyEase,
-    ":before": {
-      content: '""',
-      position: "absolute",
-      inset: 0,
-      padding: "1px",
-      borderRadius: "inherit",
-      backgroundImage: "var(--partGradientBorder)",
-      opacity: 0,
-      pointerEvents: "none",
-      transitionDuration: tokens.durationNormal,
-      transitionProperty: "opacity",
-      transitionTimingFunction: tokens.curveEasyEase,
-      WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-      WebkitMaskComposite: "xor",
-      maskComposite: "exclude",
-    },
-    ":hover": {
-      backgroundColor: tokens.colorNeutralBackground1Hover,
-      boxShadow: tokens.shadow4,
-      ...shorthands.borderColor(tokens.colorNeutralStroke1),
-      ":before": {
-        opacity: 1,
-      },
-    },
-    ":active": {
-      transform: "scale(0.995)",
-      boxShadow: tokens.shadow2,
-    },
-    ":focus-visible": {
-      outlineStyle: "solid",
-      outlineWidth: "2px",
-      outlineColor: tokens.colorBrandStroke1,
-      outlineOffset: "2px",
-      ":before": {
-        opacity: 1,
-      },
-    },
+    minHeight: "104px", display: "grid", gridTemplateColumns: "48px minmax(0, 1fr)",
+    alignItems: "center", gap: "16px", padding: "24px",
+    color: tokens.colorNeutralForeground1, textDecorationLine: "none",
+    backgroundColor: tokens.colorNeutralBackground1, borderRadius: "22px",
+    boxShadow: tokens.shadow4,
+    touchAction: "manipulation", userSelect: "none",
+    ":active": { backgroundColor: tokens.colorNeutralBackground1Pressed },
+    ":focus-visible": { outline: `2px solid ${tokens.colorBrandStroke1}`, outlineOffset: "4px" },
   },
   mobilePartButtonIcon: {
     position: "relative",
     zIndex: 1,
-    width: "34px",
-    height: "34px",
+    width: "48px",
+    height: "48px",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     color: tokens.colorBrandForeground1,
-    fontSize: "32px",
+    fontSize: "48px",
     lineHeight: 0,
     "& svg": {
-      width: "32px",
-      height: "32px",
+      width: "48px",
+      height: "48px",
     },
   },
   mobilePartButtonText: {
@@ -608,14 +601,15 @@ const useStyles = makeStyles({
     marginRight: "auto",
     marginLeft: "auto",
     display: "grid",
-    gridTemplateColumns: "minmax(0, 0.95fr) minmax(300px, 0.78fr)",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
     alignItems: "center",
-    gap: "clamp(24px, 4.4vw, 58px)",
+    columnGap: "48px",
+    rowGap: 0,
     "@media (max-width: 980px)": {
       gridTemplateColumns: "1fr",
       gap: "22px",
     },
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       alignItems: "start",
       gap: "16px",
     },
@@ -662,12 +656,12 @@ const useStyles = makeStyles({
   heroLaceTopRight: {
     top: 0,
     right: "-22px",
-    width: "clamp(196px, 15.8vw, 284px)",
+    width: "clamp(148px, 12vw, 216px)",
     transform: "rotate(0deg)",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       top: 0,
       right: "-14px",
-      width: "172px",
+      width: "132px",
       opacity: "var(--heroLaceMobileOpacity)",
     },
   },
@@ -676,7 +670,7 @@ const useStyles = makeStyles({
     zIndex: 1,
     left: 0,
     top: "clamp(280px, 38vh, 360px)",
-    width: "clamp(320px, 25vw, 440px)",
+    width: "clamp(240px, 19vw, 334px)",
     height: "auto",
     display: "block",
     objectFit: "contain",
@@ -687,50 +681,50 @@ const useStyles = makeStyles({
     maskImage: "linear-gradient(180deg, #000 0%, #000 70%, transparent 100%)",
     pointerEvents: "none",
     userSelect: "none",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       top: "clamp(228px, 30vh, 300px)",
-      width: "clamp(270px, 42vw, 360px)",
+      width: "clamp(205px, 32vw, 274px)",
       opacity: "var(--heroGuideMobileOpacity)",
     },
     "@media (max-width: 520px)": {
       top: "clamp(226px, 25vh, 252px)",
-      width: "clamp(300px, 82vw, 350px)",
+      width: "clamp(228px, 62vw, 266px)",
       left: "-62px",
     },
   },
   heroCopy: {
     display: "grid",
-    gap: "22px",
-    maxWidth: "660px",
+    gap: "24px",
+    maxWidth: "560px",
     "@media (max-width: 520px)": {
       gap: "16px",
     },
   },
-  eyebrow: {
-    margin: 0,
-    color: tokens.colorBrandForeground1,
-    fontSize: tokens.fontSizeBase200,
-    fontWeight: tokens.fontWeightBold,
-    textTransform: "uppercase",
-  },
   heroTitle: {
-    maxWidth: "9.8ch",
+    maxWidth: "100%",
     marginTop: 0,
     marginBottom: 0,
-    fontSize: "clamp(3.7rem, 7.5vw, 7.4rem)",
-    lineHeight: "0.92",
-    overflowWrap: "anywhere",
-    "@media (max-width: 860px)": {
-      fontSize: "clamp(3.7rem, 10.4vw, 5.35rem)",
-    },
-    "@media (max-width: 520px)": {
-      fontSize: "clamp(3.05rem, 13.2vw, 3.42rem)",
-      maxWidth: "8.6ch",
-    },
+    // The brand wordmark has its own display composition, as on the Fluent homepage.
+    color: "var(--hero-title-color)",
+    fontSize: "clamp(3.5rem, 5.5vw, 5.75rem)",
+    lineHeight: "1.16",
+    fontWeight: tokens.fontWeightSemibold,
+    letterSpacing: "-0.015em",
+    wordSpacing: "-0.08em",
+    fontKerning: "normal",
+    whiteSpace: "nowrap",
+  },
+  heroDescriptor: {
+    margin: 0,
+    color: "var(--hero-copy-color)",
+    fontSize: tokens.fontSizeBase300,
+    lineHeight: tokens.lineHeightBase300,
+    fontWeight: tokens.fontWeightRegular,
   },
   heroLead: {
     maxWidth: "38ch",
-    color: tokens.colorNeutralForeground2,
+    color: "var(--hero-copy-color)",
+    fontWeight: tokens.fontWeightRegular,
     fontSize: tokens.fontSizeBase500,
     lineHeight: tokens.lineHeightBase500,
     "@media (max-width: 520px)": {
@@ -741,7 +735,7 @@ const useStyles = makeStyles({
   },
   heroArtStage: {
     position: "relative",
-    minHeight: "clamp(420px, 56vh, 610px)",
+    minHeight: "clamp(400px, 54vh, 560px)",
     display: "grid",
     placeItems: "end center",
     overflow: "visible",
@@ -763,7 +757,7 @@ const useStyles = makeStyles({
     "@media (max-width: 980px)": {
       minHeight: "clamp(420px, 58vw, 520px)",
     },
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       width: "100%",
       minHeight: "clamp(276px, 60vw, 500px)",
       placeItems: "end center",
@@ -786,10 +780,10 @@ const useStyles = makeStyles({
   heroCollageLayer: {
     position: "absolute",
     zIndex: 2,
-    inset: "-4% -12% 0 -18%",
+    inset: "4% 0 0",
     pointerEvents: "none",
     userSelect: "none",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       inset: "0 4% 0",
       opacity: 0.68,
     },
@@ -805,14 +799,14 @@ const useStyles = makeStyles({
   heroLifePanel: {
     position: "absolute",
     display: "block",
-    width: "clamp(150px, 16vw, 230px)",
+    width: "clamp(128px, 12vw, 176px)",
     height: "auto",
     objectFit: "contain",
     opacity: 0.78,
     mixBlendMode: "multiply",
     filter: "saturate(0.94) drop-shadow(0 18px 28px rgba(82, 68, 111, 0.16))",
     transformOrigin: "center",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       width: "clamp(92px, 18vw, 140px)",
       opacity: 0.55,
     },
@@ -828,7 +822,7 @@ const useStyles = makeStyles({
     top: "10%",
     left: "1%",
     transform: "rotate(-8deg)",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       top: "9%",
       left: "18%",
     },
@@ -841,7 +835,7 @@ const useStyles = makeStyles({
     top: "7%",
     right: "-1%",
     transform: "rotate(7deg)",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       top: "10%",
       right: "14%",
     },
@@ -854,7 +848,7 @@ const useStyles = makeStyles({
     top: "46%",
     left: "-8%",
     transform: "rotate(4deg)",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       top: "44%",
       left: "14%",
     },
@@ -867,7 +861,7 @@ const useStyles = makeStyles({
     right: "-7%",
     bottom: "15%",
     transform: "rotate(-6deg)",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       right: "15%",
       bottom: "18%",
     },
@@ -879,8 +873,8 @@ const useStyles = makeStyles({
   heroFigureFrame: {
     position: "relative",
     zIndex: 3,
-    width: "min(92%, 500px)",
-    maxHeight: "clamp(420px, 68vh, 660px)",
+    width: "min(84%, 408px)",
+    maxHeight: "560px",
     display: "grid",
     placeItems: "end center",
     lineHeight: 0,
@@ -888,7 +882,7 @@ const useStyles = makeStyles({
     "@media (max-width: 980px)": {
       maxHeight: "480px",
     },
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       width: "min(52vw, 360px)",
       maxHeight: "clamp(350px, 54vh, 480px)",
     },
@@ -911,7 +905,7 @@ const useStyles = makeStyles({
     display: "block",
     objectFit: "contain",
     objectPosition: "bottom center",
-    filter: "saturate(0.96) contrast(0.98) drop-shadow(0 32px 48px rgba(66, 52, 95, 0.22))",
+    filter: "saturate(0.96) contrast(0.98) drop-shadow(0 4px 8px rgba(66, 52, 95, 0.12))",
     mixBlendMode: "normal",
   },
   heroFigureGuard: {
@@ -939,108 +933,19 @@ const useStyles = makeStyles({
     WebkitUserSelect: "none",
   },
   partGrid: {
-    gridColumn: "1 / -1",
-    position: "relative",
-    zIndex: 4,
-    display: "grid",
-    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    gap: "16px",
-    marginTop: "clamp(-112px, -9vh, -72px)",
-    paddingTop: "clamp(10px, 2vh, 18px)",
-    "@media (min-width: 681px) and (max-width: 900px)": {
-      gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-      gap: "12px",
-      marginTop: "clamp(-132px, -16vw, -84px)",
-      paddingTop: "8px",
-    },
-    "@media (max-width: 680px)": {
-      gridTemplateColumns: "1fr",
-      marginTop: "-18px",
-      paddingTop: 0,
-    },
-    "@media (max-width: 520px)": {
-      marginTop: "-18px",
-      gap: "12px",
-    },
+    gridColumn: "1 / -1", position: "relative", zIndex: 4,
+    display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: "24px", marginTop: "-24px",
   },
   partCard: {
-    position: "relative",
-    minHeight: "clamp(112px, 8vw, 132px)",
-    display: "grid",
-    gridTemplateColumns: "44px minmax(0, 1fr)",
-    alignItems: "center",
-    gap: "20px",
-    overflow: "hidden",
-    padding: "24px 28px",
-    borderRadius: tokens.borderRadiusMedium,
-    color: tokens.colorNeutralForeground1,
-    backgroundColor: tokens.colorNeutralBackground1,
-    backgroundImage: "none",
-    textDecorationLine: "none",
-    boxShadow: tokens.shadow2,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-    transitionDuration: tokens.durationNormal,
-    transitionProperty: "background-color, border-color, box-shadow, transform",
-    transitionTimingFunction: tokens.curveEasyEase,
-    ":before": {
-      content: '""',
-      position: "absolute",
-      inset: 0,
-      padding: "1px",
-      borderRadius: "inherit",
-      backgroundImage: "var(--partGradientBorder)",
-      opacity: 0,
-      pointerEvents: "none",
-      transitionDuration: tokens.durationNormal,
-      transitionProperty: "opacity",
-      transitionTimingFunction: tokens.curveEasyEase,
-      WebkitMask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-      WebkitMaskComposite: "xor",
-      maskComposite: "exclude",
-    },
-    ":after": {
-      content: '""',
-      position: "absolute",
-      inset: 0,
-      pointerEvents: "none",
-      backgroundColor: tokens.colorNeutralForeground1,
-      opacity: 0,
-      transitionDuration: tokens.durationNormal,
-      transitionProperty: "opacity",
-      transitionTimingFunction: tokens.curveEasyEase,
-    },
-    ":hover": {
-      transform: "translateY(-2px)",
-      backgroundColor: tokens.colorNeutralBackground1Hover,
-      boxShadow: tokens.shadow4,
-      ...shorthands.borderColor(tokens.colorNeutralStroke1),
-      ":before": {
-        opacity: 1,
-      },
-    },
-    ":active": {
-      transform: "translateY(0)",
-      boxShadow: tokens.shadow2,
-      ":after": {
-        opacity: 1,
-      },
-    },
-    ":focus-visible": {
-      outlineStyle: "solid",
-      outlineWidth: "2px",
-      outlineColor: tokens.colorBrandStroke1,
-      outlineOffset: "2px",
-      ":before": {
-        opacity: 1,
-      },
-    },
-    "@media (max-width: 520px)": {
-      minHeight: "104px",
-      gridTemplateColumns: "34px minmax(0, 1fr)",
-      gap: "14px",
-      padding: "18px 20px",
-      borderRadius: tokens.borderRadiusMedium,
-    },
+    minHeight: "152px", display: "grid", gridTemplateColumns: "64px minmax(0, 1fr)",
+    alignItems: "center", gap: "24px", padding: "32px",
+    color: tokens.colorNeutralForeground1, textDecorationLine: "none",
+    backgroundColor: tokens.colorNeutralBackground1, borderRadius: "22px",
+    boxShadow: tokens.shadow4,
+    touchAction: "manipulation", userSelect: "none",
+    ":active": { backgroundColor: tokens.colorNeutralBackground1Pressed },
+    ":focus-visible": { outline: `2px solid ${tokens.colorBrandStroke1}`, outlineOffset: "4px" },
   },
   mobilePartCard: {
     minHeight: "96px",
@@ -1052,29 +957,8 @@ const useStyles = makeStyles({
     },
   },
   partIcon: {
-    position: "relative",
-    zIndex: 1,
-    width: "44px",
-    height: "44px",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: tokens.colorBrandForeground1,
-    fontSize: "36px",
-    lineHeight: 0,
-    "& svg": {
-      width: "36px",
-      height: "36px",
-    },
-    "@media (max-width: 520px)": {
-      width: "34px",
-      height: "34px",
-      fontSize: "32px",
-      "& svg": {
-        width: "32px",
-        height: "32px",
-      },
-    },
+    width: "64px", height: "64px", display: "inline-flex", alignItems: "center",
+    color: tokens.colorBrandForeground1, fontSize: "64px", lineHeight: 0,
   },
   partText: {
     position: "relative",
@@ -1087,7 +971,7 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground1,
     fontSize: tokens.fontSizeBase500,
     fontWeight: tokens.fontWeightSemibold,
-    lineHeight: "1.2",
+    lineHeight: "26px",
   },
   partCopy: {
     color: tokens.colorNeutralForeground2,
@@ -1096,7 +980,9 @@ const useStyles = makeStyles({
   },
   section: {
     scrollMarginTop: "0px",
-    padding: "clamp(44px, 5vw, 60px) clamp(22px, 5vw, 72px)",
+    padding: "64px 48px",
+    "@media (max-width: 1023px)": { padding: "48px 24px" },
+    "@media (max-width: 479px)": { padding: "32px 16px" },
   },
   sectionMuted: {
     backgroundColor: tokens.colorNeutralBackground2,
@@ -1111,7 +997,7 @@ const useStyles = makeStyles({
     alignItems: "end",
     justifyContent: "space-between",
     gap: "28px",
-    marginBottom: "clamp(26px, 3vw, 38px)",
+    marginBottom: "32px",
     "@media (max-width: 820px)": {
       alignItems: "start",
       flexDirection: "column",
@@ -1119,9 +1005,9 @@ const useStyles = makeStyles({
   },
   sectionTitleCluster: {
     display: "grid",
-    gridTemplateColumns: "28px minmax(0, 1fr)",
+    gridTemplateColumns: `${tokens.fontSizeHero800} minmax(0, 1fr)`,
     columnGap: "12px",
-    rowGap: "18px",
+    rowGap: "16px",
     alignItems: "center",
     maxWidth: "720px",
   },
@@ -1132,19 +1018,25 @@ const useStyles = makeStyles({
     gridColumn: 2,
     marginTop: 0,
     marginBottom: 0,
-    lineHeight: "1.08",
+    lineHeight: tokens.lineHeightHero800,
+    fontSize: tokens.fontSizeHero800,
   },
   sectionTitleIcon: {
     gridColumn: 1,
     gridRow: 1,
-    width: "28px",
-    height: "28px",
+    width: tokens.fontSizeHero800,
+    height: tokens.fontSizeHero800,
+    fontSize: tokens.fontSizeHero800,
     flexShrink: 0,
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
     color: tokens.colorBrandForeground1,
     lineHeight: 0,
+    "& svg": {
+      width: "1em",
+      height: "1em",
+    },
   },
   headingCopy: {
     gridColumn: 2,
@@ -1152,11 +1044,13 @@ const useStyles = makeStyles({
     marginBottom: 0,
     maxWidth: "62ch",
     color: tokens.colorNeutralForeground2,
+    fontSize: tokens.fontSizeBase300,
+    lineHeight: tokens.lineHeightBase300,
   },
   chartHeadingCopy: {
     maxWidth: "54ch",
     fontSize: tokens.fontSizeBase300,
-    lineHeight: tokens.lineHeightBase400,
+    lineHeight: tokens.lineHeightBase300,
   },
   albumShell: {
     position: "relative",
@@ -1167,27 +1061,14 @@ const useStyles = makeStyles({
     ...shorthands.border("0", "solid", "transparent"),
   },
   albumViewport: {
-    display: "flex",
-    alignItems: "stretch",
-    justifyContent: "flex-start",
-    gap: "12px",
     height: "clamp(316px, 30vw, 404px)",
-    overflowX: "auto",
-    overflowY: "hidden",
-    padding: 0,
-    backgroundColor: "transparent",
-    scrollPaddingInline: 0,
-    scrollSnapType: "x mandatory",
-    scrollbarWidth: "none",
-    "::-webkit-scrollbar": {
-      display: "none",
-    },
-    "@media (max-width: 760px)": {
-      height: "374px",
-    },
-    "@media (max-width: 520px)": {
-      height: "332px",
-    },
+    overflow: "hidden", touchAction: "pan-y pinch-zoom",
+    "@media (max-width: 760px)": { height: "374px" },
+    "@media (max-width: 520px)": { height: "332px" },
+  },
+  albumTrack: {
+    display: "flex", alignItems: "stretch", justifyContent: "flex-start",
+    gap: "12px", height: "100%", userSelect: "none",
   },
   albumCard: {
     position: "relative",
@@ -1196,17 +1077,24 @@ const useStyles = makeStyles({
     flexShrink: 0,
     flexBasis: "var(--albumBasis)",
     height: "100%",
-    scrollSnapAlign: "center",
     overflow: "hidden",
     borderRadius: "28px",
     color: "#fff",
     backgroundColor: "var(--imageSurface)",
     boxShadow: "none",
-    transitionDuration: "520ms",
-    transitionProperty: "flex-basis, border-radius",
-    transitionTimingFunction: "cubic-bezier(.2, 0, 0, 1)",
+    transformOrigin: "left center",
     ...shorthands.border("0", "solid", "transparent"),
     cursor: "pointer",
+    padding: 0,
+    fontFamily: tokens.fontFamilyBase,
+    textAlign: "left",
+    ":focus-visible": {
+      outline: `3px solid ${tokens.colorBrandStroke1}`,
+      outlineOffset: "-3px",
+    },
+    "& [data-media-guard]": {
+      cursor: "pointer",
+    },
     "@media (max-width: 760px)": {
       flexBasis: "var(--albumMobileBasis)",
     },
@@ -1234,24 +1122,26 @@ const useStyles = makeStyles({
     bottom: 0,
     left: 0,
     display: "grid",
-    gap: "5px",
-    padding: "18px",
+    gap: tokens.spacingVerticalXS,
+    padding: tokens.spacingHorizontalL,
     background: "linear-gradient(180deg, transparent, rgba(31, 24, 48, 0.78))",
     pointerEvents: "none",
   },
   albumMeta: {
     color: "rgba(255,255,255,0.82)",
     fontSize: tokens.fontSizeBase200,
+    lineHeight: tokens.lineHeightBase200,
     fontWeight: tokens.fontWeightBold,
     textTransform: "uppercase",
   },
   albumTitle: {
-    fontSize: "clamp(1.2rem, 1.8vw, 1.55rem)",
-    lineHeight: "1.12",
+    fontSize: tokens.fontSizeBase600,
+    lineHeight: tokens.lineHeightBase600,
+    "@media (max-width: 520px)": { fontSize: tokens.fontSizeBase500, lineHeight: "26px" },
   },
   albumPanel: {
     width: "100%",
-    marginTop: "clamp(22px, 2.5vw, 32px)",
+    marginTop: "16px",
     marginRight: 0,
     marginLeft: 0,
     display: "grid",
@@ -1267,35 +1157,10 @@ const useStyles = makeStyles({
   },
   albumCaption: {
     display: "grid",
-    gap: "8px",
+    gap: tokens.spacingVerticalS,
+    "& h3": { margin: 0 },
   },
-  albumControls: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "end",
-    gap: "8px",
-    flexWrap: "wrap",
-  },
-  albumDots: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "6px",
-    paddingRight: "8px",
-    paddingLeft: "8px",
-  },
-  albumDot: {
-    width: "8px",
-    height: "8px",
-    borderRadius: "999px",
-    backgroundColor: tokens.colorNeutralStroke1,
-    transitionDuration: tokens.durationNormal,
-    transitionProperty: "width, background-color",
-    transitionTimingFunction: tokens.curveEasyEase,
-  },
-  albumDotActive: {
-    width: "24px",
-    backgroundColor: "#c6bae0",
-  },
+
   blogGrid: {
     width: "100%",
     display: "grid",
@@ -1306,30 +1171,7 @@ const useStyles = makeStyles({
     },
   },
   blogCard: {
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden",
-    borderRadius: "8px",
-    boxShadow: tokens.shadow2,
-    backgroundColor: tokens.colorNeutralBackground1,
-    ...shorthands.border("1px", "solid", tokens.colorNeutralStroke2),
-    transitionDuration: tokens.durationNormal,
-    transitionProperty: "box-shadow, border-color, transform",
-    transitionTimingFunction: tokens.curveEasyEase,
-    ":hover": {
-      boxShadow: tokens.shadow4,
-      borderTopColor: tokens.colorNeutralStroke1,
-      borderRightColor: tokens.colorNeutralStroke1,
-      borderBottomColor: tokens.colorNeutralStroke1,
-      borderLeftColor: tokens.colorNeutralStroke1,
-      transform: "translateY(-1px)",
-    },
-    ":focus-within": {
-      outlineStyle: "solid",
-      outlineWidth: "2px",
-      outlineColor: tokens.colorBrandStroke1,
-      outlineOffset: "2px",
-    },
+    display: "flex", flexDirection: "column", overflow: "hidden",
   },
   blogPreview: {
     position: "relative",
@@ -1345,8 +1187,8 @@ const useStyles = makeStyles({
   blogBody: {
     display: "flex",
     flexDirection: "column",
-    gap: "14px",
-    padding: "24px 32px",
+    gap: "16px",
+    padding: "24px",
     "@media (max-width: 640px)": {
       padding: "24px",
     },
@@ -1359,20 +1201,11 @@ const useStyles = makeStyles({
   blogHeader: {
     alignItems: "center",
   },
-  blogHeaderIcon: {
-    width: "28px",
-    height: "28px",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-    color: tokens.colorBrandForeground1,
-    lineHeight: 0,
-  },
   blogTitle: {
     marginTop: 0,
     marginBottom: 0,
-    lineHeight: "1.25",
+    fontSize: tokens.fontSizeBase500,
+    lineHeight: "26px",
   },
   blogMetaLine: {
     display: "inline-flex",
@@ -1390,47 +1223,86 @@ const useStyles = makeStyles({
     marginTop: 0,
     marginBottom: 0,
     color: tokens.colorNeutralForeground2,
-    lineHeight: tokens.lineHeightBase400,
+    fontSize: tokens.fontSizeBase300,
+    lineHeight: tokens.lineHeightBase300,
   },
-  blogFooter: {
-    paddingTop: "2px",
-    justifyContent: "flex-start",
-  },
+
+  blogFooter: { marginTop: "auto", paddingTop: "16px" },
   blogReadButton: {
-    minWidth: "88px",
-    fontWeight: tokens.fontWeightSemibold,
-    borderRadius: "6px",
-    ":focus-visible": {
-      outlineStyle: "solid",
-      outlineWidth: "2px",
-      outlineColor: tokens.colorBrandStroke1,
-      outlineOffset: "2px",
+    minWidth: "80px", color: tokens.colorNeutralForegroundOnBrand, fontWeight: tokens.fontWeightSemibold,
+  },
+  linksSection: {
+    paddingRight: "var(--page-gutter)",
+    paddingLeft: "var(--page-gutter)",
+    "@media (max-width: 1023px)": {
+      paddingRight: "var(--page-gutter)", paddingLeft: "var(--page-gutter)",
+    },
+    "@media (max-width: 479px)": {
+      paddingRight: "var(--page-gutter)", paddingLeft: "var(--page-gutter)",
     },
   },
   regulationGrid: {
+    width: "100%",
     display: "grid",
     gridTemplateColumns: "minmax(0, 1fr) 360px",
-    gap: "24px",
+    gap: "48px",
     alignItems: "start",
-    "@media (max-width: 860px)": {
+    "@media (max-width: 1023px)": {
       gridTemplateColumns: "1fr",
     },
   },
-  regulationLead: {
+  externalLinksCopy: {
     gridColumn: 2,
     marginTop: 0,
     marginBottom: 0,
     maxWidth: "62ch",
     color: tokens.colorNeutralForeground2,
-    fontSize: tokens.fontSizeBase500,
-    lineHeight: tokens.lineHeightBase500,
+    fontSize: tokens.fontSizeBase400,
+    lineHeight: tokens.lineHeightBase400,
   },
-  statementCard: {
-    borderRadius: "8px",
-    boxShadow: tokens.shadow8,
+  externalLinks: {
+    gridColumn: 2,
+    display: "grid",
+    width: "100%",
+    maxWidth: "640px",
+    margin: 0,
+    padding: 0,
+    listStyleType: "none",
   },
+  externalLink: {
+    display: "grid",
+    gridTemplateColumns: "32px minmax(0, 1fr) 24px",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "16px",
+    minHeight: "60px",
+    padding: "12px 4px",
+    color: tokens.colorNeutralForeground1,
+    fontSize: tokens.fontSizeBase400,
+    lineHeight: tokens.lineHeightBase400,
+    fontWeight: tokens.fontWeightSemibold,
+    textDecorationLine: "none",
+    ...shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
+    ":hover": {
+      color: tokens.colorBrandForeground1,
+      ...shorthands.borderBottom("1px", "solid", tokens.colorBrandStroke1),
+    },
+    ":focus-visible": {
+      outline: `2px solid ${tokens.colorBrandStroke1}`,
+      outlineOffset: "4px",
+      borderRadius: "4px",
+    },
+    "& svg": {
+      flexShrink: 0,
+      color: "inherit",
+    },
+  },
+  platformIcon: { width: "24px", height: "24px", color: "inherit" },
+
   statementBody: {
-    padding: "22px",
+    padding: "24px",
+    "& h3": { margin: 0 },
+    "& .fui-CardHeader": { marginBottom: tokens.spacingVerticalL },
   },
   statementList: {
     display: "grid",
@@ -1461,7 +1333,7 @@ const useStyles = makeStyles({
     alignItems: "center",
     justifyContent: "space-between",
     gap: "18px",
-    padding: "28px clamp(20px, 5vw, 72px)",
+    padding: "28px var(--page-gutter)",
     color: tokens.colorNeutralForeground2,
     ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
     "@media (max-width: 540px)": {
@@ -1469,77 +1341,13 @@ const useStyles = makeStyles({
       flexDirection: "column",
     },
   },
-  "@keyframes wipPopoverIn": {
-    "0%": {
-      opacity: 0,
-      transform: "translate(-50%, 14px) scale(0.96)",
-    },
-    "60%": {
-      opacity: 1,
-      transform: "translate(-50%, -2px) scale(1)",
-    },
-    "100%": {
-      opacity: 1,
-      transform: "translate(-50%, 0) scale(1)",
-    },
-  },
-  "@keyframes wipPopoverOut": {
-    "0%": {
-      opacity: 1,
-      transform: "translate(-50%, 0) scale(1)",
-    },
-    "100%": {
-      opacity: 0,
-      transform: "translate(-50%, 10px) scale(0.97)",
-    },
-  },
-  workPopoverSurface: {
-    position: "fixed",
-    zIndex: 1000,
-    left: "50%",
-    bottom: "max(24px, calc(env(safe-area-inset-bottom) + 18px))",
-    transform: "translateX(-50%)",
-    maxWidth: "min(360px, calc(100vw - 32px))",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "10px",
-    pointerEvents: "none",
-    padding: "12px 18px",
-    borderRadius: tokens.borderRadiusMedium,
-    color: tokens.colorNeutralForeground1,
-    backgroundColor: "var(--wipSurface)",
-    boxShadow: tokens.shadow4,
-    ...shorthands.border("1px", "solid", "var(--wipStroke)"),
-    animationName: "wipPopoverIn",
-    animationDuration: "260ms",
-    animationTimingFunction: tokens.curveDecelerateMid,
-    animationFillMode: "both",
-    "@media (prefers-reduced-motion: reduce)": {
-      animationDuration: "1ms",
-    },
-  },
-  workPopoverSurfaceClosing: {
-    animationName: "wipPopoverOut",
-    animationDuration: "180ms",
-    animationTimingFunction: tokens.curveAccelerateMid,
-  },
-  workPopoverIcon: {
-    width: "24px",
-    height: "24px",
-    flexShrink: 0,
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: tokens.colorBrandForeground1,
-    lineHeight: 0,
-  },
+
 });
 
 type Locale = "zh-TW" | "zh-CN";
 type ChartId = "collage" | "portrait" | "scene";
-type PartId = "charts" | "blog" | "regulation";
-type SectionId = "hero" | PartId;
+type PartId = "charts" | "blog";
+type SectionId = "hero" | "regulation" | PartId;
 type PostImageId = "characterScene" | "characterCollage" | "characterPortrait";
 
 type ChartCopy = {
@@ -1585,8 +1393,9 @@ type LocaleContent = {
     shareText: string;
     themeToLight: string;
     themeToDark: string;
-    languageShort: string;
     languageTitle: string;
+    languageCurrent: string;
+    darkMode: string;
   };
   aria: {
     header: string;
@@ -1597,7 +1406,6 @@ type LocaleContent = {
   sections: {
     chartsTitle: string;
     chartsCopy: string;
-    chartsCount: (count: number) => string;
     albumControls: string;
     previousChart: string;
     nextChart: string;
@@ -1607,7 +1415,9 @@ type LocaleContent = {
     read: string;
     readPost: (title: string) => string;
     regulationTitle: string;
-    regulationCopy: string;
+    externalLinksTitle: string;
+    externalLinksCopy: string;
+    opensInNewTab: string;
   };
   charts: readonly ChartCopy[];
   parts: readonly PartCopy[];
@@ -1632,12 +1442,15 @@ const postImages: Record<PostImageId, string> = {
 };
 
 const partIcons: Record<PartId, ReactElement> = {
-  charts: <PanelRightGallery24Regular />,
-  blog: <BookOpen24Regular />,
-  regulation: <GlobeShield24Regular />,
+  charts: <FluentNamedIcon name="PhotoCollection" animated />,
+  blog: <FluentNamedIcon name="Library" animated />,
 };
 
-const workInProgressText = "Work in progress...";
+const externalLinks = [
+  { name: { "zh-TW": "GitHub", "zh-CN": "GitHub" }, href: "https://github.com/VikaKumaChR", icon: "github" },
+  { name: { "zh-TW": "嗶哩嗶哩", "zh-CN": "哔哩哔哩" }, href: "https://space.bilibili.com/387756916", icon: "bilibili" },
+  { name: { "zh-TW": "小紅書", "zh-CN": "小红书" }, href: "https://xhslink.cn/o/7rwdxZDWMnl", icon: "xiaohongshu" },
+] as const;
 
 const contentByLocale: Record<Locale, LocaleContent> = {
   "zh-TW": {
@@ -1648,24 +1461,24 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       { id: "hero", label: "首頁" },
       { id: "charts", label: "圖件" },
       { id: "blog", label: "札記" },
-      { id: "regulation", label: "聲明" },
     ],
     hero: {
-      titleLine1: "维嘉VkC",
-      titleLine2: "Blog",
-      lead: "歡迎訪問^^ Welcome to my world~",
-      artLabel: "维嘉首頁立繪舞台",
-      figureAlt: "维嘉的淡紫色角色立繪",
+      titleLine1: "維嘉 VkC",
+      titleLine2: "角色部落格 / Character Journal",
+      lead: "現在是傍晚時……歡迎來訪～",
+      artLabel: "維嘉首頁立繪舞台",
+      figureAlt: "維嘉的淡紫色角色立繪",
       partLabel: "特色頁面入口",
     },
     actions: {
       share: "分享此頁",
       copied: "連結已複製",
-      shareText: "维嘉原創角色部落格",
+      shareText: "維嘉原創角色部落格",
       themeToLight: "切換到亮色",
       themeToDark: "切換到暗色",
-      languageShort: "简",
-      languageTitle: "切換為簡體中文",
+      languageTitle: "切換簡體中文",
+      languageCurrent: "目前為正體中文",
+      darkMode: "暗色模式",
     },
     aria: {
       header: "部落格導覽",
@@ -1675,8 +1488,7 @@ const contentByLocale: Record<Locale, LocaleContent> = {
     },
     sections: {
       chartsTitle: "圖件",
-      chartsCopy: "维嘉的圖件被放進同一條圖冊軌道：拼貼、肖像與場景會依序成為主位，保留前後素材的連續感。",
-      chartsCount: (count) => `${count} 件圖件`,
+      chartsCopy: "維嘉的圖件被放進同一條圖冊軌道：拼貼、肖像與場景會依序成為主位，保留前後素材的連續感。",
       albumControls: "圖冊控制",
       previousChart: "上一張",
       nextChart: "下一張",
@@ -1685,15 +1497,17 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       blogCopy: "整理設定札記、圖件歸檔與角色觀察。每篇貼文都有封面、分類與摘要。",
       read: "閱讀",
       readPost: (title) => `閱讀：${title}`,
-      regulationTitle: "使用聲明",
-      regulationCopy: "未經確認請勿使用、轉載、訓練AI、二次分發、二改或商用",
+      regulationTitle: "須知",
+      externalLinksTitle: "站外連結",
+      externalLinksCopy: "也可以在這裡找到我。",
+      opensInNewTab: "在新分頁開啟",
     },
     charts: [
       {
         id: "collage",
         title: "四格拼貼",
         meta: "角色索引",
-        alt: "维嘉多張處理後插圖組成的四格拼貼",
+        alt: "維嘉多張處理後插圖組成的四格拼貼",
         summary: "多張素材先收進同一入口，作為角色檔案總覽。",
         detail: "拼貼負責建立角色檔案的第一層：表情、姿態、日常片段與後續補檔線索先被收束在一起。",
       },
@@ -1701,7 +1515,7 @@ const contentByLocale: Record<Locale, LocaleContent> = {
         id: "portrait",
         title: "肖像立繪",
         meta: "身份識別",
-        alt: "维嘉的處理後肖像圖",
+        alt: "維嘉的處理後肖像圖",
         summary: "紫髮、淺色服裝和柔和表情是最穩定的角色識別點。",
         detail: "肖像圖承擔身份錨點，是檔案中最適合放在角色資料頁的主要圖件。",
       },
@@ -1709,7 +1523,7 @@ const contentByLocale: Record<Locale, LocaleContent> = {
         id: "scene",
         title: "場景氣質",
         meta: "世界氣質",
-        alt: "维嘉站在淡藍紫色場景中的處理後插圖",
+        alt: "維嘉站在淡藍紫色場景中的處理後插圖",
         summary: "淡藍背景、低飽和紫和留白共同形成安靜、柔光的敘事空間。",
         detail: "場景圖承接首頁的故事感，讓角色資料像章節一樣逐步展開。",
       },
@@ -1717,30 +1531,29 @@ const contentByLocale: Record<Locale, LocaleContent> = {
     parts: [
       { id: "charts", title: "圖件整理", copy: "整理角色圖件與立繪。" },
       { id: "blog", title: "創作札記", copy: "保存設定札記與創作紀錄。" },
-      { id: "regulation", title: "使用聲明", copy: "查看使用聲明與來源資訊。" },
     ],
     posts: [
       {
         image: "characterScene",
-        title: "维嘉的頁面為什麼需要故事入口",
+        title: "維嘉的頁面為什麼需要故事入口",
         excerpt: "可以隨時隨地查看與了解維嘉^^",
       },
       {
         image: "characterCollage",
-        title: "三張圖件如何構成维嘉的資料線",
+        title: "三張圖件如何構成維嘉的資料線",
         excerpt: "為什麼會用這個功能呢？因為很好看><",
       },
       {
         image: "characterPortrait",
-        title: "维嘉是誰？",
+        title: "維嘉是誰？",
         excerpt: "查看維嘉的角色設定、外觀特徵與創作說明w",
       },
     ],
     regulation: [
       { term: "畫師媽咪", value: "几维不是猕猴桃" },
-      { term: "角色來源", value: "個人角色：维嘉" },
-      { term: "展示範圍", value: "本頁僅展示個人角色和整理日志" },
-      { term: "使用聲明", value: "未經確認請勿使用、轉載、訓練AI、二次分發、二改或商用" },
+      { term: "角色來源", value: "個人角色：維嘉" },
+      { term: "展示範圍", value: "本頁僅展示個人角色和整理日誌" },
+      { term: "授權範圍", value: "未經確認請勿使用、轉載、訓練AI、二次分發、二改或商用" },
     ],
     footer: {
       name: "VkC's Blog",
@@ -1755,12 +1568,11 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       { id: "hero", label: "首页" },
       { id: "charts", label: "图件" },
       { id: "blog", label: "札记" },
-      { id: "regulation", label: "声明" },
     ],
     hero: {
-      titleLine1: "维嘉VkC",
-      titleLine2: "Blog",
-      lead: "欢迎访问^^ Welcome to my world~",
+      titleLine1: "维嘉 VkC",
+      titleLine2: "角色博客 / Character Journal",
+      lead: "现在是傍晚时……欢迎访问～",
       artLabel: "维嘉首页立绘舞台",
       figureAlt: "维嘉的淡紫色角色立绘",
       partLabel: "特色页面入口",
@@ -1771,8 +1583,9 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       shareText: "维嘉原创角色博客",
       themeToLight: "切换到亮色",
       themeToDark: "切换到暗色",
-      languageShort: "繁",
-      languageTitle: "切换为繁体中文",
+      languageTitle: "切換正體中文",
+      languageCurrent: "当前为简体中文",
+      darkMode: "暗色模式",
     },
     aria: {
       header: "博客导航",
@@ -1783,7 +1596,6 @@ const contentByLocale: Record<Locale, LocaleContent> = {
     sections: {
       chartsTitle: "图件",
       chartsCopy: "维嘉的图件被放进同一条图册轨道：拼贴、肖像与场景会依序成为主位，保留前后素材的连续感。",
-      chartsCount: (count) => `${count} 件图件`,
       albumControls: "图册控制",
       previousChart: "上一张",
       nextChart: "下一张",
@@ -1792,8 +1604,10 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       blogCopy: "整理设定札记、图件归档与角色观察。每篇贴文都有封面、分类与摘要。",
       read: "阅读",
       readPost: (title) => `阅读：${title}`,
-      regulationTitle: "使用声明",
-      regulationCopy: "未经确认请勿使用、转载、训练AI、二次分发、二改或商用",
+      regulationTitle: "须知",
+      externalLinksTitle: "站外链接",
+      externalLinksCopy: "也可以在这里找到我。",
+      opensInNewTab: "在新标签页打开",
     },
     charts: [
       {
@@ -1824,7 +1638,6 @@ const contentByLocale: Record<Locale, LocaleContent> = {
     parts: [
       { id: "charts", title: "图件整理", copy: "整理角色图件与立绘。" },
       { id: "blog", title: "创作札记", copy: "保存设定札记与创作记录。" },
-      { id: "regulation", title: "使用声明", copy: "查看使用声明与来源信息。" },
     ],
     posts: [
       {
@@ -1847,7 +1660,7 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       { term: "画师妈咪", value: "几维不是猕猴桃" },
       { term: "角色来源", value: "个人角色：维嘉" },
       { term: "展示范围", value: "本页仅展示个人角色和整理日志" },
-      { term: "使用声明", value: "未经确认请勿使用、转载、训练AI、二次分发、二改或商用" },
+      { term: "授权范围", value: "未经确认请勿使用、转载、训练AI、二次分发、二改或商用" },
     ],
     footer: {
       name: "VkC's Blog",
@@ -1875,19 +1688,13 @@ export function App() {
   const posts = copy.posts.map((post) => ({ ...post, image: postImages[post.image] }));
   const regulation = copy.regulation;
   const navItems = copy.navItems;
-  const [activeSection, setActiveSection] = useState<SectionId>("hero");
-  const [selectedChart, setSelectedChart] = useState<ChartId>("collage");
+  const { activeSection, headerRef, navigateToSection } = useSectionNavigation();
+  const album = useAlbumNavigation(charts.length);
+  const selectedChart = charts[album.selectedIndex].id;
+  const { dispatchToast } = useToastController("blog-feedback");
   const [shareHint, setShareHint] = useState(contentByLocale["zh-TW"].actions.share);
-  const [themeSettling, setThemeSettling] = useState(false);
-  const [workPopoverOpen, setWorkPopoverOpen] = useState(false);
-  const [workPopoverClosing, setWorkPopoverClosing] = useState(false);
   const [isMobileMode, setIsMobileMode] = useState(getIsMobileDevice);
-  const navigationLockUntil = useRef(0);
-  const themeSettleTimer = useRef<number | null>(null);
-  const workPopoverTimer = useRef<number | null>(null);
-  const workPopoverExitTimer = useRef<number | null>(null);
-  const albumViewportRef = useRef<HTMLDivElement | null>(null);
-
+  const transitionTheme = useThemeTransition();
   const theme = mode === "dark" ? darkTheme : lightTheme;
   const selectedChartIndex = charts.findIndex((item) => item.id === selectedChart);
   const selectedChartItem = charts[selectedChartIndex] ?? charts[0];
@@ -1898,31 +1705,18 @@ export function App() {
     setShareHint(copy.actions.share);
   }, [copy]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.style.colorScheme = mode;
     document.documentElement.dataset.theme = mode;
     document.body.style.backgroundColor = theme.colorNeutralBackground1;
   }, [mode, theme.colorNeutralBackground1]);
 
-  useEffect(() => {
-    return () => {
-      if (themeSettleTimer.current !== null) {
-        window.clearTimeout(themeSettleTimer.current);
-      }
-      if (workPopoverTimer.current !== null) {
-        window.clearTimeout(workPopoverTimer.current);
-      }
-      if (workPopoverExitTimer.current !== null) {
-        window.clearTimeout(workPopoverExitTimer.current);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     const syncMobileMode = () => {
       setIsMobileMode(getIsMobileDevice());
     };
-    const narrowQuery = window.matchMedia("(max-width: 760px)");
+    const narrowQuery = window.matchMedia("(max-width: 1023px)");
     const pointerQuery = window.matchMedia("(pointer: coarse)");
     const addListener = (query: MediaQueryList) => {
       if (typeof query.addEventListener === "function") {
@@ -1953,78 +1747,12 @@ export function App() {
     };
   }, []);
 
-  useEffect(() => {
-    const viewport = albumViewportRef.current;
 
-    if (!viewport) {
-      return;
-    }
-
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    viewport.scrollTo({
-      left: 0,
-      behavior: prefersReducedMotion ? "auto" : "smooth",
+  const setThemeMode = (nextMode: "light" | "dark") => {
+    transitionTheme(() => {
+      setMode(nextMode);
+      localStorage.setItem("theme", nextMode);
     });
-  }, [selectedChart]);
-
-  useEffect(() => {
-    const sectionIds: SectionId[] = ["hero", "charts", "blog", "regulation"];
-    let frame = 0;
-
-    const updateActiveSection = () => {
-      if (Date.now() < navigationLockUntil.current) {
-        return;
-      }
-
-      const pageBottom = window.scrollY + window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      if (pageBottom >= documentHeight - 8) {
-        setActiveSection("regulation");
-        return;
-      }
-
-      const marker = 140;
-      const current =
-        sectionIds
-          .map((id) => ({ id, top: document.getElementById(id)?.getBoundingClientRect().top }))
-          .filter((section): section is { id: SectionId; top: number } => typeof section.top === "number")
-          .filter((section) => section.top <= marker)
-          .at(-1)?.id ?? "hero";
-
-      setActiveSection(current);
-    };
-
-    const scheduleUpdate = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(updateActiveSection);
-    };
-
-    updateActiveSection();
-    window.addEventListener("scroll", scheduleUpdate, { passive: true });
-    window.addEventListener("resize", scheduleUpdate);
-    window.addEventListener("hashchange", scheduleUpdate);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", scheduleUpdate);
-      window.removeEventListener("resize", scheduleUpdate);
-      window.removeEventListener("hashchange", scheduleUpdate);
-    };
-  }, []);
-
-  const toggleTheme = () => {
-    const nextMode = mode === "dark" ? "light" : "dark";
-    if (themeSettleTimer.current !== null) {
-      window.clearTimeout(themeSettleTimer.current);
-    }
-    setThemeSettling(true);
-    setMode(nextMode);
-    localStorage.setItem("theme", nextMode);
-    themeSettleTimer.current = window.setTimeout(() => {
-      setThemeSettling(false);
-      themeSettleTimer.current = null;
-    }, 260);
   };
 
   const toggleLocale = () => {
@@ -2033,17 +1761,21 @@ export function App() {
     localStorage.setItem("locale", nextLocale);
   };
 
-  const navigateToSection = (section: SectionId) => {
-    navigationLockUntil.current = Date.now() + 900;
-    setActiveSection(section);
+  const activateLink = (event: MouseEvent<HTMLAnchorElement>, section: SectionId) => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    event.preventDefault();
+    // Touch gets press feedback; mouse feedback starts on entry, without restarting on click.
+    if (event.detail > 0 && !window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      animateEntryIcon(event.currentTarget);
+    }
+    navigateToSection(section);
   };
 
-  const selectPreviousChart = () => {
-    setSelectedChart(charts[(selectedChartIndex - 1 + charts.length) % charts.length].id);
-  };
-
-  const selectNextChart = () => {
-    setSelectedChart(charts[(selectedChartIndex + 1) % charts.length].id);
+  const showWorkInProgress = () => {
+    dispatchToast(
+      <Toast className="ui-feedback"><ToastTitle>{locale === "zh-TW" ? "札記內容整理中" : "札记内容整理中"}</ToastTitle></Toast>,
+      { intent: "info", timeout: 2400, toastId: "post-status" },
+    );
   };
 
   const sharePage = async () => {
@@ -2070,26 +1802,6 @@ export function App() {
     }
   };
 
-  const showWorkInProgress = () => {
-    if (workPopoverTimer.current !== null) {
-      window.clearTimeout(workPopoverTimer.current);
-    }
-    if (workPopoverExitTimer.current !== null) {
-      window.clearTimeout(workPopoverExitTimer.current);
-    }
-
-    setWorkPopoverOpen(true);
-    setWorkPopoverClosing(false);
-    workPopoverTimer.current = window.setTimeout(() => {
-      setWorkPopoverClosing(true);
-      workPopoverTimer.current = null;
-      workPopoverExitTimer.current = window.setTimeout(() => {
-        setWorkPopoverOpen(false);
-        setWorkPopoverClosing(false);
-        workPopoverExitTimer.current = null;
-      }, 170);
-    }, 1800);
-  };
 
   const preventMediaContextMenu = (event: MouseEvent<HTMLElement>) => {
     const target = event.target;
@@ -2105,16 +1817,18 @@ export function App() {
   return (
     <FluentProvider
       theme={theme}
-      className={mergeClasses(styles.shell, themeSettling ? "theme-settling" : undefined)}
+      applyStylesToPortals={false}
+      className={mergeClasses(styles.shell, "theme-surface")}
       onContextMenu={preventMediaContextMenu}
       style={
         {
           colorScheme: mode,
+          "--heroTextureFilter": mode === "dark" ? "brightness(0.28) saturate(0.7)" : "none",
+          "--heroTextureOpacity": mode === "dark" ? "0.88" : "1",
           "--heroBase": mode === "dark" ? "#15131d" : "#fbf9fd",
           "--heroPaper": mode === "dark" ? "#1d1828" : "#f6f1fa",
           "--heroCoolGlow": mode === "dark" ? "rgba(129, 159, 186, 0.16)" : "rgba(184, 203, 228, 0.42)",
           "--heroWarmGlow": mode === "dark" ? "rgba(198, 186, 224, 0.12)" : "rgba(236, 224, 241, 0.72)",
-          "--heroGridLine": mode === "dark" ? "rgba(198, 186, 224, 0.055)" : "rgba(198, 186, 224, 0.16)",
           "--heroLine": mode === "dark" ? "rgba(222, 213, 239, 0.14)" : "rgba(113, 101, 144, 0.16)",
           "--heroLaceOpacity": mode === "dark" ? "0.38" : "0.48",
           "--heroLaceMobileOpacity": mode === "dark" ? "0.26" : "0.34",
@@ -2135,16 +1849,15 @@ export function App() {
             mode === "dark"
               ? "linear-gradient(120deg, rgba(198,186,224,0.94) 0%, rgba(154,190,216,0.74) 48%, rgba(232,215,255,0.72) 100%)"
               : "linear-gradient(120deg, rgba(198,186,224,0.94) 0%, rgba(177,218,232,0.78) 48%, rgba(231,212,255,0.76) 100%)",
-          "--wipSurface": "color-mix(in srgb, #c6bae0 22%, var(--colorNeutralBackground1))",
-          "--wipStroke": "color-mix(in srgb, #c6bae0 48%, transparent)",
           "--albumGlow": mode === "dark" ? "rgba(198, 186, 224, 0.14)" : "rgba(198, 186, 224, 0.26)",
           "--imageSurface": mode === "dark" ? "rgba(198, 186, 224, 0.16)" : "rgba(232, 222, 245, 0.58)",
           "--colorNeutralBackground1": theme.colorNeutralBackground1,
         } as CSSProperties
       }
     >
-      <header className={styles.header} aria-label={copy.aria.header}>
-        <Link className={styles.brand} href="#hero" appearance="subtle" aria-label={copy.aria.home}>
+      <Toaster toasterId="blog-feedback" position="bottom-end" limit={1} />
+      <header ref={headerRef} className={styles.header} aria-label={copy.aria.header}>
+        <Link className={styles.brand} href="#hero" onClick={(event) => activateLink(event, "hero")} appearance="subtle" aria-label={copy.aria.home}>
           <span className={styles.brandMark} aria-hidden="true">
             {/* QQ 人插圖入口：將下方文字替換為 <img className={styles.brandAvatar} src={你的圖片} alt="" />。 */}
             <img className={styles.brandAvatar} src={brandAvatar} alt="" />
@@ -2156,87 +1869,72 @@ export function App() {
         </Link>
 
         <nav className={styles.nav} aria-label={copy.aria.nav}>
-          {navItems.map((item) => {
-            const isActive = activeSection === item.id;
-
-            return (
-              <Link
-                key={item.id}
-                className={mergeClasses(styles.navLink, isActive ? styles.navLinkActive : undefined)}
-                href={`#${item.id}`}
-                appearance="subtle"
-                onClick={() => navigateToSection(item.id)}
-                aria-current={isActive ? "page" : undefined}
-              >
-                <span>{item.label}</span>
-                <span
-                  className={mergeClasses(styles.navUnderline, isActive ? styles.navUnderlineActive : undefined)}
-                  aria-hidden="true"
-                />
-              </Link>
-            );
-          })}
+          <TabList
+            className={styles.navTabs}
+            selectedValue={activeSection}
+            onTabSelect={(_, data) => navigateToSection(data.value as SectionId)}
+            aria-label={copy.aria.nav}
+          >
+            {navItems.map((item) => (
+              <Tab key={item.id} value={item.id} className={styles.navLink}
+                aria-controls={item.id} aria-current={activeSection === item.id ? "location" : undefined}>
+                {item.label}
+              </Tab>
+            ))}
+            <NavigationIndicator selectedValue={activeSection} />
+          </TabList>
         </nav>
 
-        <div className={styles.headerActions} aria-label={copy.aria.actions}>
+        <div className={styles.headerActions} role="group" aria-label={copy.aria.actions} data-header-actions>
+          <ThemeSwitch dark={mode === "dark"} label={copy.actions.darkMode} onChange={(dark) => setThemeMode(dark ? "dark" : "light")} />
+          <Tooltip content={{ children: shareHint, className: "ui-feedback" }} relationship="description">
           <Button
             className={styles.actionButton}
-            appearance="subtle"
+            appearance="transparent"
             icon={<Share24Regular />}
             onClick={sharePage}
-            title={shareHint}
             aria-label={shareHint}
           />
+          </Tooltip>
+          <Tooltip content={{ children: `${copy.actions.languageCurrent}；${copy.actions.languageTitle}`, className: "ui-feedback" }} relationship="description">
           <Button
-            className={mergeClasses(styles.actionButton, styles.languageButton)}
-            appearance="subtle"
-            icon={<Translate24Regular />}
+            className={styles.actionButton}
+            appearance="transparent"
+            icon={<FluentNamedIcon name={locale === "zh-TW" ? "ChineseBoPoMoFo" : "ChinesePinyin"} />}
             onClick={toggleLocale}
-            title={copy.actions.languageTitle}
-            aria-label={copy.actions.languageTitle}
-          >
-            {copy.actions.languageShort}
-          </Button>
-          <Button
-            className={mergeClasses(styles.actionButton, styles.themeButton)}
-            appearance="subtle"
-            icon={mode === "dark" ? <WeatherSunny24Regular /> : <WeatherMoon24Regular />}
-            onClick={toggleTheme}
-            title={mode === "dark" ? copy.actions.themeToLight : copy.actions.themeToDark}
-            aria-pressed={mode === "dark"}
-            aria-label={mode === "dark" ? copy.actions.themeToLight : copy.actions.themeToDark}
+            aria-label={`${copy.actions.languageCurrent}；${copy.actions.languageTitle}`}
           />
+          </Tooltip>
+
         </div>
       </header>
 
       <main>
         <section
-          className={mergeClasses(styles.hero, isMobileMode ? styles.mobileHero : undefined)}
+          className={mergeClasses(styles.hero, isMobileMode ? styles.mobileHero : undefined, "hero-journal")}
           id="hero"
           aria-labelledby="hero-title"
           data-mobile-hero={isMobileMode ? "true" : undefined}
         >
+          <HeroHomeFrame />
           {isMobileMode ? (
             <div className={styles.mobileHeroInner}>
-              <div className={styles.mobileHeroCopy}>
-                <h1 id="hero-title" className={styles.mobileHeroTitle}>
-                  {copy.hero.titleLine1}
-                  <br />
-                  {copy.hero.titleLine2}
-                </h1>
-                <Text as="p" className={styles.mobileHeroLead}>
-                  {copy.hero.lead}
-                </Text>
+              <div className={mergeClasses(styles.mobileHeroCopy, "hero-journal-copy")}>
+                <div className="hero-welcome-note">
+                  <div className="hero-title-group">
+                    <h1 id="hero-title" className={styles.mobileHeroTitle}>{copy.hero.titleLine1}</h1>
+                    <Text as="p" className={styles.heroDescriptor} data-hero-descriptor>{copy.hero.titleLine2}</Text>
+                  </div>
+                  <Text as="p" className={styles.mobileHeroLead}>
+                    {copy.hero.lead}
+                  </Text>
+                </div>
               </div>
 
-              <aside className={styles.mobileHeroScene} aria-label={copy.hero.artLabel}>
-                <img className={mergeClasses(styles.mobileLaceHint, styles.protectedImage)} src={heroLaceTopRight} alt="" aria-hidden="true" draggable={false} />
-                <img className={mergeClasses(styles.mobileGuideSheet, styles.protectedImage)} src={heroGuideLeft} alt="" aria-hidden="true" draggable={false} />
-                <img className={mergeClasses(styles.mobileLifePanel, styles.mobileLifePanelOne, styles.protectedImage)} src={lifePanel01} alt="" aria-hidden="true" draggable={false} />
-                <img className={mergeClasses(styles.mobileLifePanel, styles.mobileLifePanelTwo, styles.protectedImage)} src={lifePanel02} alt="" aria-hidden="true" draggable={false} />
-                <img className={mergeClasses(styles.mobileLifePanel, styles.mobileLifePanelThree, styles.protectedImage)} src={lifePanel03} alt="" aria-hidden="true" draggable={false} />
-                <img className={mergeClasses(styles.mobileLifePanel, styles.mobileLifePanelFour, styles.protectedImage)} src={lifePanel04} alt="" aria-hidden="true" draggable={false} />
-                <div className={styles.mobileFigureFrame} onContextMenu={(event) => event.preventDefault()}>
+              <aside className={mergeClasses(styles.mobileHeroScene, "hero-journal-stage")} aria-label={copy.hero.artLabel}>
+                <HeroPhotoNotes />
+                <div className={mergeClasses(styles.mobileFigureFrame, "hero-journal-figure")} onContextMenu={(event) => event.preventDefault()}>
+                  <HeroFigureBackdrop />
                   <img
                     className={mergeClasses(styles.heroArtImage, styles.mobileHeroArtImage, styles.protectedImage)}
                     src={heroFigure}
@@ -2259,7 +1957,8 @@ export function App() {
                     className={styles.mobilePartButton}
                     href={`#${part.id}`}
                     key={part.id}
-                    onClick={() => navigateToSection(part.id)}
+                    onClick={(event) => activateLink(event, part.id)}
+                    onPointerEnter={previewEntryIcon}
                     aria-label={`${part.title} - ${part.copy}`}
                   >
                     <span className={styles.mobilePartButtonIcon} aria-hidden="true">
@@ -2277,52 +1976,41 @@ export function App() {
             </div>
           ) : (
             <>
-              <img className={mergeClasses(styles.heroGuideLeftEdge, styles.protectedImage)} src={heroGuideLeft} alt="" aria-hidden="true" draggable={false} data-hero-guide="true" />
-              <div className={styles.heroScrapbookLayer} aria-hidden="true">
-                <img className={mergeClasses(styles.heroLaceDecor, styles.heroLaceTopRight, styles.protectedImage)} src={heroLaceTopRight} alt="" draggable={false} data-hero-lace="true" />
-                <span className={mergeClasses(styles.scrapbookDots, styles.scrapbookDotsOne)} />
-              </div>
-              <div className={styles.heroInner}>
-                <div className={styles.heroCopy}>
-                  <div>
-                    <Text as="p" className={styles.eyebrow}>
-
-                    </Text>
-                    <h1 id="hero-title" className={styles.heroTitle}>
-                      {copy.hero.titleLine1}
-                      <br />
-                      {copy.hero.titleLine2}
-                    </h1>
+              <div className={mergeClasses(styles.heroInner, "hero-journal-layout")}>
+                <div className="hero-memo-spread">
+                  <div className={mergeClasses(styles.heroCopy, "hero-journal-copy")}>
+                    <div className="hero-welcome-note">
+                      <div className="hero-title-group">
+                        <h1 id="hero-title" className={styles.heroTitle}>{copy.hero.titleLine1}</h1>
+                        <Text as="p" className={styles.heroDescriptor} data-hero-descriptor>{copy.hero.titleLine2}</Text>
+                      </div>
+                      <Text as="p" className={styles.heroLead}>
+                        {copy.hero.lead}
+                      </Text>
+                    </div>
                   </div>
-                  <Text as="p" className={styles.heroLead}>
-                    {copy.hero.lead}
-                  </Text>
+
+                  <aside className={mergeClasses(styles.heroArtStage, "hero-journal-stage")} aria-label={copy.hero.artLabel}>
+                    <HeroPhotoNotes variant="portrait" />
+                    <HeroPhotoNotes variant="memo" />
+                    <div className={mergeClasses(styles.heroFigureFrame, "hero-journal-figure")} onContextMenu={(event) => event.preventDefault()}>
+                      <HeroFigureBackdrop />
+                      <img
+                        className={mergeClasses(styles.heroArtImage, styles.protectedImage)}
+                        src={heroFigure}
+                        alt={copy.hero.figureAlt}
+                        draggable={false}
+                        data-hero-figure="true"
+                      />
+                      <span
+                        className={styles.heroFigureGuard}
+                        data-figure-guard="true"
+                        aria-hidden="true"
+                        onContextMenu={(event) => event.preventDefault()}
+                      />
+                    </div>
+                  </aside>
                 </div>
-
-                <aside className={styles.heroArtStage} aria-label={copy.hero.artLabel}>
-                  <div className={styles.heroArtBackdrop} aria-hidden="true" />
-                  <div className={styles.heroCollageLayer} aria-hidden="true">
-                    <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelOne, styles.protectedImage)} src={lifePanel01} alt="" draggable={false} data-hero-panel="true" />
-                    <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelTwo, styles.protectedImage)} src={lifePanel02} alt="" draggable={false} data-hero-panel="true" />
-                    <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelThree, styles.protectedImage)} src={lifePanel03} alt="" draggable={false} data-hero-panel="true" />
-                    <img className={mergeClasses(styles.heroLifePanel, styles.heroLifePanelFour, styles.protectedImage)} src={lifePanel04} alt="" draggable={false} data-hero-panel="true" />
-                  </div>
-                  <div className={styles.heroFigureFrame} onContextMenu={(event) => event.preventDefault()}>
-                    <img
-                      className={mergeClasses(styles.heroArtImage, styles.protectedImage)}
-                      src={heroFigure}
-                      alt={copy.hero.figureAlt}
-                      draggable={false}
-                      data-hero-figure="true"
-                    />
-                    <span
-                      className={styles.heroFigureGuard}
-                      data-figure-guard="true"
-                      aria-hidden="true"
-                      onContextMenu={(event) => event.preventDefault()}
-                    />
-                  </div>
-                </aside>
 
                 <div className={styles.partGrid} aria-label={copy.hero.partLabel} data-part-grid="true">
                   {parts.map((part) => (
@@ -2330,7 +2018,8 @@ export function App() {
                       className={styles.partCard}
                       href={`#${part.id}`}
                       key={part.id}
-                      onClick={() => navigateToSection(part.id)}
+                      onClick={(event) => activateLink(event, part.id)}
+                      onPointerEnter={previewEntryIcon}
                     >
                       <span className={styles.partIcon} aria-hidden="true">
                         {part.icon}
@@ -2355,7 +2044,7 @@ export function App() {
               <div className={styles.sectionTitleCluster}>
                 <div className={styles.sectionTitleRow}>
                   <span className={styles.sectionTitleIcon} aria-hidden="true">
-                    <PanelRightGallery24Regular />
+                    <FluentNamedIcon name="PhotoCollection" />
                   </span>
                   <Title1 as="h2" id="charts-title" className={styles.sectionTitleText}>
                     {copy.sections.chartsTitle}
@@ -2365,11 +2054,11 @@ export function App() {
                   {copy.sections.chartsCopy}
                 </Text>
               </div>
-              <Badge appearance="tint">{copy.sections.chartsCount(charts.length)}</Badge>
             </div>
 
             <div className={styles.albumShell}>
-              <div className={styles.albumViewport} ref={albumViewportRef} aria-live="polite">
+              <div id="chart-gallery" role="tabpanel" aria-labelledby={`gallery-tab-${selectedChart}`} className={styles.albumViewport} ref={album.viewportRef} {...album.handlers} data-direction={album.direction}>
+                <div className={styles.albumTrack} ref={album.trackRef}>
                 {charts.map((item, index) => {
                   const position = (index - selectedChartIndex + charts.length) % charts.length;
                   const isActive = selectedChart === item.id;
@@ -2378,6 +2067,7 @@ export function App() {
                   return (
                     <button
                       key={item.id}
+                      data-chart-id={item.id}
                       className={mergeClasses(styles.albumCard, isActive ? styles.albumCardActive : undefined)}
                       style={
                         {
@@ -2391,7 +2081,8 @@ export function App() {
                         } as CSSProperties
                       }
                       type="button"
-                      onClick={() => setSelectedChart(item.id)}
+                      onClick={() => album.select(index)}
+                      tabIndex={isActive ? 0 : -1}
                       aria-pressed={isActive}
                       aria-label={copy.sections.viewChart(item.title)}
                       data-protect-media="true"
@@ -2407,40 +2098,27 @@ export function App() {
                     </button>
                   );
                 })}
+                </div>
               </div>
 
               <div className={styles.albumPanel}>
-                <div className={styles.albumCaption}>
-                  <Text as="p" className={styles.eyebrow}>
-                    {selectedChartItem.meta}
-                  </Text>
+                <div className={styles.albumCaption} aria-live="polite" aria-atomic="true">
                   <Title2 as="h3">{selectedChartItem.title}</Title2>
                   <Text as="p" className={styles.cardCopy}>
                     {selectedChartItem.detail}
                   </Text>
                 </div>
-                <div className={styles.albumControls} aria-label={copy.sections.albumControls}>
-                  <Button
-                    appearance="secondary"
-                    icon={<ChevronLeft24Regular />}
-                    onClick={selectPreviousChart}
-                    aria-label={copy.sections.previousChart}
-                  />
-                  <span className={styles.albumDots} aria-hidden="true">
-                    {charts.map((item) => (
-                      <span
-                        key={item.id}
-                        className={mergeClasses(styles.albumDot, selectedChart === item.id ? styles.albumDotActive : undefined)}
-                      />
-                    ))}
-                  </span>
-                  <Button
-                    appearance="secondary"
-                    icon={<ChevronRight24Regular />}
-                    onClick={selectNextChart}
-                    aria-label={copy.sections.nextChart}
-                  />
-                </div>
+                <AlbumNavigation
+                  items={charts}
+                  selectedIndex={album.selectedIndex}
+                  label={copy.sections.albumControls}
+                  previousLabel={copy.sections.previousChart}
+                  nextLabel={copy.sections.nextChart}
+                  itemLabel={copy.sections.viewChart}
+                  select={album.select}
+                  previous={album.previous}
+                  next={album.next}
+                />
               </div>
             </div>
           </div>
@@ -2452,7 +2130,7 @@ export function App() {
               <div className={styles.sectionTitleCluster}>
                 <div className={styles.sectionTitleRow}>
                   <span className={styles.sectionTitleIcon} aria-hidden="true">
-                    <BookOpen24Regular />
+                    <FluentNamedIcon name="Library" />
                   </span>
                   <Title1 as="h2" id="blog-title" className={styles.sectionTitleText}>
                     {copy.sections.blogTitle}
@@ -2475,11 +2153,6 @@ export function App() {
                     <div className={styles.blogContent}>
                       <CardHeader
                         className={styles.blogHeader}
-                        image={
-                          <span className={styles.blogHeaderIcon} aria-hidden="true">
-                            <DocumentBulletList24Regular />
-                          </span>
-                        }
                         header={
                           <Subtitle1 as="h3" className={styles.blogTitle}>
                             {post.title}
@@ -2507,16 +2180,7 @@ export function App() {
                       </Text>
                     </div>
                     <CardFooter className={styles.blogFooter}>
-                      <Button
-                        className={styles.blogReadButton}
-                        appearance="primary"
-                        icon={<BookOpen24Regular />}
-                        type="button"
-                        onClick={showWorkInProgress}
-                        aria-label={copy.sections.readPost(post.title)}
-                      >
-                        {copy.sections.read}
-                      </Button>
+                      <Button className={styles.blogReadButton} appearance="primary" onClick={showWorkInProgress} aria-label={copy.sections.readPost(post.title)}>{copy.sections.read}</Button>
                     </CardFooter>
                   </div>
                 </Card>
@@ -2525,25 +2189,42 @@ export function App() {
           </div>
         </section>
 
-        <section className={styles.section} id="regulation" aria-labelledby="regulation-title">
-          <div className={mergeClasses(styles.sectionInner, styles.regulationGrid)}>
+        <section className={mergeClasses(styles.section, styles.linksSection)} id="regulation" aria-labelledby="regulation-title">
+          <div className={styles.regulationGrid}>
             <div className={styles.sectionTitleCluster}>
               <div className={styles.sectionTitleRow}>
                 <span className={styles.sectionTitleIcon} aria-hidden="true">
-                  <GlobeShield24Regular />
+                  <FluentNamedIcon name="Relationship" />
                 </span>
                 <Title1 as="h2" id="regulation-title" className={styles.sectionTitleText}>
-                  {copy.sections.regulationTitle}
+                  {copy.sections.externalLinksTitle}
                 </Title1>
               </div>
-              <Text as="p" className={styles.regulationLead}>
-                {copy.sections.regulationCopy}
+              <Text as="p" className={styles.externalLinksCopy}>
+                {copy.sections.externalLinksCopy}
               </Text>
+              <ul className={styles.externalLinks}>
+                {externalLinks.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      className={styles.externalLink}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${link.name[locale]} · ${copy.sections.opensInNewTab}`}
+                    >
+                      <BrandIcon name={link.icon} className={styles.platformIcon} />
+                      <span>{link.name[locale]}</span>
+                      <ArrowUpRight24Regular aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <Card className={styles.statementCard}>
+            <Card>
               <div className={styles.statementBody}>
-                <CardHeader image={<Person24Regular />} header={<Title3 as="h3">{copy.sections.regulationTitle}</Title3>} />
+                <CardHeader image={<GlobeShield24Regular />} header={<Title3 as="h3">{copy.sections.regulationTitle}</Title3>} />
                 <ul className={styles.statementList}>
                   {regulation.map((item) => (
                     <li className={styles.statementItem} key={item.term}>
@@ -2558,34 +2239,10 @@ export function App() {
         </section>
       </main>
 
-      {workPopoverOpen ? (
-        <PopoverSurface
-          className={mergeClasses(styles.workPopoverSurface, workPopoverClosing ? styles.workPopoverSurfaceClosing : undefined)}
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-          style={
-            {
-              backgroundColor: mode === "dark" ? "#2a2436" : "#f4f0fb",
-              borderColor: mode === "dark" ? "#716590" : "#c6bae0",
-              color: mode === "dark" ? "#f4f1fb" : "#242424",
-              boxShadow:
-                mode === "dark"
-                  ? "0 8px 16px rgba(0, 0, 0, 0.28), 0 0 2px rgba(0, 0, 0, 0.2)"
-                  : "0 8px 16px rgba(0, 0, 0, 0.12), 0 0 2px rgba(0, 0, 0, 0.1)",
-            } as CSSProperties
-          }
-        >
-          <span className={styles.workPopoverIcon} aria-hidden="true">
-            <Info24Regular />
-          </span>
-          <Text weight="semibold">{workInProgressText}</Text>
-        </PopoverSurface>
-      ) : null}
 
       <footer className={styles.footer}>
         <Text weight="semibold">{copy.footer.name}</Text>
-        <Button as="a" href="#hero" appearance="subtle" icon={<ArrowUp24Regular />}>
+        <Button as="a" href="#hero" onClick={(event) => activateLink(event, "hero")} appearance="subtle" icon={<ArrowUp24Regular />}>
           {copy.footer.back}
         </Button>
       </footer>

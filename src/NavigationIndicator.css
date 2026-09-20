@@ -1,0 +1,14 @@
+.navigation-selection-indicator {
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  background: var(--colorBrandBackground);
+  visibility: hidden;
+  pointer-events: none;
+  /* One clipped surface keeps round ends throughout the stretch and contraction. */
+  clip-path: inset(0 100% 0 0 round 1.5px);
+}
+
+@media (forced-colors: active) {
+  .navigation-selection-indicator { background: Highlight; forced-color-adjust: none; }
+}

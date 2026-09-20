@@ -1,17 +1,27 @@
 html {
+  --font-serif: "Noto Serif", "Noto Serif TC", "Noto Serif SC", "Songti TC", serif;
+  --font-sans: "Noto Sans", "Noto Sans TC", "Noto Sans SC", sans-serif;
+  --theme-duration: 240ms;
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --page-gutter: clamp(18px, 4vw, 54px);
+  --toolbar-target-size: 48px;
   scroll-behavior: smooth;
-  scroll-padding-top: 96px;
+  scroll-padding-top: calc(var(--header-height, 72px) + 16px);
+}
+
+html[lang="zh-CN"] {
+  --font-serif: "Noto Serif", "Noto Serif SC", "Noto Serif TC", "SimSun", serif;
+  --font-sans: "Noto Sans", "Noto Sans SC", "Noto Sans TC", sans-serif;
 }
 
 body {
   margin: 0;
-  font-family:
-    "Segoe UI Variable Text",
-    "Segoe UI",
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
+  font-family: var(--font-serif);
+  font-kerning: normal;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
 }
 
 * {
@@ -23,9 +33,48 @@ img {
   max-width: 100%;
 }
 
-.theme-settling,
-.theme-settling * {
-  animation-duration: 1ms !important;
-  transition-duration: 1ms !important;
-  transition-delay: 0ms !important;
+/* Reveal complete palettes: interpolating inherited text colors loses contrast.
+   The live switch is captured separately so its circle-to-moon motion remains visible. */
+.theme-switch { view-transition-name: theme-control; }
+::view-transition-group(root), ::view-transition-group(theme-control),
+::view-transition-old(root), ::view-transition-new(root),
+::view-transition-old(theme-control), ::view-transition-new(theme-control) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { z-index: 0; }
+::view-transition-new(root) { z-index: 1; }
+::view-transition-group(theme-control) { z-index: 2; }
+::view-transition-old(theme-control) { display: none; }
+::view-transition { pointer-events: none; }
+html[data-theme-transition] .theme-surface :not(.theme-switch, .theme-switch *) {
+  transition: none !important;
+}
+.ui-feedback, .fui-Toast, .fui-Tooltip {
+  font-family: var(--font-sans);
+  --fontFamilyBase: var(--font-sans);
+}
+.ui-feedback *, .fui-Toast *, .fui-Tooltip * { font-family: inherit; }
+.album-navigation.fui-CarouselNavContainer {
+  justify-content: flex-end;
+  justify-self: end;
+  margin: 0;
+}
+.album-navigation .fui-CarouselNav {
+  background: transparent;
+  box-shadow: none;
+}
+.album-navigation .fui-CarouselButton {
+  min-width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+}
+.album-navigation .fui-CarouselNavButton {
+  /* Keep the official dots and spacing, extending only the vertical hit area. */
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; --theme-duration: 0ms; }
 }
