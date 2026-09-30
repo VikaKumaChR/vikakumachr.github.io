@@ -1,5 +1,5 @@
 import { useId, type MouseEvent } from "react";
-import { BrandIcon } from "./BrandIcon";
+import { BrandIcon, type BrandIconName } from "./BrandIcon";
 import "./BlogFooter.css";
 
 type Props = {
@@ -7,8 +7,8 @@ type Props = {
   noticeTitle: string;
   linksLabel: string;
   newTabLabel: string;
-  links: readonly { name: string; href: string; icon: "github" | "bilibili" | "xiaohongshu" }[];
-  notice: readonly { term: string; value: string }[];
+  links: readonly { name: string; href: string; icon: BrandIconName }[];
+  notice: readonly { term: string; value: string; href?: string }[];
   onHome: (event: MouseEvent<HTMLAnchorElement>) => void;
 };
 
@@ -36,7 +36,13 @@ export function BlogFooter({ name, noticeTitle, linksLabel, newTabLabel, links, 
           <h2 id={noticeId}>{noticeTitle}</h2>
           <dl className="blog-footer-terms">
             {notice.slice(0, -1).map(item => (
-              <div key={item.term}><dt>{item.term}</dt><dd>{item.value}</dd></div>
+              <div key={item.term}>
+                <dt>{item.term}</dt>
+                <dd>{item.href ? (
+                  <a href={item.href} target="_blank" rel="noopener noreferrer"
+                    aria-label={`${item.value} · ${newTabLabel}`}>{item.value}</a>
+                ) : item.value}</dd>
+              </div>
             ))}
           </dl>
         </div>

@@ -49,6 +49,8 @@ import characterCollage from "../Image/LifeFourCuts.png";
 
 import characterPortrait from "../Image/VikaKumaChR_Stand.png";
 import characterScene from "../Image/VikaKumaChR_Scene.png";
+import characterIllustration01 from "../Image/Vika_illu01.png";
+import characterIllustration00 from "../Image/Vika_illu00.png";
 import heroFigurePlaceholder from "../Image/hero_figure_placeholder.png";
 import brandAvatar from "../Image/BrandAvatar.png";
 
@@ -1232,10 +1234,10 @@ const useStyles = makeStyles({
 });
 
 type Locale = "zh-TW" | "zh-CN";
-type ChartId = "collage" | "portrait" | "scene";
+type ChartId = "collage" | "portrait" | "scene" | "illustration01" | "illustration00";
 type PartId = "charts" | "blog";
 type SectionId = "hero" | "regulation" | PartId;
-type PostImageId = "characterScene" | "characterCollage" | "characterPortrait";
+type PostImageId = "characterScene" | "characterCollage" | "characterPortrait" | "characterIllustration01";
 
 type ChartCopy = {
   id: ChartId;
@@ -1309,7 +1311,7 @@ type LocaleContent = {
   charts: readonly ChartCopy[];
   parts: readonly PartCopy[];
   posts: readonly BlogPostCopy[];
-  regulation: readonly { term: string; value: string }[];
+  regulation: readonly { term: string; value: string; href?: string }[];
   footer: {
     name: string;
   };
@@ -1319,12 +1321,15 @@ const chartImages: Record<ChartId, string> = {
   collage: characterCollage,
   portrait: characterPortrait,
   scene: characterScene,
+  illustration01: characterIllustration01,
+  illustration00: characterIllustration00,
 };
 
 const postImages: Record<PostImageId, string> = {
   characterScene,
   characterCollage,
   characterPortrait,
+  characterIllustration01,
 };
 
 const partIcons: Record<PartId, ReactElement> = {
@@ -1332,8 +1337,11 @@ const partIcons: Record<PartId, ReactElement> = {
   blog: <FluentNamedIcon name="Library" animated />,
 };
 
+const artistProfileUrl = "https://www.mihuashi.com/500/";
+
 const externalLinks = [
   { name: { "zh-TW": "GitHub", "zh-CN": "GitHub" }, href: "https://github.com/VikaKumaChR", icon: "github" },
+  { name: { "zh-TW": "米畫師", "zh-CN": "米画师" }, href: artistProfileUrl, icon: "mihuashi" },
   { name: { "zh-TW": "嗶哩嗶哩", "zh-CN": "哔哩哔哩" }, href: "https://space.bilibili.com/387756916", icon: "bilibili" },
   { name: { "zh-TW": "小紅書", "zh-CN": "小红书" }, href: "https://xhslink.cn/o/7rwdxZDWMnl", icon: "xiaohongshu" },
 ] as const;
@@ -1413,6 +1421,22 @@ const contentByLocale: Record<Locale, LocaleContent> = {
         summary: "淡藍背景、低飽和紫和留白共同形成安靜、柔光的敘事空間。",
         detail: "場景圖承接首頁的故事感，讓角色資料像章節一樣逐步展開。",
       },
+      {
+        id: "illustration01",
+        title: "角色插畫 01",
+        meta: "角色插畫",
+        alt: "維嘉角色插畫 01",
+        summary: "維嘉的角色插畫。",
+        detail: "維嘉的角色插畫 01，點選圖片可放大瀏覽。",
+      },
+      {
+        id: "illustration00",
+        title: "角色插畫 00",
+        meta: "角色插畫",
+        alt: "維嘉角色插畫 00",
+        summary: "維嘉的角色插畫。",
+        detail: "維嘉的角色插畫 00，點選圖片可放大瀏覽。",
+      },
     ],
     parts: [
       { id: "charts", title: "圖件整理", copy: "整理角色圖件與立繪。" },
@@ -1430,13 +1454,13 @@ const contentByLocale: Record<Locale, LocaleContent> = {
         excerpt: "為什麼會用這個功能呢？因為很好看><",
       },
       {
-        image: "characterPortrait",
+        image: "characterIllustration01",
         title: "維嘉是誰？",
         excerpt: "查看維嘉的角色設定、外觀特徵與創作說明w",
       },
     ],
     regulation: [
-      { term: "畫師媽咪:", value: "几维不是猕猴桃" },
+      { term: "畫師媽咪:", value: "几维不是猕猴桃", href: artistProfileUrl },
       { term: "角色來源:", value: "維嘉VkC" },
       { term: "授權範圍 >", value: "未經確認請勿使用、轉載、訓練AI、二次分發、二改或商用" },
     ],
@@ -1518,6 +1542,22 @@ const contentByLocale: Record<Locale, LocaleContent> = {
         summary: "淡蓝背景、低饱和紫和留白共同形成安静、柔光的叙事空间。",
         detail: "场景图承接首页的故事感，让角色资料像章节一样逐步展开。",
       },
+      {
+        id: "illustration01",
+        title: "角色插画 01",
+        meta: "角色插画",
+        alt: "维嘉角色插画 01",
+        summary: "维嘉的角色插画。",
+        detail: "维嘉的角色插画 01，点击图片可放大浏览。",
+      },
+      {
+        id: "illustration00",
+        title: "角色插画 00",
+        meta: "角色插画",
+        alt: "维嘉角色插画 00",
+        summary: "维嘉的角色插画。",
+        detail: "维嘉的角色插画 00，点击图片可放大浏览。",
+      },
     ],
     parts: [
       { id: "charts", title: "图件整理", copy: "整理角色图件与立绘。" },
@@ -1535,13 +1575,13 @@ const contentByLocale: Record<Locale, LocaleContent> = {
         excerpt: "为什么会用这个功能呢？因为豪堪><",
       },
       {
-        image: "characterPortrait",
+        image: "characterIllustration01",
         title: "维嘉是谁？",
         excerpt: "查看维嘉的角色设定、外观特征与创作说明w",
       },
     ],
     regulation: [
-      { term: "画师妈咪:", value: "几维不是猕猴桃" },
+      { term: "画师妈咪:", value: "几维不是猕猴桃", href: artistProfileUrl },
       { term: "角色来源:", value: "维嘉VkC" },
       { term: "授权范围 >", value: "未经确认请勿使用、转载、训练AI、二次分发、二改或商用" },
     ],
@@ -1972,7 +2012,7 @@ export function App() {
                             ? "52%"
                             : isMedium
                               ? "31%"
-                              : "clamp(96px, calc(17% - 24px), 190px)",
+                              : "calc(17% - 24px)",
                           "--albumMobileBasis": isActive ? "72vw" : isMedium ? "46vw" : "22vw",
                         } as CSSProperties
                       }

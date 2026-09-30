@@ -59,6 +59,10 @@ html[data-theme="dark"] .blog-footer { --notice-important-color: #f5f3f8; }
 .blog-footer-terms > div { display: flex; align-items: baseline; gap: 6px; min-width: 0; max-width: 100%; }
 .blog-footer-terms dt { flex: none; }
 .blog-footer-terms dd { margin: 0; overflow-wrap: anywhere; }
+.blog-footer-terms a {
+  color: inherit;
+  text-decoration: none;
+}
 .footer-notice-important { color: var(--notice-important-color); }
 @media (max-width: 900px) {
   .blog-footer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 24px; }
