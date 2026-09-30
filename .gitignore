@@ -7,3 +7,9 @@ vite.config.d.ts
 Thumbs.db
 desktop.ini
 .codex-video-frames/
+
+# Local working notes and asset provenance; never publish with the site.
+.local-docs/
+PROJECT_HANDOFF.md
+public/brands/SOURCES.md
+public/backgrounds/README.md

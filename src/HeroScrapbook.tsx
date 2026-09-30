@@ -1,5 +1,5 @@
-import frameCutout from "../Image/Frame01.png";
-import baseTexture from "../Image/Texture_Sample00.jpg";
+import frameCutout from "../Image/MainPageComponent/Frame01.png";
+import baseTexture from "../Image/MainPageComponent/Texture_BlogBackgroundTile.jpg";
 import lifePanel02 from "../Image/LifePanel_03.png";
 import lifePanel03 from "../Image/LifePanel_04.png";
 import "./HeroScrapbook.css";

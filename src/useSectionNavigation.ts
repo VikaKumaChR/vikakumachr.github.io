@@ -1,21 +1,23 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const sectionIds = ["hero", "charts", "blog", "regulation"] as const;
+const navigationIds = ["hero", "charts", "blog"] as const;
 type SectionId = typeof sectionIds[number];
 const isSection = (value: string): value is SectionId => sectionIds.some(id => id === value);
 
 export function useSectionNavigation() {
-  const [activeSection, setActiveSection] = useState<SectionId>("hero");
+  const [activeSection, setActiveSection] = useState<typeof navigationIds[number]>("hero");
   const headerRef = useRef<HTMLElement>(null);
   const pendingSection = useRef<SectionId | null>(null);
   const settleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const interactionCount = useRef(0);
 
   const updateActiveSection = useCallback(() => {
+    if (headerRef.current) headerRef.current.dataset.scrolled = String(window.scrollY > 8);
     if (pendingSection.current) return;
     const marker = (headerRef.current?.getBoundingClientRect().bottom ?? 0) + 32;
     const atBottom = window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8;
-    const current = atBottom ? "regulation" : sectionIds.filter(id => {
+    const current = atBottom ? "blog" : navigationIds.filter(id => {
       const top = document.getElementById(id)?.getBoundingClientRect().top;
       return top !== undefined && top <= marker;
     }).at(-1) ?? "hero";
@@ -34,7 +36,7 @@ export function useSectionNavigation() {
     interactionCount.current++;
     clearTimeout(settleTimer.current);
     pendingSection.current = section;
-    setActiveSection(section);
+    setActiveSection(section === "regulation" ? "blog" : section);
     // Repeated activation must scroll even when the URL already has this hash.
     if (updateHistory && window.location.hash !== `#${section}`) {
       window.history.pushState(null, "", `#${section}`);

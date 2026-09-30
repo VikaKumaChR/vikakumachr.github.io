@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState, type CSSProperties, type MouseEvent, type ReactElement } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactElement } from "react";
 import {
   Badge,
   Button,
@@ -18,7 +18,6 @@ import {
   Tooltip,
   useToastController,
   Title1,
-  Title2,
   Title3,
   createDarkTheme,
   createLightTheme,
@@ -30,13 +29,14 @@ import {
   type Theme,
 } from "@fluentui/react-components";
 import {
-  ArrowUp24Regular,
-  ArrowUpRight24Regular,
-  GlobeShield24Regular,
   Share24Regular,
 } from "@fluentui/react-icons";
 import { FluentNamedIcon } from "./FluentNamedIcon";
-import { BrandIcon } from "./BrandIcon";
+import { BlogFooter } from "./BlogFooter";
+import { ImageSlideshow, galleryLabels } from "./ImageSlideshow";
+import { useGalleryAutoplay } from "./useGalleryAutoplay";
+import { useWindowActive } from "./useWindowActive";
+import "./MicaHeader.css";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { useAlbumNavigation } from "./useAlbumNavigation";
 import { AlbumNavigation } from "./AlbumNavigation";
@@ -91,6 +91,9 @@ const lightTheme: Theme = {
   ...createLightTheme(brandRamp),
   fontFamilyBase: "var(--font-serif)",
   fontFamilyNumeric: "var(--font-serif)",
+  colorNeutralForeground1: "#51445f",
+  colorNeutralForeground2: "#51445f",
+  colorNeutralForeground3: "#51445f",
   colorBrandBackground: "#c6bae0",
   colorBrandBackgroundHover: "#b4aad4",
   colorBrandBackgroundPressed: "#9d91bf",
@@ -106,6 +109,9 @@ const darkTheme: Theme = {
   ...createDarkTheme(brandRamp),
   fontFamilyBase: "var(--font-serif)",
   fontFamilyNumeric: "var(--font-serif)",
+  colorNeutralForeground1: "#ded5ef",
+  colorNeutralForeground2: "#ded5ef",
+  colorNeutralForeground3: "#ded5ef",
   colorBrandBackground: "#c6bae0",
   colorBrandBackgroundHover: "#d2c7e7",
   colorBrandBackgroundPressed: "#b4aad4",
@@ -131,19 +137,16 @@ const useStyles = makeStyles({
     top: 0,
     right: 0,
     left: 0,
-    minHeight: "72px",
+    minHeight: "64px",
     display: "grid",
     gridTemplateColumns: "minmax(220px, 1fr) auto minmax(160px, 1fr)",
     alignItems: "center",
     columnGap: "24px",
-    padding: "12px var(--page-gutter)",
-    backgroundColor: "color-mix(in srgb, var(--colorNeutralBackground1) 88%, transparent)",
-    ...shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
-    backdropFilter: "blur(22px) saturate(1.18)",
+    padding: "8px var(--chrome-gutter)",
     "@media (max-width: 1023px)": {
       position: "sticky",
       gridTemplateColumns: "1fr auto",
-      rowGap: "10px",
+      rowGap: "4px",
     },
   },
   brand: {
@@ -159,8 +162,8 @@ const useStyles = makeStyles({
     ":focus-visible": { textDecorationLine: "none" },
   },
   brandMark: {
-    width: "48px",
-    height: "48px",
+    width: "40px",
+    height: "40px",
     flexShrink: 0,
     display: "grid",
     placeItems: "center",
@@ -238,7 +241,7 @@ const useStyles = makeStyles({
     "&:hover, &:active": { backgroundColor: "transparent" },
     "& .fui-Tab__content": { fontFamily: "inherit", fontSize: "inherit", lineHeight: "inherit" },
     "&[data-fui-focus-visible]": {
-      boxShadow: "none", outline: `2px solid ${tokens.colorBrandStroke1}`, outlineOffset: "2px",
+      boxShadow: "none", outline: `2px solid ${tokens.colorStrokeFocus2}`, outlineOffset: "-2px", borderRadius: "4px",
     },
   },
   headerActions: {
@@ -1127,13 +1130,6 @@ const useStyles = makeStyles({
     background: "linear-gradient(180deg, transparent, rgba(31, 24, 48, 0.78))",
     pointerEvents: "none",
   },
-  albumMeta: {
-    color: "rgba(255,255,255,0.82)",
-    fontSize: tokens.fontSizeBase200,
-    lineHeight: tokens.lineHeightBase200,
-    fontWeight: tokens.fontWeightBold,
-    textTransform: "uppercase",
-  },
   albumTitle: {
     fontSize: tokens.fontSizeBase600,
     lineHeight: tokens.lineHeightBase600,
@@ -1165,9 +1161,10 @@ const useStyles = makeStyles({
     width: "100%",
     display: "grid",
     gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    gap: "16px",
+    gap: "32px",
     "@media (max-width: 960px)": {
       gridTemplateColumns: "1fr",
+      gap: "24px",
     },
   },
   blogCard: {
@@ -1230,116 +1227,6 @@ const useStyles = makeStyles({
   blogFooter: { marginTop: "auto", paddingTop: "16px" },
   blogReadButton: {
     minWidth: "80px", color: tokens.colorNeutralForegroundOnBrand, fontWeight: tokens.fontWeightSemibold,
-  },
-  linksSection: {
-    paddingRight: "var(--page-gutter)",
-    paddingLeft: "var(--page-gutter)",
-    "@media (max-width: 1023px)": {
-      paddingRight: "var(--page-gutter)", paddingLeft: "var(--page-gutter)",
-    },
-    "@media (max-width: 479px)": {
-      paddingRight: "var(--page-gutter)", paddingLeft: "var(--page-gutter)",
-    },
-  },
-  regulationGrid: {
-    width: "100%",
-    display: "grid",
-    gridTemplateColumns: "minmax(0, 1fr) 360px",
-    gap: "48px",
-    alignItems: "start",
-    "@media (max-width: 1023px)": {
-      gridTemplateColumns: "1fr",
-    },
-  },
-  externalLinksCopy: {
-    gridColumn: 2,
-    marginTop: 0,
-    marginBottom: 0,
-    maxWidth: "62ch",
-    color: tokens.colorNeutralForeground2,
-    fontSize: tokens.fontSizeBase400,
-    lineHeight: tokens.lineHeightBase400,
-  },
-  externalLinks: {
-    gridColumn: 2,
-    display: "grid",
-    width: "100%",
-    maxWidth: "640px",
-    margin: 0,
-    padding: 0,
-    listStyleType: "none",
-  },
-  externalLink: {
-    display: "grid",
-    gridTemplateColumns: "32px minmax(0, 1fr) 24px",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: "16px",
-    minHeight: "60px",
-    padding: "12px 4px",
-    color: tokens.colorNeutralForeground1,
-    fontSize: tokens.fontSizeBase400,
-    lineHeight: tokens.lineHeightBase400,
-    fontWeight: tokens.fontWeightSemibold,
-    textDecorationLine: "none",
-    ...shorthands.borderBottom("1px", "solid", tokens.colorNeutralStroke2),
-    ":hover": {
-      color: tokens.colorBrandForeground1,
-      ...shorthands.borderBottom("1px", "solid", tokens.colorBrandStroke1),
-    },
-    ":focus-visible": {
-      outline: `2px solid ${tokens.colorBrandStroke1}`,
-      outlineOffset: "4px",
-      borderRadius: "4px",
-    },
-    "& svg": {
-      flexShrink: 0,
-      color: "inherit",
-    },
-  },
-  platformIcon: { width: "24px", height: "24px", color: "inherit" },
-
-  statementBody: {
-    padding: "24px",
-    "& h3": { margin: 0 },
-    "& .fui-CardHeader": { marginBottom: tokens.spacingVerticalL },
-  },
-  statementList: {
-    display: "grid",
-    gap: "12px",
-    margin: 0,
-    padding: 0,
-    listStyleType: "none",
-  },
-  statementItem: {
-    display: "grid",
-    gridTemplateColumns: "112px minmax(0, 1fr)",
-    gap: "16px",
-    paddingTop: "12px",
-    ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
-    "@media (max-width: 460px)": {
-      gridTemplateColumns: "1fr",
-      gap: "4px",
-    },
-  },
-  statementTerm: {
-    color: tokens.colorNeutralForeground2,
-  },
-  statementValue: {
-    fontWeight: tokens.fontWeightSemibold,
-  },
-  footer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: "18px",
-    padding: "28px var(--page-gutter)",
-    color: tokens.colorNeutralForeground2,
-    ...shorthands.borderTop("1px", "solid", tokens.colorNeutralStroke2),
-    "@media (max-width: 540px)": {
-      alignItems: "start",
-      flexDirection: "column",
-    },
   },
 
 });
@@ -1425,7 +1312,6 @@ type LocaleContent = {
   regulation: readonly { term: string; value: string }[];
   footer: {
     name: string;
-    back: string;
   };
 };
 
@@ -1497,7 +1383,7 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       blogCopy: "整理設定札記、圖件歸檔與角色觀察。每篇貼文都有封面、分類與摘要。",
       read: "閱讀",
       readPost: (title) => `閱讀：${title}`,
-      regulationTitle: "須知",
+      regulationTitle: "須知 >",
       externalLinksTitle: "站外連結",
       externalLinksCopy: "也可以在這裡找到我。",
       opensInNewTab: "在新分頁開啟",
@@ -1550,14 +1436,12 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       },
     ],
     regulation: [
-      { term: "畫師媽咪", value: "几维不是猕猴桃" },
-      { term: "角色來源", value: "個人角色：維嘉" },
-      { term: "展示範圍", value: "本頁僅展示個人角色和整理日誌" },
-      { term: "授權範圍", value: "未經確認請勿使用、轉載、訓練AI、二次分發、二改或商用" },
+      { term: "畫師媽咪:", value: "几维不是猕猴桃" },
+      { term: "角色來源:", value: "維嘉VkC" },
+      { term: "授權範圍 >", value: "未經確認請勿使用、轉載、訓練AI、二次分發、二改或商用" },
     ],
     footer: {
-      name: "VkC's Blog",
-      back: "返回首頁",
+      name: "維嘉VkC",
     },
   },
   "zh-CN": {
@@ -1604,7 +1488,7 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       blogCopy: "整理设定札记、图件归档与角色观察。每篇贴文都有封面、分类与摘要。",
       read: "阅读",
       readPost: (title) => `阅读：${title}`,
-      regulationTitle: "须知",
+      regulationTitle: "须知 >",
       externalLinksTitle: "站外链接",
       externalLinksCopy: "也可以在这里找到我。",
       opensInNewTab: "在新标签页打开",
@@ -1657,14 +1541,12 @@ const contentByLocale: Record<Locale, LocaleContent> = {
       },
     ],
     regulation: [
-      { term: "画师妈咪", value: "几维不是猕猴桃" },
-      { term: "角色来源", value: "个人角色：维嘉" },
-      { term: "展示范围", value: "本页仅展示个人角色和整理日志" },
-      { term: "授权范围", value: "未经确认请勿使用、转载、训练AI、二次分发、二改或商用" },
+      { term: "画师妈咪:", value: "几维不是猕猴桃" },
+      { term: "角色来源:", value: "维嘉VkC" },
+      { term: "授权范围 >", value: "未经确认请勿使用、转载、训练AI、二次分发、二改或商用" },
     ],
     footer: {
-      name: "VkC's Blog",
-      back: "返回首页",
+      name: "维嘉VkC",
     },
   },
 };
@@ -1690,6 +1572,16 @@ export function App() {
   const navItems = copy.navItems;
   const { activeSection, headerRef, navigateToSection } = useSectionNavigation();
   const album = useAlbumNavigation(charts.length);
+  const [slideshow, setSlideshow] = useState({ open: false, index: 0 });
+  const slideshowTrigger = useRef<HTMLButtonElement | null>(null);
+  const autoplay = useGalleryAutoplay({ selectedIndex: album.selectedIndex, count: charts.length,
+    next: album.next, blocked: slideshow.open });
+  const viewerLabels = galleryLabels(locale);
+  const windowActive = useWindowActive();
+  const closeSlideshow = () => {
+    setSlideshow(value => ({ ...value, open: false }));
+    requestAnimationFrame(() => slideshowTrigger.current?.focus({ preventScroll: true }));
+  };
   const selectedChart = charts[album.selectedIndex].id;
   const { dispatchToast } = useToastController("blog-feedback");
   const [shareHint, setShareHint] = useState(contentByLocale["zh-TW"].actions.share);
@@ -1856,7 +1748,11 @@ export function App() {
       }
     >
       <Toaster toasterId="blog-feedback" position="bottom-end" limit={1} />
-      <header ref={headerRef} className={styles.header} aria-label={copy.aria.header}>
+      <a className="skip-navigation" href="#main-content" onClick={event => {
+        event.preventDefault();
+        document.getElementById("main-content")?.focus({ preventScroll: true });
+      }}>{locale === "zh-TW" ? "跳過導覽，前往主要內容" : "跳过导航，前往主要内容"}</a>
+      <header ref={headerRef} className={mergeClasses(styles.header, "global-header")} data-window-active={windowActive} aria-label={copy.aria.header}>
         <Link className={styles.brand} href="#hero" onClick={(event) => activateLink(event, "hero")} appearance="subtle" aria-label={copy.aria.home}>
           <span className={styles.brandMark} aria-hidden="true">
             {/* QQ 人插圖入口：將下方文字替換為 <img className={styles.brandAvatar} src={你的圖片} alt="" />。 */}
@@ -1909,7 +1805,7 @@ export function App() {
         </div>
       </header>
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section
           className={mergeClasses(styles.hero, isMobileMode ? styles.mobileHero : undefined, "hero-journal")}
           id="hero"
@@ -2056,7 +1952,7 @@ export function App() {
               </div>
             </div>
 
-            <div className={styles.albumShell}>
+            <div className={styles.albumShell} ref={autoplay.regionRef} {...autoplay.handlers} data-autoplay={autoplay.running ? "playing" : "paused"}>
               <div id="chart-gallery" role="tabpanel" aria-labelledby={`gallery-tab-${selectedChart}`} className={styles.albumViewport} ref={album.viewportRef} {...album.handlers} data-direction={album.direction}>
                 <div className={styles.albumTrack} ref={album.trackRef}>
                 {charts.map((item, index) => {
@@ -2081,16 +1977,19 @@ export function App() {
                         } as CSSProperties
                       }
                       type="button"
-                      onClick={() => album.select(index)}
+                      onClick={(event) => {
+                        slideshowTrigger.current = event.currentTarget;
+                        setSlideshow({ open: true, index });
+                      }}
+                      aria-haspopup="dialog"
                       tabIndex={isActive ? 0 : -1}
                       aria-pressed={isActive}
-                      aria-label={copy.sections.viewChart(item.title)}
+                      aria-label={`${viewerLabels.open} · ${item.title}`}
                       data-protect-media="true"
                     >
                       <img className={mergeClasses(styles.albumImage, styles.protectedImage)} src={item.image} alt={item.alt} draggable={false} />
                       <span className={styles.mediaGuard} data-media-guard="true" aria-hidden="true" />
                       <span className={styles.albumOverlay}>
-                        <span className={styles.albumMeta}>{item.meta}</span>
                         <Title3 as="span" className={styles.albumTitle}>
                           {item.title}
                         </Title3>
@@ -2102,23 +2001,24 @@ export function App() {
               </div>
 
               <div className={styles.albumPanel}>
-                <div className={styles.albumCaption} aria-live="polite" aria-atomic="true">
-                  <Title2 as="h3">{selectedChartItem.title}</Title2>
+                <div className={styles.albumCaption} aria-live={autoplay.playing ? "off" : "polite"} aria-atomic="true">
                   <Text as="p" className={styles.cardCopy}>
                     {selectedChartItem.detail}
                   </Text>
                 </div>
-                <AlbumNavigation
-                  items={charts}
-                  selectedIndex={album.selectedIndex}
-                  label={copy.sections.albumControls}
-                  previousLabel={copy.sections.previousChart}
-                  nextLabel={copy.sections.nextChart}
-                  itemLabel={copy.sections.viewChart}
-                  select={album.select}
-                  previous={album.previous}
-                  next={album.next}
-                />
+                <div className="album-controls">
+                  <AlbumNavigation
+                    items={charts}
+                    selectedIndex={album.selectedIndex}
+                    label={copy.sections.albumControls}
+                    previousLabel={copy.sections.previousChart}
+                    nextLabel={copy.sections.nextChart}
+                    itemLabel={copy.sections.viewChart}
+                    select={album.select}
+                    previous={album.previous}
+                    next={album.next}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -2189,63 +2089,18 @@ export function App() {
           </div>
         </section>
 
-        <section className={mergeClasses(styles.section, styles.linksSection)} id="regulation" aria-labelledby="regulation-title">
-          <div className={styles.regulationGrid}>
-            <div className={styles.sectionTitleCluster}>
-              <div className={styles.sectionTitleRow}>
-                <span className={styles.sectionTitleIcon} aria-hidden="true">
-                  <FluentNamedIcon name="Relationship" />
-                </span>
-                <Title1 as="h2" id="regulation-title" className={styles.sectionTitleText}>
-                  {copy.sections.externalLinksTitle}
-                </Title1>
-              </div>
-              <Text as="p" className={styles.externalLinksCopy}>
-                {copy.sections.externalLinksCopy}
-              </Text>
-              <ul className={styles.externalLinks}>
-                {externalLinks.map((link) => (
-                  <li key={link.href}>
-                    <a
-                      className={styles.externalLink}
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${link.name[locale]} · ${copy.sections.opensInNewTab}`}
-                    >
-                      <BrandIcon name={link.icon} className={styles.platformIcon} />
-                      <span>{link.name[locale]}</span>
-                      <ArrowUpRight24Regular aria-hidden="true" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <Card>
-              <div className={styles.statementBody}>
-                <CardHeader image={<GlobeShield24Regular />} header={<Title3 as="h3">{copy.sections.regulationTitle}</Title3>} />
-                <ul className={styles.statementList}>
-                  {regulation.map((item) => (
-                    <li className={styles.statementItem} key={item.term}>
-                      <Text className={styles.statementTerm}>{item.term}</Text>
-                      <Text className={styles.statementValue}>{item.value}</Text>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Card>
-          </div>
-        </section>
       </main>
 
-
-      <footer className={styles.footer}>
-        <Text weight="semibold">{copy.footer.name}</Text>
-        <Button as="a" href="#hero" onClick={(event) => activateLink(event, "hero")} appearance="subtle" icon={<ArrowUp24Regular />}>
-          {copy.footer.back}
-        </Button>
-      </footer>
+      <BlogFooter name={copy.footer.name} noticeTitle={copy.sections.regulationTitle}
+        linksLabel={copy.sections.externalLinksTitle} newTabLabel={copy.sections.opensInNewTab}
+        notice={regulation}
+        links={externalLinks.map(link => ({ ...link, name: link.name[locale] }))}
+        onHome={event => activateLink(event, "hero")} />
+      {/* Portal gets only palette tokens, never the page shell's 100vh layout. */}
+      <FluentProvider theme={theme}>
+        <ImageSlideshow open={slideshow.open} startIndex={slideshow.index}
+          items={charts} locale={locale} onClose={closeSlideshow} />
+      </FluentProvider>
     </FluentProvider>
   );
 }
