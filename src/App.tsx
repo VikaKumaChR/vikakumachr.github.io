@@ -1337,11 +1337,11 @@ const partIcons: Record<PartId, ReactElement> = {
   blog: <FluentNamedIcon name="Library" animated />,
 };
 
-const artistProfileUrl = "https://www.mihuashi.com/500/";
+const artistProfileUrl = "https://www.mihuashi.com/profiles/108690";
 
 const externalLinks = [
   { name: { "zh-TW": "GitHub", "zh-CN": "GitHub" }, href: "https://github.com/VikaKumaChR", icon: "github" },
-  { name: { "zh-TW": "米畫師", "zh-CN": "米画师" }, href: artistProfileUrl, icon: "mihuashi" },
+  { name: { "zh-TW": "米畫師", "zh-CN": "米画师" }, href: "https://www.mihuashi.com/character-card/692e8496cf3eb102974439f6c746940e9f4ba670", icon: "mihuashi" },
   { name: { "zh-TW": "嗶哩嗶哩", "zh-CN": "哔哩哔哩" }, href: "https://space.bilibili.com/387756916", icon: "bilibili" },
   { name: { "zh-TW": "小紅書", "zh-CN": "小红书" }, href: "https://xhslink.cn/o/7rwdxZDWMnl", icon: "xiaohongshu" },
 ] as const;
