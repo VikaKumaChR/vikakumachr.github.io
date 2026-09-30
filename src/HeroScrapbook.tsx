@@ -44,3 +44,4 @@ export function HeroHomeFrame() {
 export function HeroFigureBackdrop() {
   return <img className="hero-figure-backdrop" src={`${import.meta.env.BASE_URL}backgrounds/hero-lace-expanded.png`} alt="" aria-hidden="true" draggable={false} data-hero-texture="true" />;
 }
+
