@@ -7,7 +7,7 @@ type Options = {
   blocked?: boolean;
 };
 
-export const GALLERY_INTERVAL = 6000;
+export const GALLERY_INTERVAL = 3000;
 
 /** Auto-advance only while visible; hand control to the visitor on interaction. */
 export function useGalleryAutoplay({ selectedIndex, count, next, blocked = false }: Options) {
