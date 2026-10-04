@@ -1325,6 +1325,12 @@ const chartImages: Record<ChartId, string> = {
   illustration00: characterIllustration00,
 };
 
+// 僅控制輪播首位的取景；第二個百分比越小，竪圖在裁切框內越往下移。
+const activeChartImagePositions: Partial<Record<ChartId, string>> = {
+  portrait: "50% 32%",
+  illustration00: "50% 28%",
+};
+
 const postImages: Record<PostImageId, string> = {
   characterScene,
   characterCollage,
@@ -2027,7 +2033,13 @@ export function App() {
                       aria-label={`${viewerLabels.open} · ${item.title}`}
                       data-protect-media="true"
                     >
-                      <img className={mergeClasses(styles.albumImage, styles.protectedImage)} src={item.image} alt={item.alt} draggable={false} />
+                      <img
+                        className={mergeClasses(styles.albumImage, styles.protectedImage)}
+                        style={isActive ? { objectPosition: activeChartImagePositions[item.id] ?? "50% 50%" } : undefined}
+                        src={item.image}
+                        alt={item.alt}
+                        draggable={false}
+                      />
                       <span className={styles.mediaGuard} data-media-guard="true" aria-hidden="true" />
                       <span className={styles.albumOverlay}>
                         <Title3 as="span" className={styles.albumTitle}>
